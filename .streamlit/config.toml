@@ -1,0 +1,18 @@
+[theme]
+primaryColor       = "#1f77b4"
+backgroundColor    = "#ffffff"
+secondaryBackgroundColor = "#f0f4f8"
+textColor          = "#1a1a1a"
+font               = "sans serif"
+
+[server]
+headless           = true
+enableCORS         = false
+enableXsrfProtection = false   # needed when Flask and Streamlit share the same origin
+
+[browser]
+gatherUsageStats   = false
+
+[client]
+toolbarMode        = "minimal"   # hides the top toolbar to save vertical space
+showSidebarNavigation = false

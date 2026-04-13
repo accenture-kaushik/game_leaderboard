@@ -1,0 +1,14 @@
+gemini:
+  api_key: "YOUR_GOOGLE_API_KEY_HERE"   # https://aistudio.google.com/app/apikey
+  model_name: "gemini-2.0-flash"
+  temperature: 0.7
+  top_p: 0.95
+  max_output_tokens: 4096
+
+app:
+  # Local dev: leave as ./data
+  # Azure App Service: change to /home/data  (persistent mount)
+  data_dir: "./data"
+  default_rounds: 12
+  num_courts: 2
+  game_duration_minutes: 10
