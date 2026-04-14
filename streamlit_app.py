@@ -19,7 +19,6 @@ from typing import Dict, List, Optional
 
 import requests
 
-import google.generativeai as genai
 import pandas as pd
 import streamlit as st
 import yaml
@@ -65,66 +64,11 @@ def _gemini_key() -> str:
     return ""
 
 
-_QUIP_FALLBACKS = [
-    [
-        "Officially declared the MVP by absolutely everyone (including themselves).",
-        "We're checking their shoes for illegal motors.",
-        "The team's secret weapon — don't tell anyone.",
-    ],
-    [
-        "So close to first place they can almost smell the trophy.",
-        "Solid, steady, and suspiciously consistent.",
-        "You owe the team 7 beers for that podium finish.",
-    ],
-    [
-        "Arrived for the snacks, stayed to podium.",
-        "Bronze never looked this good.",
-        "Still figuring out which end of the racket to hold — and somehow made the podium.",
-    ],
-]
-
-
-def _podium_quips(names: List[str]) -> List[str]:
-    """Generate 3 funny, friendly one-liners for podium players using Gemini."""
-    key = _gemini_key()
-    if not key:
-        return [_QUIP_FALLBACKS[i][0] for i in range(3)]
-
-    gcfg = _cfg().get("gemini", {})
-    try:
-        genai.configure(api_key=key)
-        model = genai.GenerativeModel(
-            model_name=gcfg.get("model_name", "gemini-2.0-flash"),
-            generation_config=genai.GenerationConfig(
-                temperature=1.0,
-                max_output_tokens=300,
-            ),
-        )
-        prompt = (
-            f"We just finished a friendly pickleball tournament. "
-            f"The top 3 players are: 1st place: {names[0]}, "
-            f"2nd place: {names[1] if len(names) > 1 else 'TBD'}, "
-            f"3rd place: {names[2] if len(names) > 2 else 'TBD'}.\n\n"
-            "Write exactly 3 funny, warm, light-hearted one-liner jokes — one for each player "
-            "in order (1st, 2nd, 3rd). Be creative and unpredictable — generate something fresh "
-            "and different every time, never repeat the same joke. Rules:\n"
-            "- Keep it friendly and fun, no mean jokes or personal attacks.\n"
-            "- No words like loser, failure, dumb, bad.\n"
-            "- Jokes should be simple and relatable to all people, not technical.\n"
-            "- Each line must be under 80 characters.\n"
-            "- Output exactly 3 lines, one per player, nothing else. No numbering, no labels.\n"
-            "Examples of the tone: 'You owe the team 7 beers for that win.', "
-            "'We're checking your shoes for illegal motors.', "
-            "'You're just here for the post-game snacks, aren't you?'"
-        )
-        response = model.generate_content(prompt)
-        lines = [ln.strip() for ln in response.text.strip().splitlines() if ln.strip()]
-        # Pad with fallbacks if Gemini returns fewer than 3 lines
-        while len(lines) < 3:
-            lines.append(_QUIP_FALLBACKS[len(lines)][0])
-        return lines[:3]
-    except Exception:
-        return [_QUIP_FALLBACKS[i][0] for i in range(3)]
+def _podium_quips() -> List[str]:
+    """Pick 3 random quips from the local quips list."""
+    import random
+    from quips import QUIPS
+    return random.sample(QUIPS, min(3, len(QUIPS)))
 
 
 def _data_dir() -> Path:
@@ -1203,9 +1147,7 @@ def show_leaderboard() -> None:
     _medal_border = ["#F9A825", "#9E9E9E", "#EF5350"]
     _medals       = ["🥇", "🥈", "🥉"]
 
-    podium_names = [lb[i]["name"] for i in range(podium)]
-    with st.spinner("Generating podium vibes…"):
-        quips = _podium_quips(podium_names)
+    quips = _podium_quips()
 
     cols = st.columns(podium)
     for col, medal, p, bg, border, quip in zip(
