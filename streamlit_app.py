@@ -436,6 +436,7 @@ def _init_ui():
         "verified_phone": "",
         "show_admin_pw": False,
         "show_admin_panel": False,
+        "phone_add_counter": 0,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -1315,7 +1316,8 @@ def show_welcome() -> None:
         with n_col:
             new_ph = st.text_input(
                 "new_ph", max_chars=10, placeholder="Add 10-digit number",
-                label_visibility="collapsed", key="new_phone_field",
+                label_visibility="collapsed",
+                key=f"new_phone_field_{st.session_state.phone_add_counter}",
             )
         with a_col:
             if st.button("Add", key="btn_add_phone",
@@ -1326,8 +1328,7 @@ def show_welcome() -> None:
                         phones.append(p)
                         with st.spinner("Saving…"):
                             _put_users({"allowed_phones": phones})
-                        if "new_phone_field" in st.session_state:
-                            del st.session_state["new_phone_field"]
+                        st.session_state.phone_add_counter += 1
                         st.success(f"Added {p[:5]}·····")
                     else:
                         st.warning("Already registered.")
