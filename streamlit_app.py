@@ -530,7 +530,7 @@ def show_setup() -> None:
         unsafe_allow_html=True,
     )
 
-    tab_p, tab_s = st.tabs(["👥 Players & Courts", "⚙️ Settings & Generate"])
+    tab_p, tab_s = st.tabs(["👥 Players & Courts", "⚙️ Generate Schedule"])
 
     # ── Players tab ──────────────────────────────────────────────────────────
     with tab_p:
@@ -551,15 +551,20 @@ def show_setup() -> None:
         # Number of courts
         num_courts = st.number_input(
             "Number of courts", min_value=1, max_value=6,
-            step=1, key="num_courts",
+            value=st.session_state.get("num_courts", 2), step=1,
         )
+        if num_courts != st.session_state.get("num_courts", 2):
+            st.session_state.num_courts = num_courts
+            st.rerun()
 
         # Single rate slider
         games_per_hour = st.slider(
-            "Games per hour",
+            "Games /per court/ per hour",
             min_value=1, max_value=12, step=1,
-            key="games_per_hour",
+            value=st.session_state.get("games_per_hour", 5),
         )
+        if games_per_hour != st.session_state.get("games_per_hour", 5):
+            st.session_state.games_per_hour = games_per_hour
         mins_per_game = round(60 / games_per_hour, 1)
         st.caption(f"~{mins_per_game} min per game")
 
@@ -695,7 +700,7 @@ def show_setup() -> None:
                         st.error("Incorrect password.")
                     st.rerun()
 
-    # ── Settings & Generate tab ───────────────────────────────────────────────
+    # ── Generate Schedule tab ───────────────────────────────────────────────
     with tab_s:
         # Read values set in Players tab
         num_courts     = st.session_state.get("num_courts", 2)
