@@ -1,7 +1,1008 @@
 {
-  "players": [],
-  "skill_levels": {},
-  "schedule": [],
-  "scores": {},
-  "session_active": false
+  "players": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O"
+  ],
+  "skill_levels": {
+    "A": "intermediate",
+    "B": "intermediate",
+    "C": "intermediate",
+    "D": "intermediate",
+    "E": "intermediate",
+    "F": "intermediate",
+    "G": "intermediate",
+    "H": "intermediate",
+    "I": "intermediate",
+    "J": "intermediate",
+    "K": "intermediate",
+    "L": "intermediate",
+    "M": "intermediate",
+    "N": "intermediate",
+    "O": "intermediate"
+  },
+  "num_courts": 3,
+  "games_per_hour": 5,
+  "court_hours": {
+    "1": 3.0,
+    "2": 2.0,
+    "3": 3.0
+  },
+  "schedule": [
+    {
+      "round": 1,
+      "court": 1,
+      "team_a": [
+        "F",
+        "I"
+      ],
+      "team_b": [
+        "O",
+        "D"
+      ],
+      "sitting_out": [
+        "A",
+        "B",
+        "C"
+      ],
+      "time_slot": "0\u201310 min",
+      "game_id": "r1_c1"
+    },
+    {
+      "round": 1,
+      "court": 2,
+      "team_a": [
+        "G",
+        "M"
+      ],
+      "team_b": [
+        "N",
+        "L"
+      ],
+      "sitting_out": [
+        "A",
+        "B",
+        "C"
+      ],
+      "time_slot": "0\u201310 min",
+      "game_id": "r1_c2"
+    },
+    {
+      "round": 1,
+      "court": 3,
+      "team_a": [
+        "E",
+        "H"
+      ],
+      "team_b": [
+        "J",
+        "K"
+      ],
+      "sitting_out": [
+        "A",
+        "B",
+        "C"
+      ],
+      "time_slot": "0\u201310 min",
+      "game_id": "r1_c3"
+    },
+    {
+      "round": 2,
+      "court": 1,
+      "team_a": [
+        "K",
+        "M"
+      ],
+      "team_b": [
+        "L",
+        "G"
+      ],
+      "sitting_out": [
+        "D",
+        "E",
+        "F"
+      ],
+      "time_slot": "10\u201320 min",
+      "game_id": "r2_c1"
+    },
+    {
+      "round": 2,
+      "court": 2,
+      "team_a": [
+        "J",
+        "I"
+      ],
+      "team_b": [
+        "B",
+        "C"
+      ],
+      "sitting_out": [
+        "D",
+        "E",
+        "F"
+      ],
+      "time_slot": "10\u201320 min",
+      "game_id": "r2_c2"
+    },
+    {
+      "round": 2,
+      "court": 3,
+      "team_a": [
+        "O",
+        "A"
+      ],
+      "team_b": [
+        "N",
+        "H"
+      ],
+      "sitting_out": [
+        "D",
+        "E",
+        "F"
+      ],
+      "time_slot": "10\u201320 min",
+      "game_id": "r2_c3"
+    },
+    {
+      "round": 3,
+      "court": 1,
+      "team_a": [
+        "C",
+        "O"
+      ],
+      "team_b": [
+        "L",
+        "M"
+      ],
+      "sitting_out": [
+        "G",
+        "H",
+        "I"
+      ],
+      "time_slot": "20\u201330 min",
+      "game_id": "r3_c1"
+    },
+    {
+      "round": 3,
+      "court": 2,
+      "team_a": [
+        "F",
+        "K"
+      ],
+      "team_b": [
+        "D",
+        "J"
+      ],
+      "sitting_out": [
+        "G",
+        "H",
+        "I"
+      ],
+      "time_slot": "20\u201330 min",
+      "game_id": "r3_c2"
+    },
+    {
+      "round": 3,
+      "court": 3,
+      "team_a": [
+        "E",
+        "N"
+      ],
+      "team_b": [
+        "B",
+        "A"
+      ],
+      "sitting_out": [
+        "G",
+        "H",
+        "I"
+      ],
+      "time_slot": "20\u201330 min",
+      "game_id": "r3_c3"
+    },
+    {
+      "round": 4,
+      "court": 1,
+      "team_a": [
+        "D",
+        "H"
+      ],
+      "team_b": [
+        "N",
+        "O"
+      ],
+      "sitting_out": [
+        "J",
+        "K",
+        "L"
+      ],
+      "time_slot": "30\u201340 min",
+      "game_id": "r4_c1"
+    },
+    {
+      "round": 4,
+      "court": 2,
+      "team_a": [
+        "M",
+        "A"
+      ],
+      "team_b": [
+        "I",
+        "E"
+      ],
+      "sitting_out": [
+        "J",
+        "K",
+        "L"
+      ],
+      "time_slot": "30\u201340 min",
+      "game_id": "r4_c2"
+    },
+    {
+      "round": 4,
+      "court": 3,
+      "team_a": [
+        "B",
+        "G"
+      ],
+      "team_b": [
+        "C",
+        "F"
+      ],
+      "sitting_out": [
+        "J",
+        "K",
+        "L"
+      ],
+      "time_slot": "30\u201340 min",
+      "game_id": "r4_c3"
+    },
+    {
+      "round": 5,
+      "court": 1,
+      "team_a": [
+        "J",
+        "H"
+      ],
+      "team_b": [
+        "C",
+        "E"
+      ],
+      "sitting_out": [
+        "M",
+        "N",
+        "O"
+      ],
+      "time_slot": "40\u201350 min",
+      "game_id": "r5_c1"
+    },
+    {
+      "round": 5,
+      "court": 2,
+      "team_a": [
+        "L",
+        "I"
+      ],
+      "team_b": [
+        "K",
+        "A"
+      ],
+      "sitting_out": [
+        "M",
+        "N",
+        "O"
+      ],
+      "time_slot": "40\u201350 min",
+      "game_id": "r5_c2"
+    },
+    {
+      "round": 5,
+      "court": 3,
+      "team_a": [
+        "F",
+        "D"
+      ],
+      "team_b": [
+        "B",
+        "G"
+      ],
+      "sitting_out": [
+        "M",
+        "N",
+        "O"
+      ],
+      "time_slot": "40\u201350 min",
+      "game_id": "r5_c3"
+    },
+    {
+      "round": 6,
+      "court": 1,
+      "team_a": [
+        "E",
+        "K"
+      ],
+      "team_b": [
+        "J",
+        "L"
+      ],
+      "sitting_out": [
+        "A",
+        "B",
+        "C"
+      ],
+      "time_slot": "50\u201360 min",
+      "game_id": "r6_c1"
+    },
+    {
+      "round": 6,
+      "court": 2,
+      "team_a": [
+        "F",
+        "O"
+      ],
+      "team_b": [
+        "H",
+        "I"
+      ],
+      "sitting_out": [
+        "A",
+        "B",
+        "C"
+      ],
+      "time_slot": "50\u201360 min",
+      "game_id": "r6_c2"
+    },
+    {
+      "round": 6,
+      "court": 3,
+      "team_a": [
+        "G",
+        "N"
+      ],
+      "team_b": [
+        "M",
+        "D"
+      ],
+      "sitting_out": [
+        "A",
+        "B",
+        "C"
+      ],
+      "time_slot": "50\u201360 min",
+      "game_id": "r6_c3"
+    },
+    {
+      "round": 7,
+      "court": 1,
+      "team_a": [
+        "J",
+        "B"
+      ],
+      "team_b": [
+        "A",
+        "I"
+      ],
+      "sitting_out": [
+        "D",
+        "E",
+        "F"
+      ],
+      "time_slot": "60\u201370 min",
+      "game_id": "r7_c1"
+    },
+    {
+      "round": 7,
+      "court": 2,
+      "team_a": [
+        "K",
+        "L"
+      ],
+      "team_b": [
+        "N",
+        "M"
+      ],
+      "sitting_out": [
+        "D",
+        "E",
+        "F"
+      ],
+      "time_slot": "60\u201370 min",
+      "game_id": "r7_c2"
+    },
+    {
+      "round": 7,
+      "court": 3,
+      "team_a": [
+        "C",
+        "H"
+      ],
+      "team_b": [
+        "G",
+        "O"
+      ],
+      "sitting_out": [
+        "D",
+        "E",
+        "F"
+      ],
+      "time_slot": "60\u201370 min",
+      "game_id": "r7_c3"
+    },
+    {
+      "round": 8,
+      "court": 1,
+      "team_a": [
+        "K",
+        "B"
+      ],
+      "team_b": [
+        "L",
+        "A"
+      ],
+      "sitting_out": [
+        "G",
+        "H",
+        "I"
+      ],
+      "time_slot": "70\u201380 min",
+      "game_id": "r8_c1"
+    },
+    {
+      "round": 8,
+      "court": 2,
+      "team_a": [
+        "F",
+        "M"
+      ],
+      "team_b": [
+        "J",
+        "E"
+      ],
+      "sitting_out": [
+        "G",
+        "H",
+        "I"
+      ],
+      "time_slot": "70\u201380 min",
+      "game_id": "r8_c2"
+    },
+    {
+      "round": 8,
+      "court": 3,
+      "team_a": [
+        "C",
+        "N"
+      ],
+      "team_b": [
+        "O",
+        "D"
+      ],
+      "sitting_out": [
+        "G",
+        "H",
+        "I"
+      ],
+      "time_slot": "70\u201380 min",
+      "game_id": "r8_c3"
+    },
+    {
+      "round": 9,
+      "court": 1,
+      "team_a": [
+        "F",
+        "B"
+      ],
+      "team_b": [
+        "O",
+        "M"
+      ],
+      "sitting_out": [
+        "J",
+        "K",
+        "L"
+      ],
+      "time_slot": "80\u201390 min",
+      "game_id": "r9_c1"
+    },
+    {
+      "round": 9,
+      "court": 2,
+      "team_a": [
+        "N",
+        "A"
+      ],
+      "team_b": [
+        "C",
+        "D"
+      ],
+      "sitting_out": [
+        "J",
+        "K",
+        "L"
+      ],
+      "time_slot": "80\u201390 min",
+      "game_id": "r9_c2"
+    },
+    {
+      "round": 9,
+      "court": 3,
+      "team_a": [
+        "E",
+        "G"
+      ],
+      "team_b": [
+        "H",
+        "I"
+      ],
+      "sitting_out": [
+        "J",
+        "K",
+        "L"
+      ],
+      "time_slot": "80\u201390 min",
+      "game_id": "r9_c3"
+    },
+    {
+      "round": 10,
+      "court": 1,
+      "team_a": [
+        "H",
+        "L"
+      ],
+      "team_b": [
+        "D",
+        "E"
+      ],
+      "sitting_out": [
+        "M",
+        "N",
+        "O"
+      ],
+      "time_slot": "90\u2013100 min",
+      "game_id": "r10_c1"
+    },
+    {
+      "round": 10,
+      "court": 2,
+      "team_a": [
+        "C",
+        "A"
+      ],
+      "team_b": [
+        "G",
+        "J"
+      ],
+      "sitting_out": [
+        "M",
+        "N",
+        "O"
+      ],
+      "time_slot": "90\u2013100 min",
+      "game_id": "r10_c2"
+    },
+    {
+      "round": 10,
+      "court": 3,
+      "team_a": [
+        "K",
+        "I"
+      ],
+      "team_b": [
+        "B",
+        "F"
+      ],
+      "sitting_out": [
+        "M",
+        "N",
+        "O"
+      ],
+      "time_slot": "90\u2013100 min",
+      "game_id": "r10_c3"
+    },
+    {
+      "round": 11,
+      "court": 1,
+      "team_a": [
+        "F",
+        "N"
+      ],
+      "team_b": [
+        "I",
+        "G"
+      ],
+      "sitting_out": [
+        "A",
+        "B",
+        "C"
+      ],
+      "time_slot": "100\u2013110 min",
+      "game_id": "r11_c1"
+    },
+    {
+      "round": 11,
+      "court": 3,
+      "team_a": [
+        "D",
+        "L"
+      ],
+      "team_b": [
+        "O",
+        "E"
+      ],
+      "sitting_out": [
+        "A",
+        "B",
+        "C"
+      ],
+      "time_slot": "100\u2013110 min",
+      "game_id": "r11_c3"
+    },
+    {
+      "round": 12,
+      "court": 1,
+      "team_a": [
+        "J",
+        "A"
+      ],
+      "team_b": [
+        "H",
+        "B"
+      ],
+      "sitting_out": [
+        "D",
+        "E",
+        "F"
+      ],
+      "time_slot": "110\u2013120 min",
+      "game_id": "r12_c1"
+    },
+    {
+      "round": 12,
+      "court": 3,
+      "team_a": [
+        "O",
+        "L"
+      ],
+      "team_b": [
+        "C",
+        "N"
+      ],
+      "sitting_out": [
+        "D",
+        "E",
+        "F"
+      ],
+      "time_slot": "110\u2013120 min",
+      "game_id": "r12_c3"
+    },
+    {
+      "round": 13,
+      "court": 1,
+      "team_a": [
+        "A",
+        "D"
+      ],
+      "team_b": [
+        "C",
+        "M"
+      ],
+      "sitting_out": [
+        "G",
+        "H",
+        "I"
+      ],
+      "time_slot": "120\u2013130 min",
+      "game_id": "r13_c1"
+    },
+    {
+      "round": 13,
+      "court": 3,
+      "team_a": [
+        "O",
+        "K"
+      ],
+      "team_b": [
+        "J",
+        "L"
+      ],
+      "sitting_out": [
+        "G",
+        "H",
+        "I"
+      ],
+      "time_slot": "120\u2013130 min",
+      "game_id": "r13_c3"
+    },
+    {
+      "round": 14,
+      "court": 1,
+      "team_a": [
+        "C",
+        "I"
+      ],
+      "team_b": [
+        "O",
+        "H"
+      ],
+      "sitting_out": [
+        "J",
+        "K",
+        "L"
+      ],
+      "time_slot": "130\u2013140 min",
+      "game_id": "r14_c1"
+    },
+    {
+      "round": 14,
+      "court": 3,
+      "team_a": [
+        "A",
+        "F"
+      ],
+      "team_b": [
+        "N",
+        "B"
+      ],
+      "sitting_out": [
+        "J",
+        "K",
+        "L"
+      ],
+      "time_slot": "130\u2013140 min",
+      "game_id": "r14_c3"
+    },
+    {
+      "round": 15,
+      "court": 1,
+      "team_a": [
+        "J",
+        "C"
+      ],
+      "team_b": [
+        "E",
+        "L"
+      ],
+      "sitting_out": [
+        "M",
+        "N",
+        "O"
+      ],
+      "time_slot": "140\u2013150 min",
+      "game_id": "r15_c1"
+    },
+    {
+      "round": 15,
+      "court": 3,
+      "team_a": [
+        "K",
+        "A"
+      ],
+      "team_b": [
+        "B",
+        "H"
+      ],
+      "sitting_out": [
+        "M",
+        "N",
+        "O"
+      ],
+      "time_slot": "140\u2013150 min",
+      "game_id": "r15_c3"
+    }
+  ],
+  "scores": {
+    "r1_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r1_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r1_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r3_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r3_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r3_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r4_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r4_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r4_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r5_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r5_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r5_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r6_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r6_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r6_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r7_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r7_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r7_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r8_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r8_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r8_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r9_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r9_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r9_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r10_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r10_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r10_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r11_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r11_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r12_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r12_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r13_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r13_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r14_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r14_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r15_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r15_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    }
+  },
+  "session_active": true
 }
