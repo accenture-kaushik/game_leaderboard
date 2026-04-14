@@ -17,7 +17,11 @@ import threading
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import random
+
 import requests
+
+from quips import QUIPS as _ALL_QUIPS
 
 import pandas as pd
 import streamlit as st
@@ -64,11 +68,6 @@ def _gemini_key() -> str:
     return ""
 
 
-def _podium_quips() -> List[str]:
-    """Pick 3 random quips from the local quips list."""
-    import random
-    from quips import QUIPS
-    return random.sample(QUIPS, min(3, len(QUIPS)))
 
 
 def _data_dir() -> Path:
@@ -1147,7 +1146,7 @@ def show_leaderboard() -> None:
     _medal_border = ["#F9A825", "#9E9E9E", "#EF5350"]
     _medals       = ["🥇", "🥈", "🥉"]
 
-    quips = _podium_quips()
+    quips = random.sample(_ALL_QUIPS, 3)
 
     cols = st.columns(podium)
     for col, medal, p, bg, border, quip in zip(
