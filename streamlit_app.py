@@ -240,6 +240,14 @@ st.markdown(
     .stTextInput input  { font-size: 1rem !important; height: 44px !important; }
     .stSelectbox > div > div { font-size: 1rem !important; min-height: 44px; }
 
+    /* ── Win buttons (court page) ───────────────────────── */
+    [data-testid="stHorizontalBlock"]:has(.team-card-a) + div .stButton > button,
+    [data-testid="stHorizontalBlock"]:has(.team-card-b) + div .stButton > button {
+        min-height: 44px !important;
+        font-size: 0.88rem !important;
+        padding: 0.25rem 0.3rem !important;
+    }
+
     /* ── Roster radio buttons ────────────────────────────── */
     div[data-testid="stRadio"] > div {
         gap: 0.4rem;
@@ -695,34 +703,75 @@ def show_court(court: int) -> None:
         sd  = scores.get(gid, {})
         submitted = sd.get("submitted", False)
 
+        # ── Pre-initialise session state for scores & winner ──────────────
+        if f"sa_{gid}" not in st.session_state:
+            st.session_state[f"sa_{gid}"] = int(sd["score_a"]) if submitted and sd.get("score_a") is not None else 0
+        if f"sb_{gid}" not in st.session_state:
+            st.session_state[f"sb_{gid}"] = int(sd["score_b"]) if submitted and sd.get("score_b") is not None else 0
+        if f"winner_{gid}" not in st.session_state:
+            if submitted:
+                _sa, _sb = sd.get("score_a") or 0, sd.get("score_b") or 0
+                st.session_state[f"winner_{gid}"] = (
+                    "Team A" if _sa > _sb else "Team B" if _sb > _sa else "—"
+                )
+            else:
+                st.session_state[f"winner_{gid}"] = "—"
+
+        winner = st.session_state.get(f"winner_{gid}", "—")
+
         icon = "✅" if submitted else "⏳"
-        with st.expander(
-            f"{icon}  Game {game_num}  ·  {game['time_slot']}",
-            expanded=not submitted,
-        ):
-            # Teams — coloured cards
-            st.markdown(
-                f'<div class="team-card-a"><strong>Team A</strong> &nbsp; '
-                f'{" &amp; ".join(game["team_a"])}</div>'
-                f'<div class="team-card-b"><strong>Team B</strong> &nbsp; '
-                f'{" &amp; ".join(game["team_b"])}</div>',
-                unsafe_allow_html=True,
-            )
+        with st.expander(f"{icon}  Game {game_num}", expanded=not submitted):
+            # Team A row: card + Win button
+            col_card_a, col_btn_a = st.columns([5, 2])
+            with col_card_a:
+                st.markdown(
+                    f'<div class="team-card-a">'
+                    f'<strong>Team A</strong> &nbsp; {" &amp; ".join(game["team_a"])}'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+            with col_btn_a:
+                if st.button(
+                    "🏆 Win" if winner != "Team A" else "✅ Won",
+                    key=f"win_a_{gid}",
+                    type="primary" if winner == "Team A" else "secondary",
+                    use_container_width=True,
+                ):
+                    st.session_state[f"winner_{gid}"] = "Team A"
+                    st.session_state[f"sa_{gid}"] = max(11, st.session_state.get(f"sa_{gid}", 0))
+                    st.rerun()
 
-            # Score inputs — two equal half-screen columns
-            sa_val = int(sd["score_a"]) if submitted and sd.get("score_a") is not None else 0
-            sb_val = int(sd["score_b"]) if submitted and sd.get("score_b") is not None else 0
+            # Team B row: card + Win button
+            col_card_b, col_btn_b = st.columns([5, 2])
+            with col_card_b:
+                st.markdown(
+                    f'<div class="team-card-b">'
+                    f'<strong>Team B</strong> &nbsp; {" &amp; ".join(game["team_b"])}'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+            with col_btn_b:
+                if st.button(
+                    "🏆 Win" if winner != "Team B" else "✅ Won",
+                    key=f"win_b_{gid}",
+                    type="primary" if winner == "Team B" else "secondary",
+                    use_container_width=True,
+                ):
+                    st.session_state[f"winner_{gid}"] = "Team B"
+                    st.session_state[f"sb_{gid}"] = max(11, st.session_state.get(f"sb_{gid}", 0))
+                    st.rerun()
 
+            # Score inputs — winner defaults to 11, max 30 for tie-breaks
             col_a, col_b = st.columns(2)
             with col_a:
                 score_a = st.number_input(
-                    "Team A", min_value=0, max_value=99,
-                    value=sa_val, key=f"sa_{gid}",
+                    "Team A score", min_value=0, max_value=30,
+                    key=f"sa_{gid}",
                 )
             with col_b:
                 score_b = st.number_input(
-                    "Team B", min_value=0, max_value=99,
-                    value=sb_val, key=f"sb_{gid}",
+                    "Team B score", min_value=0, max_value=30,
+                    key=f"sb_{gid}",
                 )
 
             btn = "✏️ Update Score" if submitted else "✅ Submit Score"
