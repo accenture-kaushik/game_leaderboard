@@ -19,6 +19,7 @@ from typing import Dict, List, Optional
 
 import requests
 
+import google.generativeai as genai
 import pandas as pd
 import streamlit as st
 import yaml
@@ -62,6 +63,67 @@ def _gemini_key() -> str:
     if key and not key.startswith("YOUR_"):
         return key
     return ""
+
+
+_QUIP_FALLBACKS = [
+    [
+        "Officially declared the MVP by absolutely everyone (including themselves).",
+        "We're checking their shoes for illegal motors.",
+        "The team's secret weapon — don't tell anyone.",
+    ],
+    [
+        "So close to first place they can almost smell the trophy.",
+        "Solid, steady, and suspiciously consistent.",
+        "Runner-up? They prefer 'first of the rest'.",
+    ],
+    [
+        "Arrived for the snacks, stayed to podium.",
+        "Bronze never looked this good.",
+        "Still figuring out which end of the racket to hold — and somehow made the podium.",
+    ],
+]
+
+
+def _podium_quips(names: List[str]) -> List[str]:
+    """Generate 3 funny, friendly one-liners for podium players using Gemini."""
+    key = _gemini_key()
+    if not key:
+        return [_QUIP_FALLBACKS[i][0] for i in range(3)]
+
+    gcfg = _cfg().get("gemini", {})
+    try:
+        genai.configure(api_key=key)
+        model = genai.GenerativeModel(
+            model_name=gcfg.get("model_name", "gemini-2.0-flash"),
+            generation_config=genai.GenerationConfig(
+                temperature=1.0,
+                max_output_tokens=300,
+            ),
+        )
+        prompt = (
+            f"We just finished a friendly home badminton tournament. "
+            f"The top 3 players are: 1st place: {names[0]}, "
+            f"2nd place: {names[1] if len(names) > 1 else 'TBD'}, "
+            f"3rd place: {names[2] if len(names) > 2 else 'TBD'}.\n\n"
+            "Write exactly 3 funny, warm, light-hearted one-liner jokes — one for each player "
+            "in order (1st, 2nd, 3rd). Rules:\n"
+            "- Keep it friendly and fun, no mean jokes or personal attacks.\n"
+            "- No words like loser, failure, dumb, bad.\n"
+            "- Jokes should be simple and relatable to all people, not technical.\n"
+            "- Each line must be under 80 characters.\n"
+            "- Output exactly 3 lines, one per player, nothing else. No numbering, no labels.\n"
+            "Examples of the tone: 'You owe the team 7 beers for that win.', "
+            "'We're checking your shoes for illegal motors.', "
+            "'You're just here for the post-game snacks, aren't you?'"
+        )
+        response = model.generate_content(prompt)
+        lines = [ln.strip() for ln in response.text.strip().splitlines() if ln.strip()]
+        # Pad with fallbacks if Gemini returns fewer than 3 lines
+        while len(lines) < 3:
+            lines.append(_QUIP_FALLBACKS[len(lines)][0])
+        return lines[:3]
+    except Exception:
+        return [_QUIP_FALLBACKS[i][0] for i in range(3)]
 
 
 def _data_dir() -> Path:
@@ -1139,19 +1201,27 @@ def show_leaderboard() -> None:
     _medal_bg     = ["#1E1A0A", "#161616", "#1A0E0A"]
     _medal_border = ["#F9A825", "#9E9E9E", "#EF5350"]
     _medals       = ["🥇", "🥈", "🥉"]
+
+    podium_names = [lb[i]["name"] for i in range(podium)]
+    cached_key = f"podium_quips_{'_'.join(podium_names)}"
+    if cached_key not in st.session_state:
+        with st.spinner("Generating podium vibes…"):
+            st.session_state[cached_key] = _podium_quips(podium_names)
+    quips = st.session_state[cached_key]
+
     cols = st.columns(podium)
-    for col, medal, p, bg, border in zip(cols, _medals, lb[:podium], _medal_bg, _medal_border):
+    for col, medal, p, bg, border, quip in zip(
+        cols, _medals, lb[:podium], _medal_bg, _medal_border, quips
+    ):
         with col:
             st.markdown(
                 f'<div style="background:{bg};border-top:4px solid {border};'
-                f'border-radius:12px;padding:0.75rem 0.4rem;text-align:center;">'
+                f'border-radius:12px;padding:0.9rem 0.6rem;text-align:center;">'
                 f'<div style="font-size:1.8rem;line-height:1">{medal}</div>'
-                f'<div style="font-weight:700;font-size:0.88rem;margin-top:0.35rem;color:#E8EAF0;'
-                f'white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{p["name"]}</div>'
-                f'<div style="font-size:1.25rem;font-weight:800;color:{border}">'
-                f'{p["net_points"]}</div>'
-                f'<div style="font-size:0.72rem;color:#666">{p["games_won"]}W '
-                f'/ {p["games_lost"]}L</div>'
+                f'<div style="font-weight:700;font-size:0.95rem;margin-top:0.4rem;color:#E8EAF0;">'
+                f'{p["name"]}</div>'
+                f'<div style="font-size:0.75rem;color:#aaa;margin-top:0.5rem;'
+                f'font-style:italic;line-height:1.4">{quip}</div>'
                 f'</div>',
                 unsafe_allow_html=True,
             )
