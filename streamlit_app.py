@@ -106,7 +106,8 @@ def _podium_quips(names: List[str]) -> List[str]:
             f"2nd place: {names[1] if len(names) > 1 else 'TBD'}, "
             f"3rd place: {names[2] if len(names) > 2 else 'TBD'}.\n\n"
             "Write exactly 3 funny, warm, light-hearted one-liner jokes — one for each player "
-            "in order (1st, 2nd, 3rd). Rules:\n"
+            "in order (1st, 2nd, 3rd). Be creative and unpredictable — generate something fresh "
+            "and different every time, never repeat the same joke. Rules:\n"
             "- Keep it friendly and fun, no mean jokes or personal attacks.\n"
             "- No words like loser, failure, dumb, bad.\n"
             "- Jokes should be simple and relatable to all people, not technical.\n"
@@ -1203,11 +1204,8 @@ def show_leaderboard() -> None:
     _medals       = ["🥇", "🥈", "🥉"]
 
     podium_names = [lb[i]["name"] for i in range(podium)]
-    cached_key = f"podium_quips_{'_'.join(podium_names)}"
-    if cached_key not in st.session_state:
-        with st.spinner("Generating podium vibes…"):
-            st.session_state[cached_key] = _podium_quips(podium_names)
-    quips = st.session_state[cached_key]
+    with st.spinner("Generating podium vibes…"):
+        quips = _podium_quips(podium_names)
 
     cols = st.columns(podium)
     for col, medal, p, bg, border, quip in zip(
