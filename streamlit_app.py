@@ -562,7 +562,7 @@ def show_setup() -> None:
 
         # Number of courts
         num_courts = st.number_input(
-            "Number of courts", min_value=1, max_value=6,
+            "Number of courts", min_value=1, max_value=4,
             value=st.session_state.get("num_courts", 2), step=1,
         )
         if num_courts != st.session_state.get("num_courts", 2):
@@ -855,8 +855,13 @@ def show_setup() -> None:
                         st.session_state.show_reset_pw = False
                         # Clear all per-game widget state (scores, winner selections)
                         for k in list(st.session_state.keys()):
-                            if k.startswith(("sa_", "sb_", "winner_", "win_a_", "win_b_")):
+                            if k.startswith(("sa_", "sb_", "winner_", "win_a_", "win_b_", "court_hours_")):
                                 del st.session_state[k]
+                        # Reset setup widgets to defaults
+                        st.session_state.num_players   = 10
+                        st.session_state.num_courts    = 2
+                        st.session_state.games_per_hour = 5
+                        st.session_state.player_names  = [f"Player {i + 1}" for i in range(10)]
                         with st.spinner("Resetting…"):
                             _put(_empty_state())
                         st.rerun()
