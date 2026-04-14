@@ -864,6 +864,7 @@ def show_setup() -> None:
                         st.session_state.player_names  = [f"Player {i + 1}" for i in range(10)]
                         with st.spinner("Resetting…"):
                             _put(_empty_state())
+                        st.info("Tournament reset. Please refresh your browser to start fresh.")
                         st.rerun()
                     else:
                         st.error("Incorrect password.")
