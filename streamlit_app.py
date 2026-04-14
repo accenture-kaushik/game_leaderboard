@@ -710,6 +710,10 @@ def show_setup() -> None:
                              type="primary", use_container_width=True):
                     if reset_pw == "kaushik28":
                         st.session_state.show_reset_pw = False
+                        # Clear all per-game widget state (scores, winner selections)
+                        for k in list(st.session_state.keys()):
+                            if k.startswith(("sa_", "sb_", "winner_", "win_a_", "win_b_")):
+                                del st.session_state[k]
                         _put(_empty_state())
                         st.rerun()
                     else:
