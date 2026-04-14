@@ -522,6 +522,15 @@ def _nav(active: str) -> None:
 # ===========================================================================
 
 def show_setup() -> None:
+    # Restore widget values from saved session so a page reload reflects the
+    # actual tournament configuration rather than app defaults.
+    _s = _get()
+    if _s.get("session_active"):
+        st.session_state.num_courts     = _s.get("num_courts",     st.session_state.get("num_courts", 2))
+        st.session_state.games_per_hour = _s.get("games_per_hour", st.session_state.get("games_per_hour", 5))
+        for _c, _hrs in _s.get("court_hours", {}).items():
+            st.session_state[f"court_hours_{_c}"] = float(_hrs)
+
     st.markdown(
         '<div class="page-header">'
         '<h1>⚙️ Setup</h1>'
@@ -800,9 +809,14 @@ def show_setup() -> None:
                                     court_seen[c] += 1
 
                         new_state = {
-                            "players":      players,
-                            "skill_levels": skill_levels,
-                            "num_courts":   num_courts,
+                            "players":        players,
+                            "skill_levels":   skill_levels,
+                            "num_courts":     num_courts,
+                            "games_per_hour": games_per_hour,
+                            "court_hours": {
+                                c: float(st.session_state.get(f"court_hours_{c}", 2.0))
+                                for c in range(1, num_courts + 1)
+                            },
                             "schedule":     schedule,
                             "scores": {
                                 g["game_id"]: {"score_a": None, "score_b": None, "submitted": False}
@@ -1102,9 +1116,6 @@ def show_court(court: int) -> None:
                 else:
                     st.success(f"🤝 Draw!  {sa} – {sb}")
 
-            resting = game.get("sitting_out", [])
-            if resting:
-                st.caption(f"Resting: {', '.join(resting)}")
 
     _nav(f"court{court}")
 
