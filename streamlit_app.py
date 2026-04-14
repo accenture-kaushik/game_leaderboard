@@ -74,7 +74,7 @@ _QUIP_FALLBACKS = [
     [
         "So close to first place they can almost smell the trophy.",
         "Solid, steady, and suspiciously consistent.",
-        "Runner-up? They prefer 'first of the rest'.",
+        "You owe the team 7 beers for that podium finish.",
     ],
     [
         "Arrived for the snacks, stayed to podium.",
@@ -101,7 +101,7 @@ def _podium_quips(names: List[str]) -> List[str]:
             ),
         )
         prompt = (
-            f"We just finished a friendly home badminton tournament. "
+            f"We just finished a friendly pickleball tournament. "
             f"The top 3 players are: 1st place: {names[0]}, "
             f"2nd place: {names[1] if len(names) > 1 else 'TBD'}, "
             f"3rd place: {names[2] if len(names) > 2 else 'TBD'}.\n\n"
