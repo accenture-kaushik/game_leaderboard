@@ -530,6 +530,9 @@ def show_setup() -> None:
         st.session_state.games_per_hour = _s.get("games_per_hour", st.session_state.get("games_per_hour", 5))
         for _c, _hrs in _s.get("court_hours", {}).items():
             st.session_state[f"court_hours_{_c}"] = float(_hrs)
+        if _s.get("players"):
+            st.session_state.num_players  = len(_s["players"])
+            st.session_state.player_names = list(_s["players"])
 
     st.markdown(
         '<div class="page-header">'
