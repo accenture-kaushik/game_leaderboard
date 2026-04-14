@@ -8,6 +8,7 @@ Schedule + scores are persisted to a JSON file so data survives restarts.
 Gemini API key is read from config.yaml (gemini.api_key).
 """
 
+import base64
 import copy
 import json
 import logging
@@ -15,6 +16,8 @@ import os
 import threading
 from pathlib import Path
 from typing import Dict, List, Optional
+
+import requests
 
 import pandas as pd
 import streamlit as st
@@ -85,6 +88,91 @@ def _default_rounds() -> int:
 
 _file_lock = threading.Lock()
 
+# ---------------------------------------------------------------------------
+# GitHub persistence helpers
+# ---------------------------------------------------------------------------
+
+_GH_PATH = "data/session.json"   # path inside the repo
+
+
+def _gh_cfg() -> dict:
+    """Return the [github] config block from secrets or config.yaml."""
+    try:
+        if "github" in st.secrets:
+            return dict(st.secrets["github"])
+    except Exception:
+        pass
+    return _cfg().get("github", {})
+
+
+def _gh_headers() -> dict:
+    token = _gh_cfg().get("token", "")
+    return {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+    }
+
+
+def _gh_url() -> str:
+    repo = _gh_cfg().get("repo", "")
+    return f"https://api.github.com/repos/{repo}/contents/{_GH_PATH}"
+
+
+def _github_load() -> Optional[dict]:
+    """Fetch session.json from GitHub. Returns None if unavailable."""
+    if not _gh_cfg().get("token") or not _gh_cfg().get("repo"):
+        return None
+    try:
+        r = requests.get(_gh_url(), headers=_gh_headers(), timeout=10)
+        if r.status_code == 200:
+            payload = r.json()
+            content = base64.b64decode(payload["content"]).decode("utf-8")
+            return json.loads(content)
+        if r.status_code == 404:
+            return _empty_state()   # file doesn't exist yet — start fresh
+        logging.warning("GitHub load HTTP %s", r.status_code)
+    except Exception as exc:
+        logging.warning("GitHub load error: %s", exc)
+    return None
+
+
+def _github_save(state: dict) -> None:
+    """Push session.json to GitHub (create or update)."""
+    if not _gh_cfg().get("token") or not _gh_cfg().get("repo"):
+        return
+    try:
+        hdrs = _gh_headers()
+        url  = _gh_url()
+
+        # Always fetch the current SHA before writing — avoids 422 errors
+        # caused by Streamlit resetting module-level variables on every rerun.
+        sha = ""
+        r_get = requests.get(url, headers=hdrs, timeout=10)
+        if r_get.status_code == 200:
+            sha = r_get.json().get("sha", "")
+
+        content_b64 = base64.b64encode(
+            json.dumps(state, indent=2).encode("utf-8")
+        ).decode("utf-8")
+        payload: dict = {
+            "message": "leaderboard: update session",
+            "content": content_b64,
+        }
+        if sha:
+            payload["sha"] = sha
+
+        r = requests.put(url, headers=hdrs, json=payload, timeout=15)
+        if r.status_code in (200, 201):
+            logging.info("GitHub save OK (status %s)", r.status_code)
+        else:
+            logging.warning("GitHub save HTTP %s: %s", r.status_code, r.text[:200])
+    except Exception as exc:
+        logging.warning("GitHub save error: %s", exc)
+
+
+# ---------------------------------------------------------------------------
+# Shared persistent state
+# ---------------------------------------------------------------------------
 
 def _data_file() -> Path:
     return _data_dir() / "session.json"
@@ -100,35 +188,41 @@ def _empty_state() -> dict:
     }
 
 
-def _load_from_disk() -> dict:
+def _load_state() -> dict:
+    """Load state: GitHub first (persistent), local file as fallback."""
+    gh = _github_load()
+    if gh is not None:
+        logging.info("State loaded from GitHub")
+        return gh
+    # fallback: local JSON file
     try:
         f = _data_file()
         if f.exists():
             with open(f, encoding="utf-8") as fp:
+                logging.info("State loaded from local file")
                 return json.load(fp)
     except Exception as e:
-        logging.warning("Could not load session file: %s", e)
+        logging.warning("Could not load local session file: %s", e)
     return _empty_state()
 
 
 @st.cache_resource
 def _box() -> dict:
-    """
-    Singleton dict shared across ALL browser sessions.
-    key 's' holds the current application state.
-    """
-    return {"s": _load_from_disk()}
+    """Singleton dict shared across ALL browser sessions."""
+    return {"s": _load_state()}
 
 
 def _get() -> dict:
-    """Return the current shared state."""
     return _box()["s"]
 
 
 def _put(state: dict) -> None:
-    """Update shared state and persist to disk."""
+    """Update shared state, persist to GitHub and local file."""
     with _file_lock:
         _box()["s"] = state
+        # GitHub (primary — survives restarts / redeploys)
+        _github_save(state)
+        # Local file (fast fallback)
         try:
             d = _data_dir()
             d.mkdir(parents=True, exist_ok=True)
@@ -137,7 +231,7 @@ def _put(state: dict) -> None:
                 json.dump(state, f, indent=2)
             tmp.replace(_data_file())
         except Exception as e:
-            logging.warning("Could not persist state: %s", e)
+            logging.warning("Could not persist state locally: %s", e)
 
 
 # ===========================================================================
@@ -714,7 +808,8 @@ def show_setup() -> None:
                         for k in list(st.session_state.keys()):
                             if k.startswith(("sa_", "sb_", "winner_", "win_a_", "win_b_")):
                                 del st.session_state[k]
-                        _put(_empty_state())
+                        with st.spinner("Resetting…"):
+                            _put(_empty_state())
                         st.rerun()
                     else:
                         st.error("Incorrect password.")
@@ -960,7 +1055,8 @@ def show_court(court: int) -> None:
                 new_state["scores"][gid] = {
                     "score_a": score_a, "score_b": score_b, "submitted": True
                 }
-                _put(new_state)
+                with st.spinner("Saving…"):
+                    _put(new_state)
                 st.toast("Score saved!")
                 st.rerun()
 
