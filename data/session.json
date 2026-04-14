@@ -428,9 +428,9 @@
       "submitted": false
     },
     "r5_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 0,
+      "score_b": 11,
+      "submitted": true
     },
     "r5_c2": {
       "score_a": null,
@@ -443,14 +443,14 @@
       "submitted": true
     },
     "r6_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 11,
+      "score_b": 0,
+      "submitted": true
     },
     "r7_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 11,
+      "score_b": 0,
+      "submitted": true
     },
     "r7_c2": {
       "score_a": null,
@@ -463,14 +463,14 @@
       "submitted": true
     },
     "r8_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 0,
+      "score_b": 11,
+      "submitted": true
     },
     "r9_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 0,
+      "score_b": 11,
+      "submitted": true
     },
     "r9_c2": {
       "score_a": null,
@@ -478,9 +478,9 @@
       "submitted": false
     },
     "r10_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 11,
+      "score_b": 7,
+      "submitted": true
     },
     "r10_c2": {
       "score_a": null,
