@@ -1,55 +1,61 @@
 {
   "players": [
-    "Player 1",
-    "Player 2",
-    "Player 3",
-    "Player 4",
-    "Player 5",
-    "Player 6",
-    "Player 7",
-    "Player 8",
-    "Player 9",
-    "Player 10",
-    "Player 11",
-    "Player 12",
-    "Player 13",
-    "Player 14",
-    "Player 15"
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O"
   ],
   "skill_levels": {
-    "Player 1": "intermediate",
-    "Player 2": "intermediate",
-    "Player 3": "intermediate",
-    "Player 4": "intermediate",
-    "Player 5": "intermediate",
-    "Player 6": "intermediate",
-    "Player 7": "intermediate",
-    "Player 8": "intermediate",
-    "Player 9": "intermediate",
-    "Player 10": "intermediate",
-    "Player 11": "intermediate",
-    "Player 12": "intermediate",
-    "Player 13": "intermediate",
-    "Player 14": "intermediate",
-    "Player 15": "intermediate"
+    "A": "intermediate",
+    "B": "intermediate",
+    "C": "intermediate",
+    "D": "intermediate",
+    "E": "intermediate",
+    "F": "intermediate",
+    "G": "intermediate",
+    "H": "intermediate",
+    "I": "intermediate",
+    "J": "intermediate",
+    "K": "intermediate",
+    "L": "intermediate",
+    "M": "intermediate",
+    "N": "intermediate",
+    "O": "intermediate"
   },
   "num_courts": 3,
+  "games_per_hour": 7,
+  "court_hours": {
+    "1": 2.0,
+    "2": 2.0,
+    "3": 2.0
+  },
   "schedule": [
     {
       "round": 1,
       "court": 1,
       "team_a": [
-        "Player 15",
-        "Player 13"
+        "K",
+        "N"
       ],
       "team_b": [
-        "Player 12",
-        "Player 9"
+        "I",
+        "J"
       ],
       "sitting_out": [
-        "Player 1",
-        "Player 2",
-        "Player 3"
+        "A",
+        "B",
+        "C"
       ],
       "time_slot": "0\u201310 min",
       "game_id": "r1_c1"
@@ -58,17 +64,17 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Player 14",
-        "Player 4"
+        "L",
+        "E"
       ],
       "team_b": [
-        "Player 5",
-        "Player 11"
+        "O",
+        "M"
       ],
       "sitting_out": [
-        "Player 1",
-        "Player 2",
-        "Player 3"
+        "A",
+        "B",
+        "C"
       ],
       "time_slot": "0\u201310 min",
       "game_id": "r1_c2"
@@ -77,17 +83,17 @@
       "round": 1,
       "court": 3,
       "team_a": [
-        "Player 10",
-        "Player 6"
+        "D",
+        "F"
       ],
       "team_b": [
-        "Player 8",
-        "Player 7"
+        "G",
+        "H"
       ],
       "sitting_out": [
-        "Player 1",
-        "Player 2",
-        "Player 3"
+        "A",
+        "B",
+        "C"
       ],
       "time_slot": "0\u201310 min",
       "game_id": "r1_c3"
@@ -96,17 +102,17 @@
       "round": 2,
       "court": 1,
       "team_a": [
-        "Player 15",
-        "Player 9"
+        "M",
+        "K"
       ],
       "team_b": [
-        "Player 7",
-        "Player 3"
+        "L",
+        "G"
       ],
       "sitting_out": [
-        "Player 4",
-        "Player 5",
-        "Player 6"
+        "D",
+        "E",
+        "F"
       ],
       "time_slot": "10\u201320 min",
       "game_id": "r2_c1"
@@ -115,17 +121,17 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Player 2",
-        "Player 11"
+        "C",
+        "A"
       ],
       "team_b": [
-        "Player 10",
-        "Player 12"
+        "B",
+        "I"
       ],
       "sitting_out": [
-        "Player 4",
-        "Player 5",
-        "Player 6"
+        "D",
+        "E",
+        "F"
       ],
       "time_slot": "10\u201320 min",
       "game_id": "r2_c2"
@@ -134,17 +140,17 @@
       "round": 2,
       "court": 3,
       "team_a": [
-        "Player 8",
-        "Player 13"
+        "N",
+        "H"
       ],
       "team_b": [
-        "Player 1",
-        "Player 14"
+        "J",
+        "O"
       ],
       "sitting_out": [
-        "Player 4",
-        "Player 5",
-        "Player 6"
+        "D",
+        "E",
+        "F"
       ],
       "time_slot": "10\u201320 min",
       "game_id": "r2_c3"
@@ -153,17 +159,17 @@
       "round": 3,
       "court": 1,
       "team_a": [
-        "Player 12",
-        "Player 6"
+        "C",
+        "K"
       ],
       "team_b": [
-        "Player 10",
-        "Player 11"
+        "O",
+        "A"
       ],
       "sitting_out": [
-        "Player 7",
-        "Player 8",
-        "Player 9"
+        "G",
+        "H",
+        "I"
       ],
       "time_slot": "20\u201330 min",
       "game_id": "r3_c1"
@@ -172,17 +178,17 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Player 4",
-        "Player 2"
+        "E",
+        "J"
       ],
       "team_b": [
-        "Player 15",
-        "Player 14"
+        "F",
+        "M"
       ],
       "sitting_out": [
-        "Player 7",
-        "Player 8",
-        "Player 9"
+        "G",
+        "H",
+        "I"
       ],
       "time_slot": "20\u201330 min",
       "game_id": "r3_c2"
@@ -191,17 +197,17 @@
       "round": 3,
       "court": 3,
       "team_a": [
-        "Player 3",
-        "Player 13"
+        "D",
+        "L"
       ],
       "team_b": [
-        "Player 5",
-        "Player 1"
+        "N",
+        "B"
       ],
       "sitting_out": [
-        "Player 7",
-        "Player 8",
-        "Player 9"
+        "G",
+        "H",
+        "I"
       ],
       "time_slot": "20\u201330 min",
       "game_id": "r3_c3"
@@ -210,17 +216,17 @@
       "round": 4,
       "court": 1,
       "team_a": [
-        "Player 7",
-        "Player 14"
+        "C",
+        "H"
       ],
       "team_b": [
-        "Player 4",
-        "Player 3"
+        "M",
+        "A"
       ],
       "sitting_out": [
-        "Player 10",
-        "Player 11",
-        "Player 12"
+        "J",
+        "K",
+        "L"
       ],
       "time_slot": "30\u201340 min",
       "game_id": "r4_c1"
@@ -229,17 +235,17 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Player 8",
-        "Player 1"
+        "B",
+        "E"
       ],
       "team_b": [
-        "Player 9",
-        "Player 13"
+        "N",
+        "F"
       ],
       "sitting_out": [
-        "Player 10",
-        "Player 11",
-        "Player 12"
+        "J",
+        "K",
+        "L"
       ],
       "time_slot": "30\u201340 min",
       "game_id": "r4_c2"
@@ -248,17 +254,17 @@
       "round": 4,
       "court": 3,
       "team_a": [
-        "Player 15",
-        "Player 5"
+        "G",
+        "D"
       ],
       "team_b": [
-        "Player 2",
-        "Player 6"
+        "O",
+        "I"
       ],
       "sitting_out": [
-        "Player 10",
-        "Player 11",
-        "Player 12"
+        "J",
+        "K",
+        "L"
       ],
       "time_slot": "30\u201340 min",
       "game_id": "r4_c3"
@@ -267,17 +273,17 @@
       "round": 5,
       "court": 1,
       "team_a": [
-        "Player 5",
-        "Player 4"
+        "D",
+        "K"
       ],
       "team_b": [
-        "Player 10",
-        "Player 3"
+        "G",
+        "I"
       ],
       "sitting_out": [
-        "Player 13",
-        "Player 14",
-        "Player 15"
+        "M",
+        "N",
+        "O"
       ],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c1"
@@ -286,17 +292,17 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Player 8",
-        "Player 6"
+        "A",
+        "E"
       ],
       "team_b": [
-        "Player 9",
-        "Player 11"
+        "L",
+        "C"
       ],
       "sitting_out": [
-        "Player 13",
-        "Player 14",
-        "Player 15"
+        "M",
+        "N",
+        "O"
       ],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c2"
@@ -305,17 +311,17 @@
       "round": 5,
       "court": 3,
       "team_a": [
-        "Player 2",
-        "Player 7"
+        "F",
+        "H"
       ],
       "team_b": [
-        "Player 1",
-        "Player 12"
+        "J",
+        "B"
       ],
       "sitting_out": [
-        "Player 13",
-        "Player 14",
-        "Player 15"
+        "M",
+        "N",
+        "O"
       ],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c3"
@@ -324,17 +330,17 @@
       "round": 6,
       "court": 1,
       "team_a": [
-        "Player 4",
-        "Player 8"
+        "N",
+        "L"
       ],
       "team_b": [
-        "Player 5",
-        "Player 10"
+        "I",
+        "M"
       ],
       "sitting_out": [
-        "Player 1",
-        "Player 2",
-        "Player 3"
+        "A",
+        "B",
+        "C"
       ],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c1"
@@ -343,17 +349,17 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Player 13",
-        "Player 11"
+        "O",
+        "K"
       ],
       "team_b": [
-        "Player 9",
-        "Player 7"
+        "H",
+        "J"
       ],
       "sitting_out": [
-        "Player 1",
-        "Player 2",
-        "Player 3"
+        "A",
+        "B",
+        "C"
       ],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c2"
@@ -362,17 +368,17 @@
       "round": 6,
       "court": 3,
       "team_a": [
-        "Player 14",
-        "Player 12"
+        "G",
+        "F"
       ],
       "team_b": [
-        "Player 15",
-        "Player 6"
+        "E",
+        "D"
       ],
       "sitting_out": [
-        "Player 1",
-        "Player 2",
-        "Player 3"
+        "A",
+        "B",
+        "C"
       ],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c3"
@@ -381,17 +387,17 @@
       "round": 7,
       "court": 1,
       "team_a": [
-        "Player 10",
-        "Player 8"
+        "O",
+        "G"
       ],
       "team_b": [
-        "Player 13",
-        "Player 12"
+        "A",
+        "N"
       ],
       "sitting_out": [
-        "Player 4",
-        "Player 5",
-        "Player 6"
+        "D",
+        "E",
+        "F"
       ],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c1"
@@ -400,17 +406,17 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Player 15",
-        "Player 1"
+        "C",
+        "M"
       ],
       "team_b": [
-        "Player 14",
-        "Player 9"
+        "K",
+        "J"
       ],
       "sitting_out": [
-        "Player 4",
-        "Player 5",
-        "Player 6"
+        "D",
+        "E",
+        "F"
       ],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c2"
@@ -419,17 +425,17 @@
       "round": 7,
       "court": 3,
       "team_a": [
-        "Player 3",
-        "Player 11"
+        "H",
+        "L"
       ],
       "team_b": [
-        "Player 7",
-        "Player 2"
+        "I",
+        "B"
       ],
       "sitting_out": [
-        "Player 4",
-        "Player 5",
-        "Player 6"
+        "D",
+        "E",
+        "F"
       ],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c3"
@@ -438,17 +444,17 @@
       "round": 8,
       "court": 1,
       "team_a": [
-        "Player 6",
-        "Player 14"
+        "B",
+        "L"
       ],
       "team_b": [
-        "Player 10",
-        "Player 2"
+        "J",
+        "N"
       ],
       "sitting_out": [
-        "Player 7",
-        "Player 8",
-        "Player 9"
+        "G",
+        "H",
+        "I"
       ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c1"
@@ -457,17 +463,17 @@
       "round": 8,
       "court": 2,
       "team_a": [
-        "Player 11",
-        "Player 12"
+        "O",
+        "C"
       ],
       "team_b": [
-        "Player 13",
-        "Player 1"
+        "D",
+        "A"
       ],
       "sitting_out": [
-        "Player 7",
-        "Player 8",
-        "Player 9"
+        "G",
+        "H",
+        "I"
       ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c2"
@@ -476,17 +482,17 @@
       "round": 8,
       "court": 3,
       "team_a": [
-        "Player 3",
-        "Player 5"
+        "E",
+        "F"
       ],
       "team_b": [
-        "Player 15",
-        "Player 4"
+        "K",
+        "M"
       ],
       "sitting_out": [
-        "Player 7",
-        "Player 8",
-        "Player 9"
+        "G",
+        "H",
+        "I"
       ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c3"
@@ -495,17 +501,17 @@
       "round": 9,
       "court": 1,
       "team_a": [
-        "Player 15",
-        "Player 3"
+        "I",
+        "D"
       ],
       "team_b": [
-        "Player 14",
-        "Player 13"
+        "O",
+        "E"
       ],
       "sitting_out": [
-        "Player 10",
-        "Player 11",
-        "Player 12"
+        "J",
+        "K",
+        "L"
       ],
       "time_slot": "80\u201390 min",
       "game_id": "r9_c1"
@@ -514,17 +520,17 @@
       "round": 9,
       "court": 2,
       "team_a": [
-        "Player 4",
-        "Player 1"
+        "N",
+        "C"
       ],
       "team_b": [
-        "Player 6",
-        "Player 5"
+        "H",
+        "B"
       ],
       "sitting_out": [
-        "Player 10",
-        "Player 11",
-        "Player 12"
+        "J",
+        "K",
+        "L"
       ],
       "time_slot": "80\u201390 min",
       "game_id": "r9_c2"
@@ -533,17 +539,17 @@
       "round": 9,
       "court": 3,
       "team_a": [
-        "Player 8",
-        "Player 2"
+        "M",
+        "G"
       ],
       "team_b": [
-        "Player 7",
-        "Player 9"
+        "A",
+        "F"
       ],
       "sitting_out": [
-        "Player 10",
-        "Player 11",
-        "Player 12"
+        "J",
+        "K",
+        "L"
       ],
       "time_slot": "80\u201390 min",
       "game_id": "r9_c3"
@@ -552,17 +558,17 @@
       "round": 10,
       "court": 1,
       "team_a": [
-        "Player 5",
-        "Player 9"
+        "D",
+        "H"
       ],
       "team_b": [
-        "Player 8",
-        "Player 12"
+        "G",
+        "K"
       ],
       "sitting_out": [
-        "Player 13",
-        "Player 14",
-        "Player 15"
+        "M",
+        "N",
+        "O"
       ],
       "time_slot": "90\u2013100 min",
       "game_id": "r10_c1"
@@ -571,17 +577,17 @@
       "round": 10,
       "court": 2,
       "team_a": [
-        "Player 7",
-        "Player 1"
+        "A",
+        "I"
       ],
       "team_b": [
-        "Player 2",
-        "Player 3"
+        "J",
+        "F"
       ],
       "sitting_out": [
-        "Player 13",
-        "Player 14",
-        "Player 15"
+        "M",
+        "N",
+        "O"
       ],
       "time_slot": "90\u2013100 min",
       "game_id": "r10_c2"
@@ -590,20 +596,248 @@
       "round": 10,
       "court": 3,
       "team_a": [
-        "Player 4",
-        "Player 10"
+        "B",
+        "C"
       ],
       "team_b": [
-        "Player 11",
-        "Player 6"
+        "E",
+        "L"
       ],
       "sitting_out": [
-        "Player 13",
-        "Player 14",
-        "Player 15"
+        "M",
+        "N",
+        "O"
       ],
       "time_slot": "90\u2013100 min",
       "game_id": "r10_c3"
+    },
+    {
+      "round": 11,
+      "court": 1,
+      "team_a": [
+        "O",
+        "F"
+      ],
+      "team_b": [
+        "H",
+        "K"
+      ],
+      "sitting_out": [
+        "A",
+        "B",
+        "C"
+      ],
+      "time_slot": "100\u2013110 min",
+      "game_id": "r11_c1"
+    },
+    {
+      "round": 11,
+      "court": 2,
+      "team_a": [
+        "J",
+        "M"
+      ],
+      "team_b": [
+        "N",
+        "G"
+      ],
+      "sitting_out": [
+        "A",
+        "B",
+        "C"
+      ],
+      "time_slot": "100\u2013110 min",
+      "game_id": "r11_c2"
+    },
+    {
+      "round": 11,
+      "court": 3,
+      "team_a": [
+        "I",
+        "E"
+      ],
+      "team_b": [
+        "L",
+        "D"
+      ],
+      "sitting_out": [
+        "A",
+        "B",
+        "C"
+      ],
+      "time_slot": "100\u2013110 min",
+      "game_id": "r11_c3"
+    },
+    {
+      "round": 12,
+      "court": 1,
+      "team_a": [
+        "A",
+        "B"
+      ],
+      "team_b": [
+        "I",
+        "K"
+      ],
+      "sitting_out": [
+        "D",
+        "E",
+        "F"
+      ],
+      "time_slot": "110\u2013120 min",
+      "game_id": "r12_c1"
+    },
+    {
+      "round": 12,
+      "court": 2,
+      "team_a": [
+        "M",
+        "H"
+      ],
+      "team_b": [
+        "G",
+        "C"
+      ],
+      "sitting_out": [
+        "D",
+        "E",
+        "F"
+      ],
+      "time_slot": "110\u2013120 min",
+      "game_id": "r12_c2"
+    },
+    {
+      "round": 12,
+      "court": 3,
+      "team_a": [
+        "O",
+        "N"
+      ],
+      "team_b": [
+        "J",
+        "L"
+      ],
+      "sitting_out": [
+        "D",
+        "E",
+        "F"
+      ],
+      "time_slot": "110\u2013120 min",
+      "game_id": "r12_c3"
+    },
+    {
+      "round": 13,
+      "court": 1,
+      "team_a": [
+        "C",
+        "E"
+      ],
+      "team_b": [
+        "A",
+        "K"
+      ],
+      "sitting_out": [
+        "G",
+        "H",
+        "I"
+      ],
+      "time_slot": "120\u2013130 min",
+      "game_id": "r13_c1"
+    },
+    {
+      "round": 13,
+      "court": 2,
+      "team_a": [
+        "M",
+        "B"
+      ],
+      "team_b": [
+        "O",
+        "D"
+      ],
+      "sitting_out": [
+        "G",
+        "H",
+        "I"
+      ],
+      "time_slot": "120\u2013130 min",
+      "game_id": "r13_c2"
+    },
+    {
+      "round": 13,
+      "court": 3,
+      "team_a": [
+        "N",
+        "J"
+      ],
+      "team_b": [
+        "F",
+        "L"
+      ],
+      "sitting_out": [
+        "G",
+        "H",
+        "I"
+      ],
+      "time_slot": "120\u2013130 min",
+      "game_id": "r13_c3"
+    },
+    {
+      "round": 14,
+      "court": 1,
+      "team_a": [
+        "H",
+        "I"
+      ],
+      "team_b": [
+        "N",
+        "D"
+      ],
+      "sitting_out": [
+        "J",
+        "K",
+        "L"
+      ],
+      "time_slot": "130\u2013140 min",
+      "game_id": "r14_c1"
+    },
+    {
+      "round": 14,
+      "court": 2,
+      "team_a": [
+        "A",
+        "G"
+      ],
+      "team_b": [
+        "O",
+        "B"
+      ],
+      "sitting_out": [
+        "J",
+        "K",
+        "L"
+      ],
+      "time_slot": "130\u2013140 min",
+      "game_id": "r14_c2"
+    },
+    {
+      "round": 14,
+      "court": 3,
+      "team_a": [
+        "C",
+        "F"
+      ],
+      "team_b": [
+        "E",
+        "M"
+      ],
+      "sitting_out": [
+        "J",
+        "K",
+        "L"
+      ],
+      "time_slot": "130\u2013140 min",
+      "game_id": "r14_c3"
     }
   ],
   "scores": {
@@ -753,6 +987,66 @@
       "submitted": false
     },
     "r10_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r11_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r11_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r11_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r12_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r12_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r12_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r13_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r13_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r13_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r14_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r14_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r14_c3": {
       "score_a": null,
       "score_b": null,
       "submitted": false
