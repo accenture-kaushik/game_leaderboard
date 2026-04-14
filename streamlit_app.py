@@ -262,7 +262,7 @@ def _put(state: dict) -> None:
 
 st.set_page_config(
     page_title="Sports Leaderboard",
-    page_icon="🏸",
+    page_icon="🎾",
     layout="centered",
     initial_sidebar_state="collapsed",
 )
