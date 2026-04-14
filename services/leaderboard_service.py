@@ -35,7 +35,7 @@ class LeaderboardService:
 
         leaderboard = sorted(
             player_stats.values(),
-            key=lambda x: (-x["games_won"], -x["net_points"], -x["points_gained"]),
+            key=lambda x: (-x["net_points"], -x["games_won"], -x["points_gained"]),
         )
 
         for rank, player in enumerate(leaderboard, start=1):
