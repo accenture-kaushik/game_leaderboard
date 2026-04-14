@@ -156,18 +156,78 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+    /* ── Layout ─────────────────────────────────────────── */
     .main .block-container {
-        padding: 0.75rem 0.75rem 4.5rem 0.75rem;
+        padding: 0 0.75rem 5rem 0.75rem;
         max-width: 520px;
     }
+
+    /* ── Page header banner ──────────────────────────────── */
+    .page-header {
+        background: linear-gradient(135deg, #1565C0 0%, #0288D1 100%);
+        padding: 1rem 1.15rem 0.9rem;
+        border-radius: 14px;
+        margin-bottom: 1.1rem;
+        color: white;
+    }
+    .page-header h1 {
+        margin: 0;
+        font-size: 1.45rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: white;
+    }
+    .page-header p {
+        margin: 0.2rem 0 0;
+        font-size: 0.82rem;
+        opacity: 0.88;
+        color: white;
+    }
+
+    /* ── Section label ───────────────────────────────────── */
+    .section-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #888;
+        margin: 1.1rem 0 0.35rem;
+    }
+
+    /* ── Team cards (court page) ─────────────────────────── */
+    .team-card-a {
+        background: #E3F2FD;
+        border-left: 4px solid #1565C0;
+        padding: 0.55rem 0.75rem;
+        border-radius: 8px;
+        margin-bottom: 0.4rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    .team-card-b {
+        background: #FCE4EC;
+        border-left: 4px solid #C62828;
+        padding: 0.55rem 0.75rem;
+        border-radius: 8px;
+        margin-bottom: 0.6rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    /* ── Buttons ─────────────────────────────────────────── */
     .stButton > button {
         min-height: 48px;
-        font-size: 1.05rem;
+        font-size: 1rem;
         border-radius: 10px;
         width: 100%;
+        font-weight: 500;
+        transition: opacity 0.15s;
     }
+    .stButton > button:active { opacity: 0.82; }
+
+    /* ── Number / text inputs ────────────────────────────── */
     .stNumberInput input {
-        font-size: 1.4rem !important;
+        font-size: 1.35rem !important;
         height: 52px !important;
         text-align: center !important;
     }
@@ -177,10 +237,49 @@ st.markdown(
     }
     .stTextInput input  { font-size: 1rem !important; height: 44px !important; }
     .stSelectbox > div > div { font-size: 1rem !important; min-height: 44px; }
-    details summary { font-size: 1rem; padding: 0.6rem 0; line-height: 1.4; }
-    [data-testid="stMetricDelta"] { font-size: 0.78rem; }
-    [data-testid="stProgressBar"]  { height: 10px; border-radius: 5px; }
-    [data-testid="stDataFrame"]    { font-size: 0.85rem; }
+
+    /* ── Expanders ───────────────────────────────────────── */
+    details { border-radius: 10px !important; }
+    details summary {
+        font-size: 1rem;
+        padding: 0.65rem 0;
+        line-height: 1.4;
+        font-weight: 500;
+    }
+
+    /* ── Metrics ─────────────────────────────────────────── */
+    [data-testid="stMetric"] {
+        background: #F0F7FF;
+        border-radius: 10px;
+        padding: 0.5rem 0.4rem;
+        text-align: center;
+    }
+    [data-testid="stMetricDelta"] { font-size: 0.75rem; }
+    [data-testid="stMetricLabel"] { font-size: 0.78rem !important; }
+    [data-testid="stMetricValue"] { font-size: 1.3rem !important; }
+
+    /* ── Progress bar ────────────────────────────────────── */
+    [data-testid="stProgressBar"] { height: 8px; border-radius: 5px; }
+    [data-testid="stProgressBar"] > div > div {
+        background: linear-gradient(90deg, #1565C0, #0288D1) !important;
+    }
+
+    /* ── DataFrame ───────────────────────────────────────── */
+    [data-testid="stDataFrame"] { font-size: 0.85rem; border-radius: 8px; overflow: hidden; }
+
+    /* ── Tabs ────────────────────────────────────────────── */
+    .stTabs [data-baseweb="tab-list"] { gap: 4px; }
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px 8px 0 0;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* ── Alert / info boxes ──────────────────────────────── */
+    [data-testid="stAlert"] { border-radius: 10px; }
+
+    /* ── Hide Streamlit chrome ───────────────────────────── */
     #MainMenu, footer { visibility: hidden; }
     header[data-testid="stHeader"] { height: 2rem; }
     </style>
@@ -197,6 +296,8 @@ def _init_ui():
     defaults = {
         "page": "setup",
         "num_players": 10,
+        "num_courts": 2,
+        "games_per_hour": 6,
         "player_names": [f"Player {i + 1}" for i in range(10)],
     }
     for k, v in defaults.items():
@@ -215,12 +316,15 @@ with st.sidebar:
     st.markdown("## 🏸 Sports Leaderboard")
     st.divider()
 
-    for pid, label in [
-        ("setup",       "⚙️  Setup & Schedule"),
-        ("court1",      "🏟️  Court 1"),
-        ("court2",      "🏟️  Court 2"),
-        ("leaderboard", "🏆  Leaderboard"),
-    ]:
+    _s = _get()
+    _num_courts_state = _s.get("num_courts", st.session_state.get("num_courts", 2))
+
+    _sb_nav = [("setup", "⚙️  Setup & Schedule")]
+    for _c in range(1, _num_courts_state + 1):
+        _sb_nav.append((f"court{_c}", f"🏟️  Court {_c}"))
+    _sb_nav.append(("leaderboard", "🏆  Leaderboard"))
+
+    for pid, label in _sb_nav:
         if st.button(
             label,
             key=f"sb_{pid}",
@@ -231,11 +335,10 @@ with st.sidebar:
             st.rerun()
 
     st.divider()
-    s = _get()
-    if s.get("session_active"):
-        st.success(f"✅ {len(s['players'])} players")
-        total = len(s["scores"])
-        done  = sum(1 for v in s["scores"].values() if v.get("submitted"))
+    if _s.get("session_active"):
+        st.success(f"✅ {len(_s['players'])} players · {_num_courts_state} courts")
+        total = len(_s["scores"])
+        done  = sum(1 for v in _s["scores"].values() if v.get("submitted"))
         if total:
             st.progress(done / total, text=f"{done}/{total} games done")
     else:
@@ -251,13 +354,13 @@ with st.sidebar:
 
 def _nav(active: str) -> None:
     st.markdown("---")
-    cols = st.columns(4)
-    nav = [
-        ("setup",       "⚙️", "Setup"),
-        ("court1",      "🏟", "Court 1"),
-        ("court2",      "🏟", "Court 2"),
-        ("leaderboard", "🏆", "Board"),
-    ]
+    num_courts = _get().get("num_courts", st.session_state.get("num_courts", 2))
+    nav = [("setup", "⚙️", "Setup")]
+    for c in range(1, num_courts + 1):
+        nav.append((f"court{c}", "🏟", f"Crt {c}"))
+    nav.append(("leaderboard", "🏆", "Board"))
+
+    cols = st.columns(len(nav))
     for col, (pid, icon, label) in zip(cols, nav):
         with col:
             if st.button(
@@ -275,12 +378,19 @@ def _nav(active: str) -> None:
 # ===========================================================================
 
 def show_setup() -> None:
-    st.title("⚙️ Setup")
+    st.markdown(
+        '<div class="page-header">'
+        '<h1>⚙️ Setup</h1>'
+        '<p>Configure players, courts &amp; generate your schedule</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
 
-    tab_p, tab_s = st.tabs(["👥 Players", "⚙️ Settings & Generate"])
+    tab_p, tab_s = st.tabs(["👥 Players & Courts", "⚙️ Settings & Generate"])
 
     # ── Players tab ──────────────────────────────────────────────────────────
     with tab_p:
+        # Number of players
         num_players = st.number_input(
             "Number of players", min_value=4, max_value=20,
             value=st.session_state.num_players, step=1,
@@ -294,7 +404,51 @@ def show_setup() -> None:
                 st.session_state.player_names = cur[:num_players]
             st.rerun()
 
-        st.caption("Enter each player's name and skill level.")
+        # Number of courts
+        num_courts = st.number_input(
+            "Number of courts", min_value=1, max_value=6,
+            step=1, key="num_courts",
+        )
+
+        # Single rate slider
+        games_per_hour = st.slider(
+            "Games per hour (all courts)",
+            min_value=1, max_value=12, step=1,
+            key="games_per_hour",
+        )
+        mins_per_game = round(60 / games_per_hour, 1)
+        st.caption(f"~{mins_per_game} min per game")
+
+        # Per-court hours-booked sliders
+        st.markdown('<div class="section-label">Hours booked per court</div>', unsafe_allow_html=True)
+        num_games_per_court: Dict[int, int] = {}
+        for c in range(1, num_courts + 1):
+            hrs_key = f"court_hours_{c}"
+            if hrs_key not in st.session_state:
+                st.session_state[hrs_key] = 2.0
+            court_hrs = st.slider(
+                f"Court {c}",
+                min_value=0.5, max_value=6.0, step=0.5,
+                key=hrs_key,
+            )
+            num_games_per_court[c] = max(1, round(games_per_hour * court_hrs))
+            st.caption(f"→ {num_games_per_court[c]} games")
+
+        # Session summary info box
+        n           = st.session_state.num_players
+        total_games = sum(num_games_per_court.values())
+        detail      = "  \n".join(
+            f"Court {c}: {g} games ({st.session_state.get(f'court_hours_{c}', 2.0):.1f}h)"
+            for c, g in num_games_per_court.items()
+        )
+        avg_games   = round(total_games * 4 / max(n, 1), 1)  # 4 players active per game
+        st.info(
+            f"**{n} players · {num_courts} courts · doubles**  \n"
+            f"{detail}  \n"
+            f"Total: **{total_games} games** · each player plays ~**{avg_games}**"
+        )
+
+        st.markdown('<div class="section-label">Player roster</div>', unsafe_allow_html=True)
         for i in range(st.session_state.num_players):
             default = (
                 st.session_state.player_names[i]
@@ -316,19 +470,15 @@ def show_setup() -> None:
 
     # ── Settings & Generate tab ───────────────────────────────────────────────
     with tab_s:
-        num_rounds = st.slider(
-            "Rounds per court", min_value=6, max_value=24,
-            value=_default_rounds(), step=1,
-        )
-        n = st.session_state.num_players
-        total_min = num_rounds * 10
-        avg = round(num_rounds * 8 / max(n, 1), 1)
-
-        st.info(
-            f"**{n} players · 2 courts · doubles**  \n"
-            f"{num_rounds} rounds → ~{total_min} min  \n"
-            f"Each player plays ~**{avg} games**"
-        )
+        # Read values set in Players tab
+        num_courts     = st.session_state.get("num_courts", 2)
+        games_per_hour = st.session_state.get("games_per_hour", 6)
+        # Rebuild per-court game counts from stored hour sliders
+        _ngpc: Dict[int, int] = {}
+        for _c in range(1, num_courts + 1):
+            _hrs = float(st.session_state.get(f"court_hours_{_c}", 2.0))
+            _ngpc[_c] = max(1, round(games_per_hour * _hrs))
+        num_games = max(_ngpc.values())  # generate enough rounds for the busiest court
 
         has_key = bool(_gemini_key())
         use_agent = st.checkbox(
@@ -372,28 +522,42 @@ def show_setup() -> None:
                 try:
                     if use_agent and has_key:
                         from agent.react_agent import GamePlannerAgent
-                        schedule = GamePlannerAgent().generate_schedule(
-                            players, skill_levels, num_rounds=num_rounds
+                        raw_schedule = GamePlannerAgent().generate_schedule(
+                            players, skill_levels,
+                            num_rounds=num_games, num_courts=num_courts,
                         )
                         method = "AI agent (Gemini Flash)"
                     else:
                         from services.schedule_service import ScheduleService
-                        schedule = ScheduleService().generate_schedule(
-                            players, skill_levels, num_rounds=num_rounds
+                        raw_schedule = ScheduleService().generate_schedule(
+                            players, skill_levels,
+                            num_rounds=num_games, num_courts=num_courts,
                         )
                         method = "algorithm"
                 except Exception as exc:
                     logging.error("Schedule generation failed: %s", exc)
                     from services.schedule_service import ScheduleService
-                    schedule = ScheduleService().generate_schedule(
-                        players, skill_levels, num_rounds=num_rounds
+                    raw_schedule = ScheduleService().generate_schedule(
+                        players, skill_levels,
+                        num_rounds=num_games, num_courts=num_courts,
                     )
                     method = "algorithm (fallback)"
 
+                # Trim each court to its individual game limit
+                court_seen: Dict[int, int] = {c: 0 for c in range(1, num_courts + 1)}
+                schedule = []
+                for g in raw_schedule:
+                    c = g["court"]
+                    limit = _ngpc.get(c, num_games)
+                    if court_seen[c] < limit:
+                        schedule.append(g)
+                        court_seen[c] += 1
+
             new_state = {
-                "players": players,
+                "players":      players,
                 "skill_levels": skill_levels,
-                "schedule": schedule,
+                "num_courts":   num_courts,
+                "schedule":     schedule,
                 "scores": {
                     g["game_id"]: {"score_a": None, "score_b": None, "submitted": False}
                     for g in schedule
@@ -409,31 +573,33 @@ def show_setup() -> None:
             _put(_empty_state())
             st.rerun()
 
-    # ── Schedule preview ──────────────────────────────────────────────────────
-    state = _get()
-    if not state.get("schedule"):
-        st.info("No schedule yet. Go to **Settings & Generate** tab.")
-        _nav("setup")
-        return
+        # ── Schedule preview ──────────────────────────────────────────────────
+        state = _get()
+        if not state.get("schedule"):
+            st.info("No schedule yet — click **Generate Schedule** above.")
+        else:
+            schedule = state["schedule"]
+            scores   = state["scores"]
 
-    schedule = state["schedule"]
-    scores   = state["scores"]
+            st.divider()
+            st.subheader(f"📋 Schedule  ·  {len(schedule)} games")
 
-    st.divider()
-    st.subheader(f"📋 Schedule  ·  {len(schedule)} games")
+            st.download_button(
+                "⬇️ Download Schedule (CSV)",
+                data=_build_csv(schedule),
+                file_name="game_schedule.csv",
+                mime="text/csv",
+                use_container_width=True,
+            )
 
-    st.download_button(
-        "⬇️ Download Schedule (CSV)",
-        data=_build_csv(schedule),
-        file_name="game_schedule.csv",
-        mime="text/csv",
-        use_container_width=True,
-    )
-
-    t1, t2, tall = st.tabs(["🏟 Court 1", "🏟 Court 2", "📄 All"])
-    with t1:   _render_table([g for g in schedule if g["court"] == 1], scores)
-    with t2:   _render_table([g for g in schedule if g["court"] == 2], scores)
-    with tall: _render_table(schedule, scores)
+            num_courts_now = state.get("num_courts", 2)
+            sched_tab_labels = [f"🏟 Court {c}" for c in range(1, num_courts_now + 1)] + ["📄 All"]
+            sched_tabs = st.tabs(sched_tab_labels)
+            for c, tab in enumerate(sched_tabs[:-1], start=1):
+                with tab:
+                    _render_table([g for g in schedule if g["court"] == c], scores)
+            with sched_tabs[-1]:
+                _render_table(schedule, scores)
 
     _nav("setup")
 
@@ -443,13 +609,12 @@ def _render_table(games: List[dict], scores: dict) -> None:
         st.info("No games.")
         return
     rows = []
-    for g in games:
+    for game_num, g in enumerate(games, start=1):
         sd   = scores.get(g["game_id"], {})
         done = sd.get("submitted", False)
         rows.append({
             "": "✅" if done else "⏳",
-            "Rd": g["round"],
-            "Time": g["time_slot"],
+            "Game": game_num,
             "Team A": " & ".join(g["team_a"]),
             "Team B": " & ".join(g["team_b"]),
             "Score": f"{sd['score_a']}–{sd['score_b']}" if done else "—",
@@ -461,11 +626,11 @@ def _render_table(games: List[dict], scores: dict) -> None:
 def _build_csv(schedule: List[dict]) -> str:
     buf = StringIO()
     w = csv.writer(buf)
-    w.writerow(["Round", "Court", "Time", "A-P1", "A-P2", "B-P1", "B-P2", "Resting"])
-    for g in schedule:
+    w.writerow(["Game", "Court", "Time", "A-P1", "A-P2", "B-P1", "B-P2", "Resting"])
+    for game_num, g in enumerate(schedule, start=1):
         ta, tb = g["team_a"], g["team_b"]
         w.writerow([
-            g["round"], g["court"], g["time_slot"],
+            game_num, g["court"], g["time_slot"],
             ta[0] if ta else "",       ta[1] if len(ta) > 1 else "",
             tb[0] if tb else "",       tb[1] if len(tb) > 1 else "",
             ", ".join(g.get("sitting_out", [])),
@@ -478,7 +643,13 @@ def _build_csv(schedule: List[dict]) -> str:
 # ===========================================================================
 
 def show_court(court: int) -> None:
-    st.title(f"🏟 Court {court}")
+    st.markdown(
+        f'<div class="page-header">'
+        f'<h1>🏟 Court {court}</h1>'
+        f'<p>Enter scores as each game finishes</p>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
 
     state = _get()
     if not state.get("schedule"):
@@ -514,10 +685,13 @@ def show_court(court: int) -> None:
             f"{icon}  Game {game_num}  ·  {game['time_slot']}",
             expanded=not submitted,
         ):
-            # Teams — stacked, easy to read on phone
+            # Teams — coloured cards
             st.markdown(
-                f"**Team A** &nbsp; {' & '.join(game['team_a'])}  \n"
-                f"**Team B** &nbsp; {' & '.join(game['team_b'])}"
+                f'<div class="team-card-a"><strong>Team A</strong> &nbsp; '
+                f'{" &amp; ".join(game["team_a"])}</div>'
+                f'<div class="team-card-b"><strong>Team B</strong> &nbsp; '
+                f'{" &amp; ".join(game["team_b"])}</div>',
+                unsafe_allow_html=True,
             )
 
             # Score inputs — two equal half-screen columns
@@ -568,7 +742,13 @@ def show_court(court: int) -> None:
 # ===========================================================================
 
 def show_leaderboard() -> None:
-    st.title("🏆 Leaderboard")
+    st.markdown(
+        '<div class="page-header">'
+        '<h1>🏆 Leaderboard</h1>'
+        '<p>Live standings · doubles tournament</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
 
     if st.button("🔄 Refresh", use_container_width=True):
         st.rerun()
@@ -595,12 +775,25 @@ def show_leaderboard() -> None:
 
     # ── Podium ───────────────────────────────────────────────────────────────
     podium = min(len(lb), 3)
-    for col, medal, p in zip(st.columns(podium), ["🥇", "🥈", "🥉"], lb[:podium]):
-        col.metric(
-            f"{medal} {p['name']}",
-            f"{p['points_gained']} pts",
-            f"{p['games_won']}W / {p['games_lost']}L",
-        )
+    _medal_bg     = ["#FFF8E1", "#F5F5F5", "#FBE9E7"]
+    _medal_border = ["#F9A825", "#757575", "#BF360C"]
+    _medals       = ["🥇", "🥈", "🥉"]
+    cols = st.columns(podium)
+    for col, medal, p, bg, border in zip(cols, _medals, lb[:podium], _medal_bg, _medal_border):
+        with col:
+            st.markdown(
+                f'<div style="background:{bg};border-top:4px solid {border};'
+                f'border-radius:12px;padding:0.75rem 0.4rem;text-align:center;">'
+                f'<div style="font-size:1.8rem;line-height:1">{medal}</div>'
+                f'<div style="font-weight:700;font-size:0.88rem;margin-top:0.35rem;'
+                f'white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{p["name"]}</div>'
+                f'<div style="font-size:1.25rem;font-weight:800;color:{border}">'
+                f'{p["points_gained"]}</div>'
+                f'<div style="font-size:0.72rem;color:#666">{p["games_won"]}W '
+                f'/ {p["games_lost"]}L</div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
 
     st.divider()
 
@@ -642,7 +835,14 @@ def show_leaderboard() -> None:
 
 _page = st.session_state.page
 
-if   _page == "setup":       show_setup()
-elif _page == "court1":      show_court(1)
-elif _page == "court2":      show_court(2)
-elif _page == "leaderboard": show_leaderboard()
+if _page == "setup":
+    show_setup()
+elif _page == "leaderboard":
+    show_leaderboard()
+elif _page.startswith("court"):
+    try:
+        show_court(int(_page[5:]))
+    except ValueError:
+        show_setup()
+else:
+    show_setup()

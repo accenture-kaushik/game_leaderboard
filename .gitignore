@@ -1,4 +1,5 @@
 config.yaml
+.streamlit/secrets.toml
 data/
 __pycache__/
 *.pyc
