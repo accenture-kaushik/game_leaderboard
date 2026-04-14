@@ -309,7 +309,7 @@ def _init_ui():
         "page": "setup",
         "num_players": 10,
         "num_courts": 2,
-        "games_per_hour": 6,
+        "games_per_hour": 5,
         "player_names": [f"Player {i + 1}" for i in range(10)],
     }
     for k, v in defaults.items():
@@ -424,7 +424,7 @@ def show_setup() -> None:
 
         # Single rate slider
         games_per_hour = st.slider(
-            "Games per hour (all courts)",
+            "Games per hour",
             min_value=1, max_value=12, step=1,
             key="games_per_hour",
         )
@@ -487,7 +487,7 @@ def show_setup() -> None:
     with tab_s:
         # Read values set in Players tab
         num_courts     = st.session_state.get("num_courts", 2)
-        games_per_hour = st.session_state.get("games_per_hour", 6)
+        games_per_hour = st.session_state.get("games_per_hour", 5)
         # Rebuild per-court game counts from stored hour sliders
         _ngpc: Dict[int, int] = {}
         for _c in range(1, num_courts + 1):
