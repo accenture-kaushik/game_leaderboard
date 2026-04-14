@@ -92,9 +92,6 @@ _file_lock = threading.Lock()
 # GitHub persistence helpers
 # ---------------------------------------------------------------------------
 
-_GH_PATH = "data/session.json"   # path inside the repo
-
-
 def _gh_cfg() -> dict:
     """Return the [github] config block from secrets or config.yaml."""
     try:
@@ -107,67 +104,86 @@ def _gh_cfg() -> dict:
 
 def _gh_headers() -> dict:
     token = _gh_cfg().get("token", "")
-    return {
-        "Authorization": f"token {token}",
-        "Accept": "application/vnd.github.v3+json",
-    }
+    return {"Authorization": f"token {token}",
+            "Accept": "application/vnd.github.v3+json"}
 
 
-def _gh_url() -> str:
+def _gh_file_url(gh_path: str) -> str:
     repo = _gh_cfg().get("repo", "")
-    return f"https://api.github.com/repos/{repo}/contents/{_GH_PATH}"
+    return f"https://api.github.com/repos/{repo}/contents/{gh_path}"
 
 
-def _github_load() -> Optional[dict]:
-    """Fetch session.json from GitHub. Returns None if unavailable."""
+# ── Generic GitHub file helpers ──────────────────────────────────────────────
+
+def _github_load_file(gh_path: str, default: Optional[dict] = None) -> Optional[dict]:
+    """Fetch a JSON file from GitHub. Returns default if 404, None on error."""
     if not _gh_cfg().get("token") or not _gh_cfg().get("repo"):
         return None
     try:
-        r = requests.get(_gh_url(), headers=_gh_headers(), timeout=10)
+        r = requests.get(_gh_file_url(gh_path), headers=_gh_headers(), timeout=10)
         if r.status_code == 200:
-            payload = r.json()
-            content = base64.b64decode(payload["content"]).decode("utf-8")
+            content = base64.b64decode(r.json()["content"]).decode("utf-8")
             return json.loads(content)
         if r.status_code == 404:
-            return _empty_state()   # file doesn't exist yet — start fresh
-        logging.warning("GitHub load HTTP %s", r.status_code)
+            return default
+        logging.warning("GitHub load HTTP %s (%s)", r.status_code, gh_path)
     except Exception as exc:
-        logging.warning("GitHub load error: %s", exc)
+        logging.warning("GitHub load error (%s): %s", gh_path, exc)
     return None
 
 
-def _github_save(state: dict) -> None:
-    """Push session.json to GitHub (create or update)."""
+def _github_save_file(gh_path: str, data: dict, commit_msg: str = "update") -> None:
+    """Push a JSON file to GitHub (create or update)."""
     if not _gh_cfg().get("token") or not _gh_cfg().get("repo"):
         return
     try:
         hdrs = _gh_headers()
-        url  = _gh_url()
-
-        # Always fetch the current SHA before writing — avoids 422 errors
-        # caused by Streamlit resetting module-level variables on every rerun.
-        sha = ""
+        url  = _gh_file_url(gh_path)
+        sha  = ""
         r_get = requests.get(url, headers=hdrs, timeout=10)
         if r_get.status_code == 200:
             sha = r_get.json().get("sha", "")
-
         content_b64 = base64.b64encode(
-            json.dumps(state, indent=2).encode("utf-8")
+            json.dumps(data, indent=2).encode("utf-8")
         ).decode("utf-8")
-        payload: dict = {
-            "message": "leaderboard: update session",
-            "content": content_b64,
-        }
+        payload: dict = {"message": commit_msg, "content": content_b64}
         if sha:
             payload["sha"] = sha
-
         r = requests.put(url, headers=hdrs, json=payload, timeout=15)
         if r.status_code in (200, 201):
-            logging.info("GitHub save OK (status %s)", r.status_code)
+            logging.info("GitHub save OK (%s)", gh_path)
         else:
-            logging.warning("GitHub save HTTP %s: %s", r.status_code, r.text[:200])
+            logging.warning("GitHub save HTTP %s (%s): %s",
+                            r.status_code, gh_path, r.text[:200])
     except Exception as exc:
-        logging.warning("GitHub save error: %s", exc)
+        logging.warning("GitHub save error (%s): %s", gh_path, exc)
+
+
+# ── Convenience wrappers for session.json ────────────────────────────────────
+
+def _github_load() -> Optional[dict]:
+    return _github_load_file("data/session.json", default=_empty_state())
+
+def _github_save(state: dict) -> None:
+    _github_save_file("data/session.json", state, "leaderboard: update session")
+
+
+# ── Users / phone-number access list ─────────────────────────────────────────
+
+def _default_users() -> dict:
+    return {"allowed_phones": []}
+
+@st.cache_resource
+def _users_box() -> dict:
+    gh = _github_load_file("data/users.json", default=_default_users())
+    return {"u": gh if gh is not None else _default_users()}
+
+def _get_users() -> dict:
+    return _users_box()["u"]
+
+def _put_users(users: dict) -> None:
+    _users_box()["u"] = users
+    _github_save_file("data/users.json", users, "leaderboard: update users")
 
 
 # ---------------------------------------------------------------------------
@@ -416,6 +432,10 @@ def _init_ui():
         "show_skill_pw": False,
         "show_gen_pw": False,
         "show_reset_pw": False,
+        "phone_verified": False,
+        "verified_phone": "",
+        "show_admin_pw": False,
+        "show_admin_panel": False,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -1170,19 +1190,172 @@ def show_leaderboard() -> None:
 
 
 # ===========================================================================
+# Page: Welcome / Phone Gate
+# ===========================================================================
+
+def show_welcome() -> None:
+    st.markdown(
+        '<div class="page-header" style="text-align:center;">'
+        '<h1>🏸 Sports Leaderboard</h1>'
+        '<p>Home tournament · doubles</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        '<p style="text-align:center;color:#aaa;margin:1.5rem 0 0.5rem;">'
+        'Enter your mobile number to continue</p>',
+        unsafe_allow_html=True,
+    )
+
+    # ── Phone input ───────────────────────────────────────────────────────────
+    phone = st.text_input(
+        "Mobile number", max_chars=10,
+        placeholder="10-digit mobile number",
+        label_visibility="collapsed",
+        key="welcome_phone",
+    )
+
+    if st.button("Continue →", type="primary", use_container_width=True):
+        p = (phone or "").strip()
+        if len(p) != 10 or not p.isdigit():
+            st.error("Please enter a valid 10-digit number.")
+        else:
+            users = _get_users()
+            if p in users.get("allowed_phones", []):
+                st.session_state.phone_verified = True
+                st.session_state.verified_phone = p
+                st.rerun()
+            else:
+                st.error("This number is not registered for this tournament.")
+
+    # ── Admin section ─────────────────────────────────────────────────────────
+    st.markdown('<div style="height:3rem"></div>', unsafe_allow_html=True)
+
+    _, admin_col = st.columns([9, 1])
+    with admin_col:
+        st.markdown(
+            """
+            <style>
+            .admin-dots-anchor + div,
+            .admin-dots-anchor + div > div,
+            .admin-dots-anchor + div > div > div { background:transparent!important;
+                border:none!important; box-shadow:none!important; }
+            .admin-dots-anchor + div button,
+            .admin-dots-anchor + div button:hover,
+            .admin-dots-anchor + div button:focus,
+            .admin-dots-anchor + div button:active {
+                min-height:22px!important; height:22px!important;
+                width:auto!important; padding:0 0.4rem!important;
+                font-size:0.6rem!important; background:transparent!important;
+                border:none!important; outline:none!important;
+                box-shadow:none!important; color:#2e2e3e!important;
+                letter-spacing:0.2em; }
+            .admin-dots-anchor + div button:hover { color:#555!important; }
+            </style>
+            <div class="admin-dots-anchor"></div>
+            """,
+            unsafe_allow_html=True,
+        )
+        if st.button("· · ·", key="btn_admin_trigger", use_container_width=False):
+            st.session_state.show_admin_pw = not st.session_state.show_admin_pw
+            st.session_state.show_admin_panel = False
+            st.rerun()
+
+    # ── Admin password prompt ─────────────────────────────────────────────────
+    if st.session_state.show_admin_pw and not st.session_state.show_admin_panel:
+        ap_col, ago_col = st.columns([5, 2])
+        with ap_col:
+            admin_pw = st.text_input(
+                "apw", type="password", placeholder="Admin password…",
+                label_visibility="collapsed", key="admin_pw_field",
+            )
+        with ago_col:
+            if st.button("Unlock", key="btn_admin_unlock",
+                         type="primary", use_container_width=True):
+                if admin_pw == "kaushik28":
+                    st.session_state.show_admin_panel = True
+                    st.session_state.show_admin_pw    = False
+                    if "admin_pw_field" in st.session_state:
+                        del st.session_state["admin_pw_field"]
+                else:
+                    st.error("Incorrect password.")
+                st.rerun()
+
+    # ── Admin panel ───────────────────────────────────────────────────────────
+    if st.session_state.show_admin_panel:
+        st.divider()
+        st.markdown(
+            '<div class="section-label">Manage registered numbers</div>',
+            unsafe_allow_html=True,
+        )
+        users = _get_users()
+        phones: List[str] = users.get("allowed_phones", [])
+
+        # Current list
+        if phones:
+            for ph in phones:
+                c_ph, c_del = st.columns([5, 1])
+                c_ph.markdown(
+                    f'<span style="font-size:0.95rem;letter-spacing:0.05em">'
+                    f'{ph[:5]}·····</span>',
+                    unsafe_allow_html=True,
+                )
+                if c_del.button("✕", key=f"del_{ph}", use_container_width=True):
+                    phones.remove(ph)
+                    with st.spinner("Saving…"):
+                        _put_users({"allowed_phones": phones})
+                    st.rerun()
+        else:
+            st.caption("No numbers registered yet.")
+
+        # Add new number
+        st.markdown('<div style="height:0.4rem"></div>', unsafe_allow_html=True)
+        n_col, a_col = st.columns([5, 2])
+        with n_col:
+            new_ph = st.text_input(
+                "new_ph", max_chars=10, placeholder="Add 10-digit number",
+                label_visibility="collapsed", key="new_phone_field",
+            )
+        with a_col:
+            if st.button("Add", key="btn_add_phone",
+                         type="primary", use_container_width=True):
+                p = (new_ph or "").strip()
+                if len(p) == 10 and p.isdigit():
+                    if p not in phones:
+                        phones.append(p)
+                        with st.spinner("Saving…"):
+                            _put_users({"allowed_phones": phones})
+                        if "new_phone_field" in st.session_state:
+                            del st.session_state["new_phone_field"]
+                        st.success(f"Added {p[:5]}·····")
+                    else:
+                        st.warning("Already registered.")
+                else:
+                    st.error("Enter a valid 10-digit number.")
+                st.rerun()
+
+        if st.button("Close admin", key="btn_admin_close", use_container_width=True):
+            st.session_state.show_admin_panel = False
+            st.rerun()
+
+
+# ===========================================================================
 # Router
 # ===========================================================================
 
-_page = st.session_state.page
-
-if _page == "setup":
-    show_setup()
-elif _page == "leaderboard":
-    show_leaderboard()
-elif _page.startswith("court"):
-    try:
-        show_court(int(_page[5:]))
-    except ValueError:
-        show_setup()
+if not st.session_state.phone_verified:
+    show_welcome()
 else:
-    show_setup()
+    _page = st.session_state.page
+    if _page == "setup":
+        show_setup()
+    elif _page == "leaderboard":
+        show_leaderboard()
+    elif _page.startswith("court"):
+        try:
+            show_court(int(_page[5:]))
+        except ValueError:
+            show_setup()
+    else:
+        show_setup()
