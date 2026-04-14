@@ -1149,7 +1149,7 @@ def show_leaderboard() -> None:
                 f'<div style="font-weight:700;font-size:0.88rem;margin-top:0.35rem;color:#E8EAF0;'
                 f'white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{p["name"]}</div>'
                 f'<div style="font-size:1.25rem;font-weight:800;color:{border}">'
-                f'{p["points_gained"]}</div>'
+                f'{p["net_points"]}</div>'
                 f'<div style="font-size:0.72rem;color:#666">{p["games_won"]}W '
                 f'/ {p["games_lost"]}L</div>'
                 f'</div>',
