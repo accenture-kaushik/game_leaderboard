@@ -240,6 +240,16 @@ st.markdown(
     .stTextInput input  { font-size: 1rem !important; height: 44px !important; }
     .stSelectbox > div > div { font-size: 1rem !important; min-height: 44px; }
 
+    /* ── Roster radio buttons ────────────────────────────── */
+    div[data-testid="stRadio"] > div {
+        gap: 0.4rem;
+        padding-top: 0.45rem;
+    }
+    div[data-testid="stRadio"] label {
+        font-size: 0.82rem !important;
+        padding: 0.2rem 0.1rem;
+    }
+
     /* ── Expanders ───────────────────────────────────────── */
     details { border-radius: 10px !important; }
     details summary {
@@ -457,7 +467,7 @@ def show_setup() -> None:
                 if i < len(st.session_state.player_names)
                 else f"Player {i + 1}"
             )
-            c_name, c_skill = st.columns([3, 2])
+            c_name, c_skill = st.columns([5, 4])
             with c_name:
                 st.text_input(
                     f"P{i + 1}", value=default,
@@ -465,9 +475,12 @@ def show_setup() -> None:
                     label_visibility="collapsed",
                 )
             with c_skill:
-                st.selectbox(
-                    "Level", options=["intermediate", "beginner"],
-                    key=f"skill_{i}", label_visibility="collapsed",
+                st.radio(
+                    "Level",
+                    options=["intermediate", "beginner"],
+                    key=f"skill_{i}",
+                    horizontal=True,
+                    label_visibility="collapsed",
                 )
 
     # ── Settings & Generate tab ───────────────────────────────────────────────
