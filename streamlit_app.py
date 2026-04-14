@@ -9,12 +9,10 @@ Gemini API key is read from config.yaml (gemini.api_key).
 """
 
 import copy
-import csv
 import json
 import logging
 import os
 import threading
-from io import StringIO
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -248,6 +246,7 @@ st.markdown(
         padding: 0.25rem 0.3rem !important;
     }
 
+
     /* ── Roster radio buttons ────────────────────────────── */
     div[data-testid="stRadio"] > div {
         gap: 0.4rem;
@@ -319,6 +318,10 @@ def _init_ui():
         "num_courts": 2,
         "games_per_hour": 5,
         "player_names": [f"Player {i + 1}" for i in range(10)],
+        "skill_visible": False,
+        "show_skill_pw": False,
+        "show_gen_pw": False,
+        "show_reset_pw": False,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -469,27 +472,107 @@ def show_setup() -> None:
         )
 
         st.markdown('<div class="section-label">Player roster</div>', unsafe_allow_html=True)
+
+        # ── Player rows ───────────────────────────────────────────────────────
         for i in range(st.session_state.num_players):
+            # Ensure skill default is set even when radio is hidden
+            if f"skill_{i}" not in st.session_state:
+                st.session_state[f"skill_{i}"] = "intermediate"
+
             default = (
                 st.session_state.player_names[i]
                 if i < len(st.session_state.player_names)
                 else f"Player {i + 1}"
             )
-            c_name, c_skill = st.columns([5, 4])
-            with c_name:
+            if st.session_state.skill_visible:
+                c_name, c_skill = st.columns([5, 4])
+                with c_name:
+                    st.text_input(
+                        f"P{i + 1}", value=default,
+                        key=f"pname_{i}", placeholder=f"Player {i + 1}",
+                        label_visibility="collapsed",
+                    )
+                with c_skill:
+                    st.radio(
+                        "Level",
+                        options=["intermediate", "beginner"],
+                        key=f"skill_{i}",
+                        horizontal=True,
+                        label_visibility="collapsed",
+                    )
+            else:
                 st.text_input(
                     f"P{i + 1}", value=default,
                     key=f"pname_{i}", placeholder=f"Player {i + 1}",
                     label_visibility="collapsed",
                 )
-            with c_skill:
-                st.radio(
-                    "Level",
-                    options=["intermediate", "beginner"],
-                    key=f"skill_{i}",
-                    horizontal=True,
+
+        # ── Discreet lock toggle (below player list) ──────────────────────────
+        st.markdown(
+            """
+            <style>
+            .skill-toggle-anchor + div,
+            .skill-toggle-anchor + div > div,
+            .skill-toggle-anchor + div > div > div {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                outline: none !important;
+            }
+            .skill-toggle-anchor + div button,
+            .skill-toggle-anchor + div button:hover,
+            .skill-toggle-anchor + div button:focus,
+            .skill-toggle-anchor + div button:active {
+                min-height: 22px !important;
+                height: 22px !important;
+                width: auto !important;
+                padding: 0 0.4rem !important;
+                font-size: 0.6rem !important;
+                background: transparent !important;
+                border: none !important;
+                outline: none !important;
+                box-shadow: none !important;
+                color: #2e2e3e !important;
+                letter-spacing: 0.2em;
+            }
+            .skill-toggle-anchor + div button:hover {
+                color: #555 !important;
+            }
+            </style>
+            <div class="skill-toggle-anchor"></div>
+            """,
+            unsafe_allow_html=True,
+        )
+        _vis = st.session_state.skill_visible
+        if st.button("· · ·", key="btn_skill_vis", use_container_width=False):
+            if _vis:
+                st.session_state.skill_visible = False
+                st.session_state.show_skill_pw = False
+            else:
+                st.session_state.show_skill_pw = not st.session_state.show_skill_pw
+            st.rerun()
+
+        # ── Password prompt ───────────────────────────────────────────────────
+        if st.session_state.show_skill_pw and not st.session_state.skill_visible:
+            pw_col, go_col = st.columns([5, 2])
+            with pw_col:
+                pw_val = st.text_input(
+                    "pw", type="password",
+                    placeholder="Enter password…",
                     label_visibility="collapsed",
+                    key="skill_pw_field",
                 )
+            with go_col:
+                if st.button("Unlock", key="btn_skill_unlock",
+                             type="primary", use_container_width=True):
+                    if pw_val == "kaushik28":
+                        st.session_state.skill_visible = True
+                        st.session_state.show_skill_pw = False
+                        if "skill_pw_field" in st.session_state:
+                            del st.session_state["skill_pw_field"]
+                    else:
+                        st.error("Incorrect password.")
+                    st.rerun()
 
     # ── Settings & Generate tab ───────────────────────────────────────────────
     with tab_s:
@@ -514,87 +597,123 @@ def show_setup() -> None:
 
         st.markdown(" ")
 
+        # ── Generate Schedule ─────────────────────────────────────────────────
         if st.button("🎲 Generate Schedule", type="primary", use_container_width=True):
-            # Collect names & skills from widget keys
-            raw_names = [
-                (st.session_state.get(f"pname_{i}") or f"Player {i + 1}").strip()
-                for i in range(st.session_state.num_players)
-            ]
-            raw_skills = [
-                st.session_state.get(f"skill_{i}", "intermediate")
-                for i in range(st.session_state.num_players)
-            ]
-
-            # De-duplicate names
-            seen: Dict[str, int] = {}
-            players: List[str] = []
-            skill_levels: Dict[str, str] = {}
-            for nm, sk in zip(raw_names, raw_skills):
-                nm = nm or "Player"
-                if nm in seen:
-                    seen[nm] += 1
-                    nm = f"{nm} ({seen[nm]})"
-                else:
-                    seen[nm] = 1
-                players.append(nm)
-                skill_levels[nm] = sk
-
-            st.session_state.player_names = players
-
-            with st.spinner("Generating schedule… 🤖"):
-                try:
-                    if use_agent and has_key:
-                        from agent.react_agent import GamePlannerAgent
-                        raw_schedule = GamePlannerAgent().generate_schedule(
-                            players, skill_levels,
-                            num_rounds=num_games, num_courts=num_courts,
-                        )
-                        method = "AI agent (Gemini Flash)"
-                    else:
-                        from services.schedule_service import ScheduleService
-                        raw_schedule = ScheduleService().generate_schedule(
-                            players, skill_levels,
-                            num_rounds=num_games, num_courts=num_courts,
-                        )
-                        method = "algorithm"
-                except Exception as exc:
-                    logging.error("Schedule generation failed: %s", exc)
-                    from services.schedule_service import ScheduleService
-                    raw_schedule = ScheduleService().generate_schedule(
-                        players, skill_levels,
-                        num_rounds=num_games, num_courts=num_courts,
-                    )
-                    method = "algorithm (fallback)"
-
-                # Trim each court to its individual game limit
-                court_seen: Dict[int, int] = {c: 0 for c in range(1, num_courts + 1)}
-                schedule = []
-                for g in raw_schedule:
-                    c = g["court"]
-                    limit = _ngpc.get(c, num_games)
-                    if court_seen[c] < limit:
-                        schedule.append(g)
-                        court_seen[c] += 1
-
-            new_state = {
-                "players":      players,
-                "skill_levels": skill_levels,
-                "num_courts":   num_courts,
-                "schedule":     schedule,
-                "scores": {
-                    g["game_id"]: {"score_a": None, "score_b": None, "submitted": False}
-                    for g in schedule
-                },
-                "session_active": True,
-            }
-            _put(new_state)
-            st.success(f"✅ {len(schedule)} games generated via {method}")
+            st.session_state.show_gen_pw   = True
+            st.session_state.show_reset_pw = False
             st.rerun()
 
+        if st.session_state.show_gen_pw:
+            st.caption("Enter password to generate schedule")
+            pw_col, go_col = st.columns([5, 2])
+            with pw_col:
+                gen_pw = st.text_input(
+                    "gen_pw", type="password", placeholder="Password…",
+                    label_visibility="collapsed", key="gen_pw_field",
+                )
+            with go_col:
+                if st.button("Confirm", key="btn_gen_confirm",
+                             type="primary", use_container_width=True):
+                    if gen_pw == "kaushik28":
+                        st.session_state.show_gen_pw = False
+                        # ── Collect names & skills ──────────────────────────
+                        raw_names = [
+                            (st.session_state.get(f"pname_{i}") or f"Player {i + 1}").strip()
+                            for i in range(st.session_state.num_players)
+                        ]
+                        raw_skills = [
+                            st.session_state.get(f"skill_{i}", "intermediate")
+                            for i in range(st.session_state.num_players)
+                        ]
+                        seen: Dict[str, int] = {}
+                        players: List[str] = []
+                        skill_levels: Dict[str, str] = {}
+                        for nm, sk in zip(raw_names, raw_skills):
+                            nm = nm or "Player"
+                            if nm in seen:
+                                seen[nm] += 1
+                                nm = f"{nm} ({seen[nm]})"
+                            else:
+                                seen[nm] = 1
+                            players.append(nm)
+                            skill_levels[nm] = sk
+                        st.session_state.player_names = players
+
+                        with st.spinner("Generating schedule… 🤖"):
+                            try:
+                                if use_agent and has_key:
+                                    from agent.react_agent import GamePlannerAgent
+                                    raw_schedule = GamePlannerAgent().generate_schedule(
+                                        players, skill_levels,
+                                        num_rounds=num_games, num_courts=num_courts,
+                                    )
+                                    method = "AI agent (Gemini Flash)"
+                                else:
+                                    from services.schedule_service import ScheduleService
+                                    raw_schedule = ScheduleService().generate_schedule(
+                                        players, skill_levels,
+                                        num_rounds=num_games, num_courts=num_courts,
+                                    )
+                                    method = "algorithm"
+                            except Exception as exc:
+                                logging.error("Schedule generation failed: %s", exc)
+                                from services.schedule_service import ScheduleService
+                                raw_schedule = ScheduleService().generate_schedule(
+                                    players, skill_levels,
+                                    num_rounds=num_games, num_courts=num_courts,
+                                )
+                                method = "algorithm (fallback)"
+
+                            court_seen: Dict[int, int] = {c: 0 for c in range(1, num_courts + 1)}
+                            schedule = []
+                            for g in raw_schedule:
+                                c = g["court"]
+                                limit = _ngpc.get(c, num_games)
+                                if court_seen[c] < limit:
+                                    schedule.append(g)
+                                    court_seen[c] += 1
+
+                        new_state = {
+                            "players":      players,
+                            "skill_levels": skill_levels,
+                            "num_courts":   num_courts,
+                            "schedule":     schedule,
+                            "scores": {
+                                g["game_id"]: {"score_a": None, "score_b": None, "submitted": False}
+                                for g in schedule
+                            },
+                            "session_active": True,
+                        }
+                        _put(new_state)
+                        st.success(f"✅ {len(schedule)} games generated via {method}")
+                        st.rerun()
+                    else:
+                        st.error("Incorrect password.")
+
+        # ── Reset Session ─────────────────────────────────────────────────────
         st.markdown(" ")
         if st.button("🔄 Reset Session", use_container_width=True):
-            _put(_empty_state())
+            st.session_state.show_reset_pw = True
+            st.session_state.show_gen_pw   = False
             st.rerun()
+
+        if st.session_state.show_reset_pw:
+            st.caption("Enter password to reset session")
+            rp_col, rgo_col = st.columns([5, 2])
+            with rp_col:
+                reset_pw = st.text_input(
+                    "reset_pw", type="password", placeholder="Password…",
+                    label_visibility="collapsed", key="reset_pw_field",
+                )
+            with rgo_col:
+                if st.button("Confirm", key="btn_reset_confirm",
+                             type="primary", use_container_width=True):
+                    if reset_pw == "kaushik28":
+                        st.session_state.show_reset_pw = False
+                        _put(_empty_state())
+                        st.rerun()
+                    else:
+                        st.error("Incorrect password.")
 
         # ── Schedule preview ──────────────────────────────────────────────────
         state = _get()
@@ -608,10 +727,10 @@ def show_setup() -> None:
             st.subheader(f"📋 Schedule  ·  {len(schedule)} games")
 
             st.download_button(
-                "⬇️ Download Schedule (CSV)",
-                data=_build_csv(schedule),
-                file_name="game_schedule.csv",
-                mime="text/csv",
+                "⬇️ Download Schedule (Word)",
+                data=_build_docx(schedule),
+                file_name="game_schedule.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 use_container_width=True,
             )
 
@@ -646,18 +765,75 @@ def _render_table(games: List[dict], scores: dict) -> None:
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
 
-def _build_csv(schedule: List[dict]) -> str:
-    buf = StringIO()
-    w = csv.writer(buf)
-    w.writerow(["Game", "Court", "Time", "A-P1", "A-P2", "B-P1", "B-P2", "Resting"])
-    for game_num, g in enumerate(schedule, start=1):
-        ta, tb = g["team_a"], g["team_b"]
-        w.writerow([
-            game_num, g["court"], g["time_slot"],
-            ta[0] if ta else "",       ta[1] if len(ta) > 1 else "",
-            tb[0] if tb else "",       tb[1] if len(tb) > 1 else "",
-            ", ".join(g.get("sitting_out", [])),
-        ])
+def _build_docx(schedule: List[dict]) -> bytes:
+    from docx import Document
+    from docx.shared import Cm, Pt
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    import io
+
+    doc = Document()
+
+    # Narrow margins
+    sec = doc.sections[0]
+    sec.top_margin    = Cm(1.5)
+    sec.bottom_margin = Cm(1.5)
+    sec.left_margin   = Cm(2.0)
+    sec.right_margin  = Cm(2.0)
+
+    title = doc.add_heading("Game Schedule", level=1)
+    title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    # 4-column table: Game | Court | Team A | Team B
+    table = doc.add_table(rows=1, cols=4)
+    table.style = "Table Grid"
+
+    # Header row
+    for cell, text in zip(table.rows[0].cells, ["Game", "Court", "Team A", "Team B"]):
+        cell.text = text
+        run = cell.paragraphs[0].runs[0]
+        run.bold = True
+        run.font.size = Pt(10)
+        cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    # One game = 2 rows (one per player slot), Game & Court cells merged vertically
+    for game_num, game in enumerate(schedule, start=1):
+        ta = game.get("team_a", [])
+        tb = game.get("team_b", [])
+
+        r1 = table.add_row().cells
+        r1[0].text = f"Game {game_num}"
+        r1[1].text = f"Court {game['court']}"
+        r1[2].text = ta[0] if ta else ""
+        r1[3].text = tb[0] if tb else ""
+
+        r2 = table.add_row().cells
+        r2[2].text = ta[1] if len(ta) > 1 else ""
+        r2[3].text = tb[1] if len(tb) > 1 else ""
+
+        # Merge Game and Court cells across the 2 rows
+        r1[0].merge(r2[0])
+        r1[1].merge(r2[1])
+
+        # Centre-align merged cells
+        for cell in (r1[0], r1[1]):
+            cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+        # Font size for data rows
+        for row in (r1, r2):
+            for cell in row:
+                for para in cell.paragraphs:
+                    for run in para.runs:
+                        run.font.size = Pt(10)
+
+    # Column widths
+    col_widths = [Cm(2.5), Cm(2.5), Cm(5.5), Cm(5.5)]
+    for row in table.rows:
+        for cell, w in zip(row.cells, col_widths):
+            cell.width = w
+
+    buf = io.BytesIO()
+    doc.save(buf)
+    buf.seek(0)
     return buf.getvalue()
 
 
