@@ -1231,8 +1231,8 @@ def show_leaderboard() -> None:
 def show_welcome() -> None:
     st.markdown(
         '<div class="page-header" style="text-align:center;">'
-        '<h1>🏸 Sports Leaderboard</h1>'
-        '<p>Home tournament · doubles</p>'
+        '<h1>🎾 Sports Leaderboard</h1>'
+        '<p>AI Powered Tournament Scheduling : Doubles</p>'
         '</div>',
         unsafe_allow_html=True,
     )
@@ -1266,6 +1266,15 @@ def show_welcome() -> None:
 
     # ── Admin section ─────────────────────────────────────────────────────────
     st.markdown('<div style="height:3rem"></div>', unsafe_allow_html=True)
+
+    st.markdown(
+        '<div style="text-align:center;margin-top:2rem;padding:0.75rem 1rem;'
+        'border-radius:8px;background:#1A1F2E;color:#666;font-size:0.72rem;line-height:1.6">'
+        'All tournament data — player names, schedules, and scores — is stored only for '
+        'the duration of this tournament and will be cleared once the session is reset.'
+        '</div>',
+        unsafe_allow_html=True,
+    )
 
     _, admin_col = st.columns([9, 1])
     with admin_col:
