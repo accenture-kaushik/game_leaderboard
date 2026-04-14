@@ -196,22 +196,24 @@ st.markdown(
 
     /* ── Team cards (court page) ─────────────────────────── */
     .team-card-a {
-        background: #E3F2FD;
-        border-left: 4px solid #1565C0;
+        background: #0D2137;
+        border-left: 4px solid #29B6F6;
         padding: 0.55rem 0.75rem;
         border-radius: 8px;
         margin-bottom: 0.4rem;
         font-size: 0.95rem;
         line-height: 1.5;
+        color: #E8EAF0;
     }
     .team-card-b {
-        background: #FCE4EC;
-        border-left: 4px solid #C62828;
+        background: #2A0D12;
+        border-left: 4px solid #EF5350;
         padding: 0.55rem 0.75rem;
         border-radius: 8px;
         margin-bottom: 0.6rem;
         font-size: 0.95rem;
         line-height: 1.5;
+        color: #E8EAF0;
     }
 
     /* ── Buttons ─────────────────────────────────────────── */
@@ -249,7 +251,7 @@ st.markdown(
 
     /* ── Metrics ─────────────────────────────────────────── */
     [data-testid="stMetric"] {
-        background: #F0F7FF;
+        background: #1A1F2E;
         border-radius: 10px;
         padding: 0.5rem 0.4rem;
         text-align: center;
@@ -464,7 +466,7 @@ def show_setup() -> None:
                 )
             with c_skill:
                 st.selectbox(
-                    "Level", options=["beginner", "intermediate"],
+                    "Level", options=["intermediate", "beginner"],
                     key=f"skill_{i}", label_visibility="collapsed",
                 )
 
@@ -498,7 +500,7 @@ def show_setup() -> None:
                 for i in range(st.session_state.num_players)
             ]
             raw_skills = [
-                st.session_state.get(f"skill_{i}", "beginner")
+                st.session_state.get(f"skill_{i}", "intermediate")
                 for i in range(st.session_state.num_players)
             ]
 
@@ -775,8 +777,8 @@ def show_leaderboard() -> None:
 
     # ── Podium ───────────────────────────────────────────────────────────────
     podium = min(len(lb), 3)
-    _medal_bg     = ["#FFF8E1", "#F5F5F5", "#FBE9E7"]
-    _medal_border = ["#F9A825", "#757575", "#BF360C"]
+    _medal_bg     = ["#1E1A0A", "#161616", "#1A0E0A"]
+    _medal_border = ["#F9A825", "#9E9E9E", "#EF5350"]
     _medals       = ["🥇", "🥈", "🥉"]
     cols = st.columns(podium)
     for col, medal, p, bg, border in zip(cols, _medals, lb[:podium], _medal_bg, _medal_border):
@@ -785,7 +787,7 @@ def show_leaderboard() -> None:
                 f'<div style="background:{bg};border-top:4px solid {border};'
                 f'border-radius:12px;padding:0.75rem 0.4rem;text-align:center;">'
                 f'<div style="font-size:1.8rem;line-height:1">{medal}</div>'
-                f'<div style="font-weight:700;font-size:0.88rem;margin-top:0.35rem;'
+                f'<div style="font-weight:700;font-size:0.88rem;margin-top:0.35rem;color:#E8EAF0;'
                 f'white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{p["name"]}</div>'
                 f'<div style="font-size:1.25rem;font-weight:800;color:{border}">'
                 f'{p["points_gained"]}</div>'
