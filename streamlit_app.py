@@ -1171,12 +1171,13 @@ def show_leaderboard() -> None:
     _medal_border = ["#F9A825", "#9E9E9E", "#EF5350"]
     _medals       = ["🥇", "🥈", "🥉"]
 
-    quips = random.sample(_ALL_QUIPS, 3)
+    raw_quips = random.sample(_ALL_QUIPS, 3)
 
     cols = st.columns(podium)
-    for col, medal, p, bg, border, quip in zip(
-        cols, _medals, lb[:podium], _medal_bg, _medal_border, quips
+    for col, medal, p, bg, border, raw_quip in zip(
+        cols, _medals, lb[:podium], _medal_bg, _medal_border, raw_quips
     ):
+        quip = raw_quip.format(name=p["name"])
         with col:
             st.markdown(
                 f'<div style="background:{bg};border-top:4px solid {border};'
