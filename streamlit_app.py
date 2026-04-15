@@ -21,7 +21,10 @@ import random
 
 import requests
 
-from quips import QUIPS as _ALL_QUIPS
+import importlib
+import quips as _quips_module
+importlib.reload(_quips_module)
+_ALL_QUIPS = _quips_module.QUIPS
 
 import pandas as pd
 import streamlit as st
