@@ -71,6 +71,13 @@ def _gemini_key() -> str:
     return ""
 
 
+def _admin_password() -> str:
+    try:
+        return st.secrets["app"]["admin_password"]
+    except Exception:
+        return _cfg().get("app", {}).get("admin_password", "kaushik28")
+
+
 
 
 def _data_dir() -> Path:
@@ -706,7 +713,7 @@ def show_setup() -> None:
             with go_col:
                 if st.button("Unlock", key="btn_skill_unlock",
                              type="primary", use_container_width=True):
-                    if pw_val == "kaushik28":
+                    if pw_val == _admin_password():
                         st.session_state.skill_visible = True
                         st.session_state.show_skill_pw = False
                         if "skill_pw_field" in st.session_state:
@@ -755,7 +762,7 @@ def show_setup() -> None:
             with go_col:
                 if st.button("Confirm", key="btn_gen_confirm",
                              type="primary", use_container_width=True):
-                    if gen_pw == "kaushik28":
+                    if gen_pw == _admin_password():
                         st.session_state.show_gen_pw = False
                         # ── Collect names & skills ──────────────────────────
                         raw_names = [
@@ -854,7 +861,7 @@ def show_setup() -> None:
             with rgo_col:
                 if st.button("Confirm", key="btn_reset_confirm",
                              type="primary", use_container_width=True):
-                    if reset_pw == "kaushik28":
+                    if reset_pw == _admin_password():
                         st.session_state.show_reset_pw = False
                         # Clear all per-game widget state (scores, winner selections)
                         for k in list(st.session_state.keys()):
@@ -1321,7 +1328,7 @@ def show_welcome() -> None:
         with ago_col:
             if st.button("Unlock", key="btn_admin_unlock",
                          type="primary", use_container_width=True):
-                if admin_pw == "kaushik28":
+                if admin_pw == _admin_password():
                     st.session_state.show_admin_panel = True
                     st.session_state.show_admin_pw    = False
                     if "admin_pw_field" in st.session_state:
