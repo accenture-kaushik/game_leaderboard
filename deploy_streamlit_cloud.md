@@ -49,7 +49,7 @@ In the **Advanced settings → Secrets** box, paste exactly this
 
 ```toml
 [gemini]
-api_key           = "AIzaSyAG94lfTPMdN1Z45pgOXymjUEAdo9KbIi8"
+api_key           = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 model_name        = "gemini-2.0-flash"
 temperature       = 0.7
 top_p             = 0.95
