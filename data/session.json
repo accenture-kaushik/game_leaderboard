@@ -713,9 +713,9 @@
       "submitted": false
     },
     "r11_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 11,
+      "score_b": 0,
+      "submitted": true
     },
     "r12_c2": {
       "score_a": null,
