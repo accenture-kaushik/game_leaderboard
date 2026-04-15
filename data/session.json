@@ -34,12 +34,12 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "Player 4",
-        "Player 7"
+        "Player 9",
+        "Player 8"
       ],
       "team_b": [
-        "Player 10",
-        "Player 9"
+        "Player 6",
+        "Player 4"
       ],
       "sitting_out": [
         "Player 1",
@@ -52,12 +52,12 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Player 5",
-        "Player 6"
+        "Player 7",
+        "Player 5"
       ],
       "team_b": [
-        "Player 8",
-        "Player 3"
+        "Player 3",
+        "Player 10"
       ],
       "sitting_out": [
         "Player 1",
@@ -70,12 +70,12 @@
       "round": 2,
       "court": 1,
       "team_a": [
-        "Player 7",
+        "Player 1",
         "Player 6"
       ],
       "team_b": [
-        "Player 1",
-        "Player 5"
+        "Player 7",
+        "Player 2"
       ],
       "sitting_out": [
         "Player 3",
@@ -88,12 +88,12 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Player 8",
-        "Player 2"
+        "Player 5",
+        "Player 9"
       ],
       "team_b": [
-        "Player 10",
-        "Player 9"
+        "Player 8",
+        "Player 10"
       ],
       "sitting_out": [
         "Player 3",
@@ -106,11 +106,11 @@
       "round": 3,
       "court": 1,
       "team_a": [
-        "Player 3",
-        "Player 9"
+        "Player 4",
+        "Player 1"
       ],
       "team_b": [
-        "Player 7",
+        "Player 10",
         "Player 2"
       ],
       "sitting_out": [
@@ -124,12 +124,12 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Player 1",
+        "Player 3",
         "Player 8"
       ],
       "team_b": [
-        "Player 4",
-        "Player 10"
+        "Player 7",
+        "Player 9"
       ],
       "sitting_out": [
         "Player 5",
@@ -142,12 +142,12 @@
       "round": 4,
       "court": 1,
       "team_a": [
-        "Player 10",
-        "Player 5"
+        "Player 5",
+        "Player 4"
       ],
       "team_b": [
-        "Player 9",
-        "Player 4"
+        "Player 1",
+        "Player 9"
       ],
       "sitting_out": [
         "Player 7",
@@ -160,12 +160,12 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Player 2",
-        "Player 6"
+        "Player 3",
+        "Player 2"
       ],
       "team_b": [
-        "Player 3",
-        "Player 1"
+        "Player 10",
+        "Player 6"
       ],
       "sitting_out": [
         "Player 7",
@@ -178,12 +178,12 @@
       "round": 5,
       "court": 1,
       "team_a": [
-        "Player 5",
+        "Player 4",
         "Player 7"
       ],
       "team_b": [
-        "Player 6",
-        "Player 3"
+        "Player 5",
+        "Player 6"
       ],
       "sitting_out": [
         "Player 9",
@@ -197,11 +197,11 @@
       "court": 2,
       "team_a": [
         "Player 2",
-        "Player 4"
+        "Player 8"
       ],
       "team_b": [
-        "Player 1",
-        "Player 8"
+        "Player 3",
+        "Player 1"
       ],
       "sitting_out": [
         "Player 9",
@@ -215,11 +215,11 @@
       "court": 1,
       "team_a": [
         "Player 7",
-        "Player 8"
+        "Player 10"
       ],
       "team_b": [
         "Player 5",
-        "Player 9"
+        "Player 8"
       ],
       "sitting_out": [
         "Player 1",
@@ -232,12 +232,12 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Player 6",
-        "Player 4"
+        "Player 9",
+        "Player 6"
       ],
       "team_b": [
         "Player 3",
-        "Player 10"
+        "Player 4"
       ],
       "sitting_out": [
         "Player 1",
@@ -250,12 +250,12 @@
       "round": 7,
       "court": 1,
       "team_a": [
-        "Player 10",
+        "Player 8",
         "Player 7"
       ],
       "team_b": [
         "Player 5",
-        "Player 2"
+        "Player 10"
       ],
       "sitting_out": [
         "Player 3",
@@ -268,11 +268,11 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Player 6",
-        "Player 8"
+        "Player 9",
+        "Player 2"
       ],
       "team_b": [
-        "Player 9",
+        "Player 6",
         "Player 1"
       ],
       "sitting_out": [
@@ -286,11 +286,11 @@
       "round": 8,
       "court": 1,
       "team_a": [
-        "Player 10",
-        "Player 1"
+        "Player 3",
+        "Player 9"
       ],
       "team_b": [
-        "Player 4",
+        "Player 1",
         "Player 8"
       ],
       "sitting_out": [
@@ -304,12 +304,12 @@
       "round": 8,
       "court": 2,
       "team_a": [
-        "Player 7",
-        "Player 9"
+        "Player 2",
+        "Player 4"
       ],
       "team_b": [
-        "Player 2",
-        "Player 3"
+        "Player 10",
+        "Player 7"
       ],
       "sitting_out": [
         "Player 5",
@@ -322,12 +322,12 @@
       "round": 9,
       "court": 1,
       "team_a": [
-        "Player 3",
-        "Player 4"
+        "Player 4",
+        "Player 9"
       ],
       "team_b": [
-        "Player 6",
-        "Player 1"
+        "Player 2",
+        "Player 5"
       ],
       "sitting_out": [
         "Player 7",
@@ -341,11 +341,11 @@
       "court": 2,
       "team_a": [
         "Player 10",
-        "Player 2"
+        "Player 1"
       ],
       "team_b": [
-        "Player 5",
-        "Player 9"
+        "Player 3",
+        "Player 6"
       ],
       "sitting_out": [
         "Player 7",
@@ -362,8 +362,8 @@
         "Player 1"
       ],
       "team_b": [
-        "Player 8",
-        "Player 5"
+        "Player 7",
+        "Player 3"
       ],
       "sitting_out": [
         "Player 9",
@@ -377,10 +377,10 @@
       "court": 2,
       "team_a": [
         "Player 4",
-        "Player 3"
+        "Player 8"
       ],
       "team_b": [
-        "Player 7",
+        "Player 5",
         "Player 6"
       ],
       "sitting_out": [
@@ -393,9 +393,9 @@
   ],
   "scores": {
     "r1_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 11,
+      "score_b": 0,
+      "submitted": true
     },
     "r1_c2": {
       "score_a": null,
@@ -413,9 +413,9 @@
       "submitted": false
     },
     "r3_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 0,
+      "score_b": 11,
+      "submitted": true
     },
     "r3_c2": {
       "score_a": null,
@@ -433,9 +433,9 @@
       "submitted": false
     },
     "r5_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 0,
+      "score_b": 11,
+      "submitted": true
     },
     "r5_c2": {
       "score_a": null,
