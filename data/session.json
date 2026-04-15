@@ -488,9 +488,9 @@
       "submitted": false
     },
     "r10_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 0,
+      "score_b": 11,
+      "submitted": true
     }
   },
   "session_active": true
