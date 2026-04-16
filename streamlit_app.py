@@ -890,6 +890,9 @@ def show_setup() -> None:
                         st.session_state.games_per_hour = 5
                         st.session_state.player_names        = [f"Player {i + 1}" for i in range(10)]
                         st.session_state.special_instructions = ""
+                        # Delete pname_X keys so text_input widgets re-render with defaults
+                        for _i in range(20):
+                            st.session_state.pop(f"pname_{_i}", None)
                         with st.spinner("Resetting…"):
                             _put(_empty_state())
                         st.info("Tournament reset. Please refresh your browser to start fresh.")
