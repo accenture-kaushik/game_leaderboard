@@ -129,9 +129,10 @@ class GamePlannerAgent:
         skill_levels: Dict[str, str],
         num_rounds: int = 12,
         num_courts: int = 2,
+        special_instructions: str = "",
     ) -> List[Dict]:
         logger.info("GamePlannerAgent: analysis phase")
-        self._run_analysis_loop(players, skill_levels)
+        self._run_analysis_loop(players, skill_levels, special_instructions)
 
         logger.info("GamePlannerAgent: building schedule")
         return self._build_schedule(players, skill_levels, num_rounds, num_courts)
@@ -140,11 +141,22 @@ class GamePlannerAgent:
     # ReAct analysis loop
     # =========================================================================
 
-    def _run_analysis_loop(self, players: List[str], skill_levels: Dict[str, str]) -> None:
+    def _run_analysis_loop(
+        self,
+        players: List[str],
+        skill_levels: Dict[str, str],
+        special_instructions: str = "",
+    ) -> None:
+        instructions_block = (
+            f"\nSpecial instructions from the organiser (must be respected):\n{special_instructions.strip()}\n"
+            if special_instructions and special_instructions.strip()
+            else ""
+        )
         prompt = (
             f"Plan a fair doubles game schedule.\n"
             f"Players: {players}\n"
-            f"Skill levels: {json.dumps(skill_levels)}\n\n"
+            f"Skill levels: {json.dumps(skill_levels)}\n"
+            f"{instructions_block}\n"
             "Analyse skill distribution, then describe the team strategy."
         )
         history = [prompt]

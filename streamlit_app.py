@@ -452,6 +452,7 @@ def _init_ui():
         "verified_phone": "",
         "show_admin_pw": False,
         "show_admin_panel": False,
+        "special_instructions": "",
         "phone_add_counter": 0,
     }
     for k, v in defaults.items():
@@ -543,6 +544,8 @@ def show_setup() -> None:
         if _s.get("players"):
             st.session_state.num_players  = len(_s["players"])
             st.session_state.player_names = list(_s["players"])
+        if "special_instructions" in _s:
+            st.session_state.special_instructions = _s["special_instructions"]
 
     st.markdown(
         '<div class="page-header">'
@@ -654,6 +657,18 @@ def show_setup() -> None:
                     key=f"pname_{i}", placeholder=f"Player {i + 1}",
                     label_visibility="collapsed",
                 )
+
+        # ── Special instructions ──────────────────────────────────────────────
+        st.markdown('<div class="section-label">Special instructions for schedule generation</div>', unsafe_allow_html=True)
+        special_instructions = st.text_area(
+            "special_instructions",
+            value=st.session_state.get("special_instructions", ""),
+            placeholder="e.g. Player 3 and Player 7 should not be on the same team. Keep beginners with at least one intermediate player.",
+            height=90,
+            label_visibility="collapsed",
+        )
+        if special_instructions != st.session_state.get("special_instructions", ""):
+            st.session_state.special_instructions = special_instructions
 
         # ── Discreet lock toggle (below player list) ──────────────────────────
         st.markdown(
@@ -794,6 +809,7 @@ def show_setup() -> None:
                                     raw_schedule = GamePlannerAgent().generate_schedule(
                                         players, skill_levels,
                                         num_rounds=num_games, num_courts=num_courts,
+                                        special_instructions=st.session_state.get("special_instructions", ""),
                                     )
                                     method = "AI agent (Gemini Flash)"
                                 else:
@@ -835,6 +851,7 @@ def show_setup() -> None:
                                 g["game_id"]: {"score_a": None, "score_b": None, "submitted": False}
                                 for g in schedule
                             },
+                            "special_instructions": st.session_state.get("special_instructions", ""),
                             "session_active": True,
                         }
                         _put(new_state)
@@ -871,7 +888,8 @@ def show_setup() -> None:
                         st.session_state.num_players   = 10
                         st.session_state.num_courts    = 2
                         st.session_state.games_per_hour = 5
-                        st.session_state.player_names  = [f"Player {i + 1}" for i in range(10)]
+                        st.session_state.player_names        = [f"Player {i + 1}" for i in range(10)]
+                        st.session_state.special_instructions = ""
                         with st.spinner("Resetting…"):
                             _put(_empty_state())
                         st.info("Tournament reset. Please refresh your browser to start fresh.")
