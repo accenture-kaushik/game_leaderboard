@@ -1,31 +1,31 @@
 {
   "players": [
-    "Player 10",
-    "Player 20",
-    "Player 30",
-    "Player 40",
-    "Player 50",
-    "Player 60",
-    "Player 70",
-    "Player 80",
-    "Player 90",
-    "Player 100",
-    "Player 110",
-    "Player 120"
+    "Male 1",
+    "Male 2",
+    "Male 3",
+    "Male 4",
+    "Girl 1",
+    "Girl 2",
+    "Girl 3",
+    "Male 5",
+    "Male 6",
+    "Male 7",
+    "Girl 4",
+    "Male 8"
   ],
   "skill_levels": {
-    "Player 10": "intermediate",
-    "Player 20": "intermediate",
-    "Player 30": "intermediate",
-    "Player 40": "intermediate",
-    "Player 50": "intermediate",
-    "Player 60": "intermediate",
-    "Player 70": "intermediate",
-    "Player 80": "intermediate",
-    "Player 90": "intermediate",
-    "Player 100": "intermediate",
-    "Player 110": "intermediate",
-    "Player 120": "intermediate"
+    "Male 1": "intermediate",
+    "Male 2": "intermediate",
+    "Male 3": "intermediate",
+    "Male 4": "intermediate",
+    "Girl 1": "intermediate",
+    "Girl 2": "intermediate",
+    "Girl 3": "intermediate",
+    "Male 5": "intermediate",
+    "Male 6": "intermediate",
+    "Male 7": "intermediate",
+    "Girl 4": "intermediate",
+    "Male 8": "intermediate"
   },
   "num_courts": 3,
   "games_per_hour": 5,
@@ -39,12 +39,12 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "Player 10",
-        "Player 100"
+        "Girl 4",
+        "Male 4"
       ],
       "team_b": [
-        "Player 80",
-        "Player 90"
+        "Male 8",
+        "Girl 1"
       ],
       "sitting_out": [],
       "time_slot": "0\u201310 min",
@@ -54,12 +54,12 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Player 50",
-        "Player 120"
+        "Male 1",
+        "Male 3"
       ],
       "team_b": [
-        "Player 60",
-        "Player 20"
+        "Girl 2",
+        "Male 7"
       ],
       "sitting_out": [],
       "time_slot": "0\u201310 min",
@@ -69,12 +69,12 @@
       "round": 1,
       "court": 3,
       "team_a": [
-        "Player 40",
-        "Player 70"
+        "Male 2",
+        "Male 6"
       ],
       "team_b": [
-        "Player 110",
-        "Player 30"
+        "Male 5",
+        "Girl 3"
       ],
       "sitting_out": [],
       "time_slot": "0\u201310 min",
@@ -84,12 +84,12 @@
       "round": 2,
       "court": 1,
       "team_a": [
-        "Player 90",
-        "Player 100"
+        "Male 2",
+        "Male 4"
       ],
       "team_b": [
-        "Player 110",
-        "Player 50"
+        "Male 7",
+        "Male 6"
       ],
       "sitting_out": [],
       "time_slot": "10\u201320 min",
@@ -99,12 +99,12 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Player 120",
-        "Player 60"
+        "Girl 2",
+        "Male 8"
       ],
       "team_b": [
-        "Player 80",
-        "Player 30"
+        "Girl 1",
+        "Male 5"
       ],
       "sitting_out": [],
       "time_slot": "10\u201320 min",
@@ -114,12 +114,12 @@
       "round": 2,
       "court": 3,
       "team_a": [
-        "Player 20",
-        "Player 40"
+        "Girl 3",
+        "Male 3"
       ],
       "team_b": [
-        "Player 70",
-        "Player 10"
+        "Male 1",
+        "Girl 4"
       ],
       "sitting_out": [],
       "time_slot": "10\u201320 min",
@@ -129,12 +129,12 @@
       "round": 3,
       "court": 1,
       "team_a": [
-        "Player 70",
-        "Player 30"
+        "Male 2",
+        "Girl 2"
       ],
       "team_b": [
-        "Player 10",
-        "Player 110"
+        "Girl 3",
+        "Male 6"
       ],
       "sitting_out": [],
       "time_slot": "20\u201330 min",
@@ -144,12 +144,12 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Player 120",
-        "Player 90"
+        "Male 3",
+        "Male 5"
       ],
       "team_b": [
-        "Player 20",
-        "Player 80"
+        "Girl 4",
+        "Male 8"
       ],
       "sitting_out": [],
       "time_slot": "20\u201330 min",
@@ -159,12 +159,12 @@
       "round": 3,
       "court": 3,
       "team_a": [
-        "Player 50",
-        "Player 40"
+        "Male 4",
+        "Girl 1"
       ],
       "team_b": [
-        "Player 100",
-        "Player 60"
+        "Male 7",
+        "Male 1"
       ],
       "sitting_out": [],
       "time_slot": "20\u201330 min",
@@ -174,12 +174,12 @@
       "round": 4,
       "court": 1,
       "team_a": [
-        "Player 110",
-        "Player 100"
+        "Girl 1",
+        "Girl 3"
       ],
       "team_b": [
-        "Player 10",
-        "Player 90"
+        "Male 5",
+        "Male 6"
       ],
       "sitting_out": [],
       "time_slot": "30\u201340 min",
@@ -189,12 +189,12 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Player 70",
-        "Player 20"
+        "Male 2",
+        "Male 1"
       ],
       "team_b": [
-        "Player 30",
-        "Player 120"
+        "Male 4",
+        "Male 3"
       ],
       "sitting_out": [],
       "time_slot": "30\u201340 min",
@@ -204,12 +204,12 @@
       "round": 4,
       "court": 3,
       "team_a": [
-        "Player 80",
-        "Player 60"
+        "Male 7",
+        "Male 8"
       ],
       "team_b": [
-        "Player 40",
-        "Player 50"
+        "Girl 2",
+        "Girl 4"
       ],
       "sitting_out": [],
       "time_slot": "30\u201340 min",
@@ -219,12 +219,12 @@
       "round": 5,
       "court": 1,
       "team_a": [
-        "Player 110",
-        "Player 120"
+        "Girl 1",
+        "Male 6"
       ],
       "team_b": [
-        "Player 100",
-        "Player 50"
+        "Male 5",
+        "Male 4"
       ],
       "sitting_out": [],
       "time_slot": "40\u201350 min",
@@ -234,12 +234,12 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Player 10",
-        "Player 60"
+        "Girl 4",
+        "Male 3"
       ],
       "team_b": [
-        "Player 40",
-        "Player 90"
+        "Male 8",
+        "Girl 3"
       ],
       "sitting_out": [],
       "time_slot": "40\u201350 min",
@@ -249,12 +249,12 @@
       "round": 5,
       "court": 3,
       "team_a": [
-        "Player 70",
-        "Player 80"
+        "Male 1",
+        "Girl 2"
       ],
       "team_b": [
-        "Player 20",
-        "Player 30"
+        "Male 2",
+        "Male 7"
       ],
       "sitting_out": [],
       "time_slot": "40\u201350 min",
@@ -264,12 +264,12 @@
       "round": 6,
       "court": 1,
       "team_a": [
-        "Player 100",
-        "Player 40"
+        "Girl 3",
+        "Male 4"
       ],
       "team_b": [
-        "Player 60",
-        "Player 30"
+        "Girl 1",
+        "Male 7"
       ],
       "sitting_out": [],
       "time_slot": "50\u201360 min",
@@ -279,12 +279,12 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Player 10",
-        "Player 120"
+        "Male 5",
+        "Girl 4"
       ],
       "team_b": [
-        "Player 80",
-        "Player 50"
+        "Male 1",
+        "Male 6"
       ],
       "sitting_out": [],
       "time_slot": "50\u201360 min",
@@ -294,12 +294,12 @@
       "round": 6,
       "court": 3,
       "team_a": [
-        "Player 90",
-        "Player 70"
+        "Male 2",
+        "Male 3"
       ],
       "team_b": [
-        "Player 110",
-        "Player 20"
+        "Girl 2",
+        "Male 8"
       ],
       "sitting_out": [],
       "time_slot": "50\u201360 min",
@@ -309,12 +309,12 @@
       "round": 7,
       "court": 1,
       "team_a": [
-        "Player 90",
-        "Player 110"
+        "Male 4",
+        "Male 8"
       ],
       "team_b": [
-        "Player 120",
-        "Player 70"
+        "Male 5",
+        "Male 1"
       ],
       "sitting_out": [],
       "time_slot": "60\u201370 min",
@@ -324,12 +324,12 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Player 20",
-        "Player 100"
+        "Girl 4",
+        "Girl 1"
       ],
       "team_b": [
-        "Player 30",
-        "Player 40"
+        "Girl 3",
+        "Girl 2"
       ],
       "sitting_out": [],
       "time_slot": "60\u201370 min",
@@ -339,12 +339,12 @@
       "round": 7,
       "court": 3,
       "team_a": [
-        "Player 60",
-        "Player 50"
+        "Male 6",
+        "Male 3"
       ],
       "team_b": [
-        "Player 10",
-        "Player 80"
+        "Male 2",
+        "Male 7"
       ],
       "sitting_out": [],
       "time_slot": "60\u201370 min",
@@ -354,12 +354,12 @@
       "round": 8,
       "court": 1,
       "team_a": [
-        "Player 20",
-        "Player 50"
+        "Girl 3",
+        "Male 7"
       ],
       "team_b": [
-        "Player 110",
-        "Player 60"
+        "Girl 2",
+        "Male 5"
       ],
       "sitting_out": [],
       "time_slot": "70\u201380 min",
@@ -369,12 +369,12 @@
       "round": 8,
       "court": 2,
       "team_a": [
-        "Player 30",
-        "Player 90"
+        "Male 8",
+        "Male 6"
       ],
       "team_b": [
-        "Player 40",
-        "Player 10"
+        "Male 3",
+        "Girl 1"
       ],
       "sitting_out": [],
       "time_slot": "70\u201380 min",
@@ -384,12 +384,12 @@
       "round": 8,
       "court": 3,
       "team_a": [
-        "Player 70",
-        "Player 100"
+        "Male 2",
+        "Girl 4"
       ],
       "team_b": [
-        "Player 80",
-        "Player 120"
+        "Male 1",
+        "Male 4"
       ],
       "sitting_out": [],
       "time_slot": "70\u201380 min",
@@ -399,12 +399,12 @@
       "round": 9,
       "court": 1,
       "team_a": [
-        "Player 50",
-        "Player 10"
+        "Male 7",
+        "Male 5"
       ],
       "team_b": [
-        "Player 20",
-        "Player 120"
+        "Girl 2",
+        "Male 4"
       ],
       "sitting_out": [],
       "time_slot": "80\u201390 min",
@@ -414,12 +414,12 @@
       "round": 9,
       "court": 2,
       "team_a": [
-        "Player 80",
-        "Player 110"
+        "Girl 3",
+        "Male 1"
       ],
       "team_b": [
-        "Player 60",
-        "Player 70"
+        "Male 8",
+        "Male 2"
       ],
       "sitting_out": [],
       "time_slot": "80\u201390 min",
@@ -429,12 +429,12 @@
       "round": 9,
       "court": 3,
       "team_a": [
-        "Player 100",
-        "Player 30"
+        "Girl 1",
+        "Male 6"
       ],
       "team_b": [
-        "Player 40",
-        "Player 90"
+        "Male 3",
+        "Girl 4"
       ],
       "sitting_out": [],
       "time_slot": "80\u201390 min",
@@ -444,12 +444,12 @@
       "round": 10,
       "court": 1,
       "team_a": [
-        "Player 40",
-        "Player 120"
+        "Male 6",
+        "Girl 2"
       ],
       "team_b": [
-        "Player 80",
-        "Player 100"
+        "Male 7",
+        "Male 3"
       ],
       "sitting_out": [],
       "time_slot": "90\u2013100 min",
@@ -459,12 +459,12 @@
       "round": 10,
       "court": 2,
       "team_a": [
-        "Player 50",
-        "Player 70"
+        "Male 2",
+        "Male 5"
       ],
       "team_b": [
-        "Player 10",
-        "Player 20"
+        "Male 8",
+        "Male 1"
       ],
       "sitting_out": [],
       "time_slot": "90\u2013100 min",
@@ -474,12 +474,12 @@
       "round": 10,
       "court": 3,
       "team_a": [
-        "Player 60",
-        "Player 90"
+        "Male 4",
+        "Girl 3"
       ],
       "team_b": [
-        "Player 110",
-        "Player 30"
+        "Girl 1",
+        "Girl 4"
       ],
       "sitting_out": [],
       "time_slot": "90\u2013100 min",
@@ -489,12 +489,12 @@
       "round": 11,
       "court": 2,
       "team_a": [
-        "Player 110",
-        "Player 70"
+        "Girl 4",
+        "Male 7"
       ],
       "team_b": [
-        "Player 90",
-        "Player 20"
+        "Male 8",
+        "Male 5"
       ],
       "sitting_out": [],
       "time_slot": "100\u2013110 min",
@@ -504,12 +504,12 @@
       "round": 12,
       "court": 2,
       "team_a": [
-        "Player 90",
-        "Player 50"
+        "Male 7",
+        "Male 4"
       ],
       "team_b": [
-        "Player 120",
-        "Player 110"
+        "Girl 1",
+        "Male 1"
       ],
       "sitting_out": [],
       "time_slot": "110\u2013120 min",
@@ -519,12 +519,12 @@
       "round": 13,
       "court": 2,
       "team_a": [
-        "Player 60",
-        "Player 90"
+        "Male 3",
+        "Girl 2"
       ],
       "team_b": [
-        "Player 20",
-        "Player 50"
+        "Male 6",
+        "Girl 4"
       ],
       "sitting_out": [],
       "time_slot": "120\u2013130 min",
@@ -534,12 +534,12 @@
       "round": 14,
       "court": 2,
       "team_a": [
-        "Player 40",
-        "Player 110"
+        "Male 8",
+        "Male 7"
       ],
       "team_b": [
-        "Player 100",
-        "Player 120"
+        "Male 4",
+        "Male 1"
       ],
       "sitting_out": [],
       "time_slot": "130\u2013140 min",
@@ -549,12 +549,12 @@
       "round": 15,
       "court": 2,
       "team_a": [
-        "Player 20",
-        "Player 110"
+        "Girl 3",
+        "Girl 4"
       ],
       "team_b": [
-        "Player 50",
-        "Player 100"
+        "Male 4",
+        "Girl 1"
       ],
       "sitting_out": [],
       "time_slot": "140\u2013150 min",
@@ -563,9 +563,9 @@
   ],
   "scores": {
     "r1_c1": {
-      "score_a": 11,
-      "score_b": 0,
-      "submitted": true
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
     },
     "r1_c2": {
       "score_a": null,
@@ -708,14 +708,14 @@
       "submitted": false
     },
     "r10_c3": {
-      "score_a": 0,
-      "score_b": 11,
-      "submitted": true
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
     },
     "r11_c2": {
-      "score_a": 11,
-      "score_b": 0,
-      "submitted": true
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
     },
     "r12_c2": {
       "score_a": null,
@@ -738,5 +738,6 @@
       "submitted": false
     }
   },
+  "special_instructions": "Do not form a team which has only females. Mixed doubles is fine. ",
   "session_active": true
 }
