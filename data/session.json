@@ -3,25 +3,21 @@
     "Girl1",
     "Girl2",
     "Girl3",
-    "Girl4",
+    "Boy5",
     "Boy1",
     "Boy2",
     "Boy3",
-    "Boy4",
-    "Boy5",
-    "Boy6"
+    "Boy4"
   ],
   "skill_levels": {
     "Girl1": "intermediate",
     "Girl2": "intermediate",
     "Girl3": "intermediate",
-    "Girl4": "intermediate",
+    "Boy5": "intermediate",
     "Boy1": "intermediate",
     "Boy2": "intermediate",
     "Boy3": "intermediate",
-    "Boy4": "intermediate",
-    "Boy5": "intermediate",
-    "Boy6": "intermediate"
+    "Boy4": "intermediate"
   },
   "num_courts": 2,
   "games_per_hour": 5,
@@ -34,17 +30,14 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "Girl2",
-        "Boy2"
+        "Girl1",
+        "Girl2"
       ],
       "team_b": [
         "Girl3",
-        "Boy3"
+        "Boy5"
       ],
-      "sitting_out": [
-        "Girl1",
-        "Boy1"
-      ],
+      "sitting_out": [],
       "time_slot": "0\u201310 min",
       "game_id": "r1_c1"
     },
@@ -52,17 +45,14 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Girl4",
-        "Boy4"
+        "Boy1",
+        "Boy2"
       ],
       "team_b": [
-        "Boy5",
-        "Boy6"
+        "Boy3",
+        "Boy4"
       ],
-      "sitting_out": [
-        "Girl1",
-        "Boy1"
-      ],
+      "sitting_out": [],
       "time_slot": "0\u201310 min",
       "game_id": "r1_c2"
     },
@@ -71,16 +61,13 @@
       "court": 1,
       "team_a": [
         "Girl1",
-        "Boy1"
+        "Girl3"
       ],
       "team_b": [
-        "Girl3",
+        "Boy1",
         "Boy3"
       ],
-      "sitting_out": [
-        "Girl2",
-        "Boy2"
-      ],
+      "sitting_out": [],
       "time_slot": "10\u201320 min",
       "game_id": "r2_c1"
     },
@@ -88,17 +75,14 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Girl4",
-        "Boy4"
+        "Girl2",
+        "Boy5"
       ],
       "team_b": [
-        "Boy5",
-        "Boy6"
+        "Boy2",
+        "Boy4"
       ],
-      "sitting_out": [
-        "Girl2",
-        "Boy2"
-      ],
+      "sitting_out": [],
       "time_slot": "10\u201320 min",
       "game_id": "r2_c2"
     },
@@ -107,16 +91,13 @@
       "court": 1,
       "team_a": [
         "Girl1",
-        "Boy1"
+        "Boy5"
       ],
       "team_b": [
-        "Girl2",
-        "Boy2"
-      ],
-      "sitting_out": [
-        "Girl3",
+        "Boy2",
         "Boy3"
       ],
+      "sitting_out": [],
       "time_slot": "20\u201330 min",
       "game_id": "r3_c1"
     },
@@ -124,17 +105,14 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Girl4",
-        "Boy4"
+        "Girl2",
+        "Girl3"
       ],
       "team_b": [
-        "Boy5",
-        "Boy6"
+        "Boy1",
+        "Boy4"
       ],
-      "sitting_out": [
-        "Girl3",
-        "Boy3"
-      ],
+      "sitting_out": [],
       "time_slot": "20\u201330 min",
       "game_id": "r3_c2"
     },
@@ -149,10 +127,7 @@
         "Girl2",
         "Boy2"
       ],
-      "sitting_out": [
-        "Girl4",
-        "Boy4"
-      ],
+      "sitting_out": [],
       "time_slot": "30\u201340 min",
       "game_id": "r4_c1"
     },
@@ -165,12 +140,9 @@
       ],
       "team_b": [
         "Boy5",
-        "Boy6"
-      ],
-      "sitting_out": [
-        "Girl4",
         "Boy4"
       ],
+      "sitting_out": [],
       "time_slot": "30\u201340 min",
       "game_id": "r4_c2"
     },
@@ -179,16 +151,13 @@
       "court": 1,
       "team_a": [
         "Girl1",
-        "Boy1"
-      ],
-      "team_b": [
-        "Girl2",
         "Boy2"
       ],
-      "sitting_out": [
-        "Boy5",
-        "Boy6"
+      "team_b": [
+        "Girl3",
+        "Boy4"
       ],
+      "sitting_out": [],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c1"
     },
@@ -196,17 +165,14 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Girl3",
+        "Girl2",
         "Boy3"
       ],
       "team_b": [
-        "Girl4",
-        "Boy4"
-      ],
-      "sitting_out": [
         "Boy5",
-        "Boy6"
+        "Boy1"
       ],
+      "sitting_out": [],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c2"
     },
@@ -214,17 +180,14 @@
       "round": 6,
       "court": 1,
       "team_a": [
-        "Girl2",
-        "Boy1"
-      ],
-      "team_b": [
-        "Girl3",
+        "Girl1",
         "Boy3"
       ],
-      "sitting_out": [
-        "Girl1",
+      "team_b": [
+        "Boy5",
         "Boy2"
       ],
+      "sitting_out": [],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c1"
     },
@@ -232,17 +195,14 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Girl4",
-        "Boy5"
+        "Girl2",
+        "Boy4"
       ],
       "team_b": [
-        "Boy4",
-        "Boy6"
+        "Girl3",
+        "Boy1"
       ],
-      "sitting_out": [
-        "Girl1",
-        "Boy2"
-      ],
+      "sitting_out": [],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c2"
     },
@@ -251,16 +211,13 @@
       "court": 1,
       "team_a": [
         "Girl1",
-        "Boy2"
-      ],
-      "team_b": [
-        "Girl3",
         "Boy4"
       ],
-      "sitting_out": [
+      "team_b": [
         "Girl2",
-        "Boy3"
+        "Boy5"
       ],
+      "sitting_out": [],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c1"
     },
@@ -268,17 +225,14 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Girl4",
-        "Boy6"
+        "Girl3",
+        "Boy2"
       ],
       "team_b": [
         "Boy1",
-        "Boy5"
-      ],
-      "sitting_out": [
-        "Girl2",
         "Boy3"
       ],
+      "sitting_out": [],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c2"
     },
@@ -287,16 +241,13 @@
       "court": 1,
       "team_a": [
         "Girl1",
-        "Boy3"
+        "Girl2"
       ],
       "team_b": [
-        "Girl2",
-        "Boy5"
-      ],
-      "sitting_out": [
-        "Girl3",
+        "Boy1",
         "Boy4"
       ],
+      "sitting_out": [],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c1"
     },
@@ -304,17 +255,14 @@
       "round": 8,
       "court": 2,
       "team_a": [
-        "Girl4",
-        "Boy1"
+        "Girl3",
+        "Boy5"
       ],
       "team_b": [
         "Boy2",
-        "Boy6"
+        "Boy3"
       ],
-      "sitting_out": [
-        "Girl3",
-        "Boy4"
-      ],
+      "sitting_out": [],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c2"
     },
@@ -323,16 +271,13 @@
       "court": 1,
       "team_a": [
         "Girl1",
-        "Boy4"
+        "Girl3"
       ],
       "team_b": [
-        "Girl2",
-        "Boy6"
+        "Boy5",
+        "Boy1"
       ],
-      "sitting_out": [
-        "Girl4",
-        "Boy5"
-      ],
+      "sitting_out": [],
       "time_slot": "80\u201390 min",
       "game_id": "r9_c1"
     },
@@ -340,17 +285,14 @@
       "round": 9,
       "court": 2,
       "team_a": [
-        "Girl3",
-        "Boy1"
+        "Girl2",
+        "Boy2"
       ],
       "team_b": [
-        "Boy2",
-        "Boy3"
+        "Boy3",
+        "Boy4"
       ],
-      "sitting_out": [
-        "Girl4",
-        "Boy5"
-      ],
+      "sitting_out": [],
       "time_slot": "80\u201390 min",
       "game_id": "r9_c2"
     },
@@ -359,16 +301,13 @@
       "court": 1,
       "team_a": [
         "Girl1",
-        "Boy2"
+        "Boy5"
       ],
       "team_b": [
         "Girl2",
         "Boy3"
       ],
-      "sitting_out": [
-        "Boy1",
-        "Boy6"
-      ],
+      "sitting_out": [],
       "time_slot": "90\u2013100 min",
       "game_id": "r10_c1"
     },
@@ -380,13 +319,10 @@
         "Boy4"
       ],
       "team_b": [
-        "Girl4",
-        "Boy5"
-      ],
-      "sitting_out": [
         "Boy1",
-        "Boy6"
+        "Boy2"
       ],
+      "sitting_out": [],
       "time_slot": "90\u2013100 min",
       "game_id": "r10_c2"
     }
@@ -493,6 +429,6 @@
       "submitted": false
     }
   },
-  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. There are 4 girls in the player list. The name of the girls in the player list are - Girl1, Girl2, Girl3, Girl4",
+  "special_instructions": "Avoid a team with 3 girls if the opponent team has a boy. There are 4 girls in the player list. The name of the girls in the player list are - Girl1, Girl2, Girl3. ",
   "session_active": true
 }
