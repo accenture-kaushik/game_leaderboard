@@ -33,11 +33,11 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Shreya"
+        "Piyusha"
       ],
       "team_b": [
         "Prashant",
-        "Sandeep"
+        "Ayush"
       ],
       "sitting_out": [
         "Neha"
@@ -49,12 +49,12 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Akshansh",
-        "Ayush"
+        "Sandeep",
+        "Akshansh"
       ],
       "team_b": [
-        "Harpreet",
-        "Piyusha"
+        "Shreya",
+        "Harpreet"
       ],
       "sitting_out": [
         "Neha"
@@ -67,11 +67,11 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Akshansh"
+        "Sandeep"
       ],
       "team_b": [
-        "Prashant",
-        "Ayush"
+        "Neha",
+        "Prashant"
       ],
       "sitting_out": [
         "Harpreet"
@@ -83,12 +83,12 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Sandeep",
-        "Piyusha"
+        "Akshansh",
+        "Ayush"
       ],
       "team_b": [
-        "Shreya",
-        "Neha"
+        "Piyusha",
+        "Shreya"
       ],
       "sitting_out": [
         "Harpreet"
@@ -101,11 +101,11 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Harpreet"
+        "Shreya"
       ],
       "team_b": [
-        "Neha",
-        "Sandeep"
+        "Sandeep",
+        "Piyusha"
       ],
       "sitting_out": [
         "Ayush"
@@ -117,12 +117,12 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Shreya",
+        "Harpreet",
         "Akshansh"
       ],
       "team_b": [
-        "Prashant",
-        "Piyusha"
+        "Neha",
+        "Prashant"
       ],
       "sitting_out": [
         "Ayush"
@@ -135,11 +135,11 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Sandeep"
+        "Prashant"
       ],
       "team_b": [
-        "Akshansh",
-        "Harpreet"
+        "Shreya",
+        "Ayush"
       ],
       "sitting_out": [
         "Piyusha"
@@ -151,11 +151,11 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Ayush",
-        "Shreya"
+        "Harpreet",
+        "Sandeep"
       ],
       "team_b": [
-        "Prashant",
+        "Akshansh",
         "Neha"
       ],
       "sitting_out": [
@@ -169,11 +169,11 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Neha"
+        "Harpreet"
       ],
       "team_b": [
-        "Akshansh",
-        "Piyusha"
+        "Piyusha",
+        "Prashant"
       ],
       "sitting_out": [
         "Shreya"
@@ -186,11 +186,11 @@
       "court": 2,
       "team_a": [
         "Sandeep",
-        "Harpreet"
+        "Ayush"
       ],
       "team_b": [
-        "Ayush",
-        "Prashant"
+        "Neha",
+        "Akshansh"
       ],
       "sitting_out": [
         "Shreya"
@@ -203,11 +203,11 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Piyusha"
+        "Akshansh"
       ],
       "team_b": [
-        "Neha",
-        "Harpreet"
+        "Prashant",
+        "Shreya"
       ],
       "sitting_out": [
         "Sandeep"
@@ -219,12 +219,12 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Akshansh",
-        "Prashant"
+        "Neha",
+        "Ayush"
       ],
       "team_b": [
-        "Ayush",
-        "Shreya"
+        "Piyusha",
+        "Harpreet"
       ],
       "sitting_out": [
         "Sandeep"
@@ -237,11 +237,11 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Ayush"
+        "Neha"
       ],
       "team_b": [
-        "Shreya",
-        "Harpreet"
+        "Akshansh",
+        "Shreya"
       ],
       "sitting_out": [
         "Prashant"
@@ -253,12 +253,12 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Neha",
-        "Piyusha"
+        "Ayush",
+        "Harpreet"
       ],
       "team_b": [
         "Sandeep",
-        "Akshansh"
+        "Piyusha"
       ],
       "sitting_out": [
         "Prashant"
@@ -270,11 +270,11 @@
       "round": 8,
       "court": 1,
       "team_a": [
-        "Prashant",
-        "Harpreet"
+        "Ayush",
+        "Piyusha"
       ],
       "team_b": [
-        "Akshansh",
+        "Harpreet",
         "Neha"
       ],
       "sitting_out": [
@@ -287,12 +287,12 @@
       "round": 8,
       "court": 2,
       "team_a": [
-        "Sandeep",
-        "Ayush"
+        "Shreya",
+        "Sandeep"
       ],
       "team_b": [
-        "Piyusha",
-        "Shreya"
+        "Prashant",
+        "Akshansh"
       ],
       "sitting_out": [
         "Shivani"
@@ -305,11 +305,11 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Prashant"
+        "Ayush"
       ],
       "team_b": [
-        "Harpreet",
-        "Ayush"
+        "Piyusha",
+        "Neha"
       ],
       "sitting_out": [
         "Akshansh"
@@ -321,12 +321,12 @@
       "round": 9,
       "court": 2,
       "team_a": [
-        "Piyusha",
-        "Shreya"
+        "Harpreet",
+        "Prashant"
       ],
       "team_b": [
         "Sandeep",
-        "Neha"
+        "Shreya"
       ],
       "sitting_out": [
         "Akshansh"
@@ -339,11 +339,11 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Shreya"
+        "Harpreet"
       ],
       "team_b": [
         "Piyusha",
-        "Ayush"
+        "Akshansh"
       ],
       "sitting_out": [
         "Neha"
@@ -355,12 +355,12 @@
       "round": 10,
       "court": 2,
       "team_a": [
-        "Sandeep",
-        "Akshansh"
+        "Prashant",
+        "Sandeep"
       ],
       "team_b": [
-        "Harpreet",
-        "Prashant"
+        "Shreya",
+        "Ayush"
       ],
       "sitting_out": [
         "Neha"
