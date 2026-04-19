@@ -182,7 +182,7 @@
         "Girl3"
       ],
       "team_b": [
-        "Girl2",
+        "Boy1",
         "Boy3"
       ],
       "sitting_out": [
@@ -196,7 +196,7 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Boy1",
+        "Girl2",
         "Girl4"
       ],
       "team_b": [
@@ -215,11 +215,11 @@
       "court": 1,
       "team_a": [
         "Girl2",
-        "Girl4"
+        "Girl3"
       ],
       "team_b": [
         "Boy2",
-        "Boy4"
+        "Boy3"
       ],
       "sitting_out": [
         "Girl1",
@@ -232,11 +232,11 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Girl3",
+        "Girl4",
         "Boy5"
       ],
       "team_b": [
-        "Boy3",
+        "Boy4",
         "Boy6"
       ],
       "sitting_out": [
@@ -269,11 +269,11 @@
       "court": 2,
       "team_a": [
         "Girl3",
-        "Boy6"
+        "Boy5"
       ],
       "team_b": [
         "Boy3",
-        "Boy5"
+        "Boy6"
       ],
       "sitting_out": [
         "Girl2",
@@ -363,7 +363,7 @@
       ],
       "team_b": [
         "Girl2",
-        "Girl4"
+        "Boy3"
       ],
       "sitting_out": [
         "Boy4",
@@ -377,7 +377,7 @@
       "court": 2,
       "team_a": [
         "Boy1",
-        "Boy3"
+        "Girl4"
       ],
       "team_b": [
         "Boy2",
