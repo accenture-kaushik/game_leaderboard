@@ -71,7 +71,7 @@
       "court": 1,
       "team_a": [
         "Girl1",
-        "Boy1"
+        "Boy2"
       ],
       "team_b": [
         "Boy4",
@@ -79,7 +79,7 @@
       ],
       "sitting_out": [
         "Girl2",
-        "Boy2"
+        "Boy1"
       ],
       "time_slot": "10\u201320 min",
       "game_id": "r2_c1"
@@ -97,7 +97,7 @@
       ],
       "sitting_out": [
         "Girl2",
-        "Boy2"
+        "Boy1"
       ],
       "time_slot": "10\u201320 min",
       "game_id": "r2_c2"
@@ -493,6 +493,6 @@
       "submitted": false
     }
   },
-  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. There are 3 girls in the player list. The name of the girls in the player list are - Girl1, Girl2, Girl3. ",
+  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. There are 3 girls in the player list. The name of the girls in the player list are - Girl1, Girl2, Girl3. Boy 1 is coming late, so can you schedule boy1's game after first few rounds. ",
   "session_active": true
 }
