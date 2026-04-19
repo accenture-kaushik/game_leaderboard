@@ -443,7 +443,7 @@ def _init_ui():
         "num_players": 10,
         "num_courts": 2,
         "games_per_hour": 5,
-        "player_names": [f"Player {i + 1}" for i in range(10)],
+        "player_names": [""] * 10,
         "skill_visible": False,
         "show_skill_pw": False,
         "show_gen_pw": False,
@@ -452,7 +452,11 @@ def _init_ui():
         "verified_phone": "",
         "show_admin_pw": False,
         "show_admin_panel": False,
-        "special_instructions": "",
+        "special_instructions": (
+            "Avoid a team with 2 girls if the opponent team has a boy. "
+            "There are {xx} girls in the player list. "
+            "The name of the girls in the player list are - aa, bb, cc"
+        ),
         "phone_add_counter": 0,
     }
     for k, v in defaults.items():
@@ -533,10 +537,11 @@ def _nav(active: str) -> None:
 # ===========================================================================
 
 def show_setup() -> None:
-    # Restore widget values from saved session so a page reload reflects the
-    # actual tournament configuration rather than app defaults.
+    # Restore saved session values only once per browser session (on first load).
+    # Skipping on subsequent reruns prevents the saved state from overwriting
+    # widget changes the user is actively making.
     _s = _get()
-    if _s.get("session_active"):
+    if _s.get("session_active") and not st.session_state.get("_setup_restored"):
         st.session_state.num_courts     = _s.get("num_courts",     st.session_state.get("num_courts", 2))
         st.session_state.games_per_hour = _s.get("games_per_hour", st.session_state.get("games_per_hour", 5))
         for _c, _hrs in _s.get("court_hours", {}).items():
@@ -546,6 +551,7 @@ def show_setup() -> None:
             st.session_state.player_names = list(_s["players"])
         if "special_instructions" in _s:
             st.session_state.special_instructions = _s["special_instructions"]
+        st.session_state._setup_restored = True
 
     st.markdown(
         '<div class="page-header">'
@@ -624,6 +630,25 @@ def show_setup() -> None:
 
         st.markdown('<div class="section-label">Player roster</div>', unsafe_allow_html=True)
 
+        # ── Test Fill (dev only — visible to specific phone number) ───────────
+        if st.session_state.get("verified_phone") == "7261979719":
+            if st.button("🧪 Test Fill", key="btn_test_fill", use_container_width=True):
+                n = st.session_state.num_players
+                girl_names = [f"Girl{i + 1}" for i in range(4)]
+                boy_names  = [f"Boy{i + 1}"  for i in range(max(0, n - 4))]
+                test_names = (girl_names + boy_names)[:n]
+                st.session_state.player_names = test_names + [""] * max(0, n - len(test_names))
+                for i in range(n):
+                    st.session_state[f"pname_{i}"] = st.session_state.player_names[i]
+                    st.session_state[f"skill_{i}"] = "intermediate"
+                actual_girls = [g for g in girl_names if g in test_names]
+                st.session_state.special_instructions = (
+                    f"Avoid a team with 2 girls if the opponent team has a boy. "
+                    f"There are {len(actual_girls)} girls in the player list. "
+                    f"The name of the girls in the player list are - {', '.join(actual_girls)}"
+                )
+                st.rerun()
+
         # ── Player rows ───────────────────────────────────────────────────────
         for i in range(st.session_state.num_players):
             # Ensure skill default is set even when radio is hidden
@@ -633,7 +658,7 @@ def show_setup() -> None:
             default = (
                 st.session_state.player_names[i]
                 if i < len(st.session_state.player_names)
-                else f"Player {i + 1}"
+                else ""
             )
             if st.session_state.skill_visible:
                 c_name, c_skill = st.columns([5, 4])
@@ -779,6 +804,11 @@ def show_setup() -> None:
                              type="primary", use_container_width=True):
                     if gen_pw == _admin_password():
                         st.session_state.show_gen_pw = False
+                        # ── Wipe old schedule/score widget state ─────────────
+                        old_schedule = _get().get("schedule", [])
+                        for _g in old_schedule:
+                            for _prefix in ("sa_", "sb_", "btn_"):
+                                st.session_state.pop(f"{_prefix}{_g['game_id']}", None)
                         # ── Collect names & skills ──────────────────────────
                         raw_names = [
                             (st.session_state.get(f"pname_{i}") or f"Player {i + 1}").strip()
@@ -802,6 +832,17 @@ def show_setup() -> None:
                             skill_levels[nm] = sk
                         st.session_state.player_names = players
 
+                        # ── Detect refine vs fresh ──────────────────────────
+                        _saved         = _get()
+                        _saved_players = _saved.get("players", [])
+                        _saved_courts  = _saved.get("num_courts", 0)
+                        _saved_sched   = _saved.get("schedule", [])
+                        _is_refine = (
+                            bool(_saved_sched)
+                            and sorted(_saved_players) == sorted(players)
+                            and _saved_courts == num_courts
+                        )
+
                         with st.spinner("Generating schedule… 🤖"):
                             try:
                                 if use_agent and has_key:
@@ -810,8 +851,9 @@ def show_setup() -> None:
                                         players, skill_levels,
                                         num_rounds=num_games, num_courts=num_courts,
                                         special_instructions=st.session_state.get("special_instructions", ""),
+                                        previous_schedule=_saved_sched if _is_refine else None,
                                     )
-                                    method = "AI agent (Gemini Flash)"
+                                    method = "AI agent — refine" if _is_refine else "AI agent — fresh"
                                 else:
                                     from services.schedule_service import ScheduleService
                                     raw_schedule = ScheduleService().generate_schedule(
@@ -837,25 +879,26 @@ def show_setup() -> None:
                                     schedule.append(g)
                                     court_seen[c] += 1
 
-                        new_state = {
-                            "players":        players,
-                            "skill_levels":   skill_levels,
-                            "num_courts":     num_courts,
-                            "games_per_hour": games_per_hour,
-                            "court_hours": {
-                                c: float(st.session_state.get(f"court_hours_{c}", 2.0))
-                                for c in range(1, num_courts + 1)
-                            },
-                            "schedule":     schedule,
-                            "scores": {
-                                g["game_id"]: {"score_a": None, "score_b": None, "submitted": False}
-                                for g in schedule
-                            },
-                            "special_instructions": st.session_state.get("special_instructions", ""),
-                            "session_active": True,
-                        }
-                        _put(new_state)
-                        st.success(f"✅ {len(schedule)} games generated via {method}")
+                            _put({
+                                "players":        players,
+                                "skill_levels":   skill_levels,
+                                "num_courts":     num_courts,
+                                "games_per_hour": games_per_hour,
+                                "court_hours": {
+                                    c: float(st.session_state.get(f"court_hours_{c}", 2.0))
+                                    for c in range(1, num_courts + 1)
+                                },
+                                "schedule": schedule,
+                                "scores": {
+                                    g["game_id"]: {"score_a": None, "score_b": None, "submitted": False}
+                                    for g in schedule
+                                },
+                                "special_instructions": st.session_state.get("special_instructions", ""),
+                                "session_active": True,
+                            })
+
+                        label = "refined" if _is_refine else "generated"
+                        st.success(f"✅ {len(schedule)} games {label} via {method}")
                         st.rerun()
                     else:
                         st.error("Incorrect password.")
@@ -911,13 +954,23 @@ def show_setup() -> None:
             st.divider()
             st.subheader(f"📋 Schedule  ·  {len(schedule)} games")
 
-            st.download_button(
-                "⬇️ Download Schedule (Word)",
-                data=_build_docx(schedule),
-                file_name="game_schedule.docx",
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                use_container_width=True,
-            )
+            dl_col1, dl_col2 = st.columns(2)
+            with dl_col1:
+                st.download_button(
+                    "⬇️ Download Schedule (Word)",
+                    data=_build_docx(schedule),
+                    file_name="game_schedule.docx",
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    use_container_width=True,
+                )
+            with dl_col2:
+                st.download_button(
+                    "⬇️ Download Schedule (Excel)",
+                    data=_build_xlsx(schedule),
+                    file_name="game_schedule.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    use_container_width=True,
+                )
 
             num_courts_now = state.get("num_courts", 2)
             sched_tab_labels = [f"🏟 Court {c}" for c in range(1, num_courts_now + 1)] + ["📄 All"]
@@ -1018,6 +1071,57 @@ def _build_docx(schedule: List[dict]) -> bytes:
 
     buf = io.BytesIO()
     doc.save(buf)
+    buf.seek(0)
+    return buf.getvalue()
+
+
+def _build_xlsx(schedule: List[dict]) -> bytes:
+    import io
+    import pandas as pd
+
+    rows = []
+    for game_num, g in enumerate(schedule, start=1):
+        rows.append({
+            "Game":        game_num,
+            "Round":       g.get("round", ""),
+            "Court":       g.get("court", ""),
+            "Team A":      " & ".join(g.get("team_a", [])),
+            "Team B":      " & ".join(g.get("team_b", [])),
+            "Time Slot":   g.get("time_slot", ""),
+            "Sitting Out": ", ".join(g.get("sitting_out", [])),
+        })
+
+    df = pd.DataFrame(rows)
+
+    buf = io.BytesIO()
+    with pd.ExcelWriter(buf, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name="Schedule")
+
+        ws = writer.sheets["Schedule"]
+
+        # Column widths
+        col_widths = {"A": 8, "B": 8, "C": 8, "D": 28, "E": 28, "F": 16, "G": 28}
+        for col, width in col_widths.items():
+            ws.column_dimensions[col].width = width
+
+        # Bold header row
+        from openpyxl.styles import Font, PatternFill, Alignment
+        header_fill = PatternFill("solid", fgColor="1F4E79")
+        for cell in ws[1]:
+            cell.font = Font(bold=True, color="FFFFFF")
+            cell.fill = header_fill
+            cell.alignment = Alignment(horizontal="center")
+
+        # Alternate row shading and centre-align Game/Round/Court/Time columns
+        centre_cols = {1, 2, 3, 6}
+        light = PatternFill("solid", fgColor="EBF3FB")
+        for row_idx, row in enumerate(ws.iter_rows(min_row=2), start=2):
+            fill = light if row_idx % 2 == 0 else PatternFill()
+            for col_idx, cell in enumerate(row, start=1):
+                cell.fill = fill
+                if col_idx in centre_cols:
+                    cell.alignment = Alignment(horizontal="center")
+
     buf.seek(0)
     return buf.getvalue()
 
