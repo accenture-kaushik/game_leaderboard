@@ -76,11 +76,11 @@
       "court": 2,
       "team_a": [
         "Girl2",
-        "Boy5"
+        "Boy3"
       ],
       "team_b": [
-        "Boy1",
-        "Boy3"
+        "Boy5",
+        "Boy1"
       ],
       "sitting_out": [],
       "time_slot": "10\u201320 min",
@@ -90,12 +90,12 @@
       "round": 3,
       "court": 1,
       "team_a": [
-        "Girl2",
-        "Boy1"
+        "Girl1",
+        "Boy3"
       ],
       "team_b": [
-        "Girl3",
-        "Boy5"
+        "Boy1",
+        "Boy2"
       ],
       "sitting_out": [],
       "time_slot": "20\u201330 min",
@@ -105,12 +105,12 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Girl1",
-        "Boy3"
+        "Girl2",
+        "Boy4"
       ],
       "team_b": [
-        "Boy2",
-        "Boy4"
+        "Girl3",
+        "Boy5"
       ],
       "sitting_out": [],
       "time_slot": "20\u201330 min",
@@ -120,12 +120,12 @@
       "round": 4,
       "court": 1,
       "team_a": [
-        "Girl3",
-        "Boy1"
-      ],
-      "team_b": [
         "Girl1",
         "Boy4"
+      ],
+      "team_b": [
+        "Girl2",
+        "Boy5"
       ],
       "sitting_out": [],
       "time_slot": "30\u201340 min",
@@ -135,12 +135,12 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Girl2",
-        "Boy3"
+        "Girl3",
+        "Boy1"
       ],
       "team_b": [
-        "Boy5",
-        "Boy2"
+        "Boy2",
+        "Boy3"
       ],
       "sitting_out": [],
       "time_slot": "30\u201340 min",
@@ -154,8 +154,8 @@
         "Boy5"
       ],
       "team_b": [
-        "Girl2",
-        "Boy4"
+        "Girl3",
+        "Boy2"
       ],
       "sitting_out": [],
       "time_slot": "40\u201350 min",
@@ -165,12 +165,12 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Girl3",
-        "Boy2"
+        "Girl2",
+        "Boy1"
       ],
       "team_b": [
-        "Boy1",
-        "Boy3"
+        "Boy3",
+        "Boy4"
       ],
       "sitting_out": [],
       "time_slot": "40\u201350 min",
@@ -184,8 +184,8 @@
         "Boy1"
       ],
       "team_b": [
-        "Girl3",
-        "Boy3"
+        "Boy2",
+        "Boy4"
       ],
       "sitting_out": [],
       "time_slot": "50\u201360 min",
@@ -196,10 +196,10 @@
       "court": 2,
       "team_a": [
         "Girl2",
-        "Boy2"
+        "Boy3"
       ],
       "team_b": [
-        "Boy4",
+        "Girl3",
         "Boy5"
       ],
       "sitting_out": [],
@@ -210,12 +210,12 @@
       "round": 7,
       "court": 1,
       "team_a": [
-        "Girl2",
-        "Boy1"
-      ],
-      "team_b": [
         "Girl1",
         "Boy2"
+      ],
+      "team_b": [
+        "Girl2",
+        "Boy4"
       ],
       "sitting_out": [],
       "time_slot": "60\u201370 min",
@@ -226,7 +226,7 @@
       "court": 2,
       "team_a": [
         "Girl3",
-        "Boy4"
+        "Boy1"
       ],
       "team_b": [
         "Boy3",
@@ -240,12 +240,12 @@
       "round": 8,
       "court": 1,
       "team_a": [
-        "Girl3",
-        "Boy1"
+        "Girl1",
+        "Boy3"
       ],
       "team_b": [
-        "Girl2",
-        "Boy5"
+        "Girl3",
+        "Boy2"
       ],
       "sitting_out": [],
       "time_slot": "70\u201380 min",
@@ -255,12 +255,12 @@
       "round": 8,
       "court": 2,
       "team_a": [
-        "Girl1",
-        "Boy4"
+        "Girl2",
+        "Boy5"
       ],
       "team_b": [
-        "Boy2",
-        "Boy3"
+        "Boy4",
+        "Boy1"
       ],
       "sitting_out": [],
       "time_slot": "70\u201380 min",
@@ -271,11 +271,11 @@
       "court": 1,
       "team_a": [
         "Girl1",
-        "Boy3"
+        "Boy4"
       ],
       "team_b": [
-        "Girl2",
-        "Boy4"
+        "Boy5",
+        "Boy2"
       ],
       "sitting_out": [],
       "time_slot": "80\u201390 min",
@@ -285,12 +285,12 @@
       "round": 9,
       "court": 2,
       "team_a": [
-        "Girl3",
-        "Boy5"
+        "Girl2",
+        "Boy1"
       ],
       "team_b": [
-        "Boy1",
-        "Boy2"
+        "Girl3",
+        "Boy3"
       ],
       "sitting_out": [],
       "time_slot": "80\u201390 min",
@@ -300,11 +300,11 @@
       "round": 10,
       "court": 1,
       "team_a": [
-        "Girl2",
-        "Boy3"
+        "Girl1",
+        "Boy5"
       ],
       "team_b": [
-        "Girl3",
+        "Girl2",
         "Boy2"
       ],
       "sitting_out": [],
@@ -315,12 +315,12 @@
       "round": 10,
       "court": 2,
       "team_a": [
-        "Girl1",
-        "Boy5"
+        "Girl3",
+        "Boy4"
       ],
       "team_b": [
         "Boy1",
-        "Boy4"
+        "Boy3"
       ],
       "sitting_out": [],
       "time_slot": "90\u2013100 min",
