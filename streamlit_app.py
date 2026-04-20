@@ -954,7 +954,7 @@ def show_setup() -> None:
             st.divider()
             st.subheader(f"📋 Schedule  ·  {len(schedule)} games")
 
-            dl_col1, dl_col2, dl_col3 = st.columns(3)
+            dl_col1, dl_col2 = st.columns(2)
             with dl_col1:
                 st.download_button(
                     "⬇️ Download Schedule (Word)",
@@ -971,6 +971,7 @@ def show_setup() -> None:
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     use_container_width=True,
                 )
+            dl_col3, _ = st.columns(2)
             with dl_col3:
                 st.download_button(
                     "⬇️ Download Schedule (CSV)",
