@@ -1,26 +1,26 @@
 {
   "players": [
-    "Neha",
+    "Sandeep",
     "Kaushik",
     "Harpreet",
     "Shreya",
-    "Sandeep",
+    "Neha",
     "Leenav",
     "AK",
     "Vaishnav"
   ],
   "skill_levels": {
-    "Neha": "intermediate",
+    "Sandeep": "intermediate",
     "Kaushik": "intermediate",
     "Harpreet": "intermediate",
     "Shreya": "intermediate",
-    "Sandeep": "intermediate",
+    "Neha": "intermediate",
     "Leenav": "intermediate",
     "AK": "intermediate",
     "Vaishnav": "intermediate"
   },
   "num_courts": 2,
-  "games_per_hour": 5,
+  "games_per_hour": 4,
   "court_hours": {
     "1": 1.5,
     "2": 1.5
@@ -205,66 +205,6 @@
       "sitting_out": [],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c2"
-    },
-    {
-      "round": 7,
-      "court": 1,
-      "team_a": [
-        "Neha",
-        "Kaushik"
-      ],
-      "team_b": [
-        "Shreya",
-        "Sandeep"
-      ],
-      "sitting_out": [],
-      "time_slot": "60\u201370 min",
-      "game_id": "r7_c1"
-    },
-    {
-      "round": 7,
-      "court": 2,
-      "team_a": [
-        "Harpreet",
-        "AK"
-      ],
-      "team_b": [
-        "Leenav",
-        "Vaishnav"
-      ],
-      "sitting_out": [],
-      "time_slot": "60\u201370 min",
-      "game_id": "r7_c2"
-    },
-    {
-      "round": 8,
-      "court": 1,
-      "team_a": [
-        "Neha",
-        "Harpreet"
-      ],
-      "team_b": [
-        "Shreya",
-        "AK"
-      ],
-      "sitting_out": [],
-      "time_slot": "70\u201380 min",
-      "game_id": "r8_c1"
-    },
-    {
-      "round": 8,
-      "court": 2,
-      "team_a": [
-        "Kaushik",
-        "Leenav"
-      ],
-      "team_b": [
-        "Sandeep",
-        "Vaishnav"
-      ],
-      "sitting_out": [],
-      "time_slot": "70\u201380 min",
-      "game_id": "r8_c2"
     }
   ],
   "scores": {
@@ -324,26 +264,6 @@
       "submitted": false
     },
     "r6_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r7_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r7_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r8_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r8_c2": {
       "score_a": null,
       "score_b": null,
       "submitted": false
