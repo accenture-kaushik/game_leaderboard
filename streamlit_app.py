@@ -979,12 +979,12 @@ def show_setup() -> None:
                 with tab:
                     _render_table([g for g in schedule if g["court"] == c], scores)
             with sched_tabs[-1]:
-                _render_table(schedule, scores)
+                _render_table(schedule, scores, show_court=True)
 
     _nav("setup")
 
 
-def _render_table(games: List[dict], scores: dict) -> None:
+def _render_table(games: List[dict], scores: dict, show_court: bool = False) -> None:
     if not games:
         st.info("No games.")
         return
@@ -992,14 +992,17 @@ def _render_table(games: List[dict], scores: dict) -> None:
     for game_num, g in enumerate(games, start=1):
         sd   = scores.get(g["game_id"], {})
         done = sd.get("submitted", False)
-        rows.append({
-            "": "✅" if done else "⏳",
-            "Game": game_num,
-            "Team A": " & ".join(g["team_a"]),
-            "Team B": " & ".join(g["team_b"]),
-            "Score": f"{sd['score_a']}–{sd['score_b']}" if done else "—",
-            "Rest": ", ".join(g.get("sitting_out", [])),
-        })
+        row = {
+            "":       "✅" if done else "⏳",
+            "Game":   game_num,
+        }
+        if show_court:
+            row["Court"] = f"Court {g.get('court', '')}"
+        row["Team A"] = " & ".join(g["team_a"])
+        row["Team B"] = " & ".join(g["team_b"])
+        row["Score"]  = f"{sd['score_a']}–{sd['score_b']}" if done else "—"
+        row["Rest"]   = ", ".join(g.get("sitting_out", []))
+        rows.append(row)
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
 
