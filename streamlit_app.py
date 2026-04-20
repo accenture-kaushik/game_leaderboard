@@ -282,7 +282,7 @@ st.markdown(
     <style>
     /* ── Layout ─────────────────────────────────────────── */
     .main .block-container {
-        padding: 0 0.75rem 5rem 0.75rem;
+        padding: 1rem 0.75rem 5rem 0.75rem;
         max-width: 520px;
     }
 
@@ -512,7 +512,6 @@ with st.sidebar:
 # ===========================================================================
 
 def _nav(active: str) -> None:
-    st.markdown("---")
     num_courts = _get().get("num_courts", st.session_state.get("num_courts", 2))
     nav = [("setup", "⚙️", "Setup")]
     for c in range(1, num_courts + 1):
@@ -943,13 +942,13 @@ def show_setup() -> None:
                     else:
                         st.error("Incorrect password.")
 
-        # ── Schedule preview ──────────────────────────────────────────────────
+        # ── Schedule preview — always read fresh state so submitted scores show ──
         state = _get()
         if not state.get("schedule"):
             st.info("No schedule yet — click **Generate Schedule** above.")
         else:
             schedule = state["schedule"]
-            scores   = state["scores"]
+            scores   = state.get("scores", {})
 
             st.divider()
             st.subheader(f"📋 Schedule  ·  {len(schedule)} games")
@@ -958,7 +957,7 @@ def show_setup() -> None:
             with dl_col1:
                 st.download_button(
                     "⬇️ Download Schedule (Word)",
-                    data=_build_docx(schedule),
+                    data=_build_docx(schedule, scores),
                     file_name="game_schedule.docx",
                     mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                     use_container_width=True,
@@ -966,7 +965,7 @@ def show_setup() -> None:
             with dl_col2:
                 st.download_button(
                     "⬇️ Download Schedule (Excel)",
-                    data=_build_xlsx(schedule),
+                    data=_build_xlsx(schedule, scores),
                     file_name="game_schedule.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     use_container_width=True,
@@ -981,7 +980,6 @@ def show_setup() -> None:
             with sched_tabs[-1]:
                 _render_table(schedule, scores, show_court=True)
 
-    _nav("setup")
 
 
 def _render_table(games: List[dict], scores: dict, show_court: bool = False) -> None:
@@ -993,28 +991,29 @@ def _render_table(games: List[dict], scores: dict, show_court: bool = False) -> 
         sd   = scores.get(g["game_id"], {})
         done = sd.get("submitted", False)
         row = {
-            "":       "✅" if done else "⏳",
-            "Game":   game_num,
+            "":      "✅" if done else "⏳",
+            "Game":  game_num,
         }
         if show_court:
-            row["Court"] = f"Court {g.get('court', '')}"
-        row["Team A"] = " & ".join(g["team_a"])
-        row["Team B"] = " & ".join(g["team_b"])
-        row["Score"]  = f"{sd['score_a']}–{sd['score_b']}" if done else "—"
-        row["Rest"]   = ", ".join(g.get("sitting_out", []))
+            row["Court"] = g.get("court", "")
+        row["Team A"]    = " & ".join(g["team_a"])
+        row["Score A"]   = str(sd["score_a"]) if done else "—"
+        row["Team B"]    = " & ".join(g["team_b"])
+        row["Score B"]   = str(sd["score_b"]) if done else "—"
+        row["Rest"]      = ", ".join(g.get("sitting_out", []))
         rows.append(row)
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
 
-def _build_docx(schedule: List[dict]) -> bytes:
+def _build_docx(schedule: List[dict], scores: dict = None) -> bytes:
     from docx import Document
     from docx.shared import Cm, Pt
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     import io
 
+    scores = scores or {}
     doc = Document()
 
-    # Narrow margins
     sec = doc.sections[0]
     sec.top_margin    = Cm(1.5)
     sec.bottom_margin = Cm(1.5)
@@ -1024,50 +1023,51 @@ def _build_docx(schedule: List[dict]) -> bytes:
     title = doc.add_heading("Game Schedule", level=1)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-    # 4-column table: Game | Court | Team A | Team B
-    table = doc.add_table(rows=1, cols=4)
+    # 6 columns: Game | Court | Team A | Score A | Team B | Score B
+    headers = ["Game", "Court", "Team A", "Score A", "Team B", "Score B"]
+    table = doc.add_table(rows=1, cols=len(headers))
     table.style = "Table Grid"
 
-    # Header row
-    for cell, text in zip(table.rows[0].cells, ["Game", "Court", "Team A", "Team B"]):
+    for cell, text in zip(table.rows[0].cells, headers):
         cell.text = text
         run = cell.paragraphs[0].runs[0]
         run.bold = True
         run.font.size = Pt(10)
         cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-    # One game = 2 rows (one per player slot), Game & Court cells merged vertically
+    # One game = 2 rows (one per player), Game/Court/ScoreA/ScoreB merged vertically
     for game_num, game in enumerate(schedule, start=1):
-        ta = game.get("team_a", [])
-        tb = game.get("team_b", [])
+        ta   = game.get("team_a", [])
+        tb   = game.get("team_b", [])
+        sd   = scores.get(game.get("game_id", ""), {})
+        done = sd.get("submitted", False)
+        score_a = str(sd["score_a"]) if done else ""
+        score_b = str(sd["score_b"]) if done else ""
 
         r1 = table.add_row().cells
         r1[0].text = f"Game {game_num}"
-        r1[1].text = f"Court {game['court']}"
+        r1[1].text = f"Court {game.get('court', '')}"
         r1[2].text = ta[0] if ta else ""
-        r1[3].text = tb[0] if tb else ""
+        r1[3].text = score_a
+        r1[4].text = tb[0] if tb else ""
+        r1[5].text = score_b
 
         r2 = table.add_row().cells
         r2[2].text = ta[1] if len(ta) > 1 else ""
-        r2[3].text = tb[1] if len(tb) > 1 else ""
+        r2[4].text = tb[1] if len(tb) > 1 else ""
 
-        # Merge Game and Court cells across the 2 rows
-        r1[0].merge(r2[0])
-        r1[1].merge(r2[1])
+        # Merge Game, Court, ScoreA, ScoreB across 2 rows
+        for col_idx in (0, 1, 3, 5):
+            r1[col_idx].merge(r2[col_idx])
+            r1[col_idx].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-        # Centre-align merged cells
-        for cell in (r1[0], r1[1]):
-            cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
-
-        # Font size for data rows
         for row in (r1, r2):
             for cell in row:
                 for para in cell.paragraphs:
                     for run in para.runs:
                         run.font.size = Pt(10)
 
-    # Column widths
-    col_widths = [Cm(2.5), Cm(2.5), Cm(5.5), Cm(5.5)]
+    col_widths = [Cm(2.0), Cm(2.0), Cm(4.5), Cm(1.8), Cm(4.5), Cm(1.8)]
     for row in table.rows:
         for cell, w in zip(row.cells, col_widths):
             cell.width = w
@@ -1078,19 +1078,22 @@ def _build_docx(schedule: List[dict]) -> bytes:
     return buf.getvalue()
 
 
-def _build_xlsx(schedule: List[dict]) -> bytes:
+def _build_xlsx(schedule: List[dict], scores: dict = None) -> bytes:
     import io
     import pandas as pd
 
+    scores = scores or {}
     rows = []
     for game_num, g in enumerate(schedule, start=1):
+        sd   = scores.get(g.get("game_id", ""), {})
+        done = sd.get("submitted", False)
         rows.append({
             "Game":        game_num,
-            "Round":       g.get("round", ""),
             "Court":       g.get("court", ""),
             "Team A":      " & ".join(g.get("team_a", [])),
+            "Score A":     sd["score_a"] if done else "",
             "Team B":      " & ".join(g.get("team_b", [])),
-            "Time Slot":   g.get("time_slot", ""),
+            "Score B":     sd["score_b"] if done else "",
             "Sitting Out": ", ".join(g.get("sitting_out", [])),
         })
 
@@ -1102,12 +1105,11 @@ def _build_xlsx(schedule: List[dict]) -> bytes:
 
         ws = writer.sheets["Schedule"]
 
-        # Column widths
-        col_widths = {"A": 8, "B": 8, "C": 8, "D": 28, "E": 28, "F": 16, "G": 28}
+        # Column widths: A=Game, B=Court, C=TeamA, D=ScoreA, E=TeamB, F=ScoreB, G=SittingOut
+        col_widths = {"A": 8, "B": 8, "C": 26, "D": 10, "E": 26, "F": 10, "G": 28}
         for col, width in col_widths.items():
             ws.column_dimensions[col].width = width
 
-        # Bold header row
         from openpyxl.styles import Font, PatternFill, Alignment
         header_fill = PatternFill("solid", fgColor="1F4E79")
         for cell in ws[1]:
@@ -1115,8 +1117,8 @@ def _build_xlsx(schedule: List[dict]) -> bytes:
             cell.fill = header_fill
             cell.alignment = Alignment(horizontal="center")
 
-        # Alternate row shading and centre-align Game/Round/Court/Time columns
-        centre_cols = {1, 2, 3, 6}
+        # Centre-align: Game(1), Court(2), ScoreA(4), ScoreB(6)
+        centre_cols = {1, 2, 4, 6}
         light = PatternFill("solid", fgColor="EBF3FB")
         for row_idx, row in enumerate(ws.iter_rows(min_row=2), start=2):
             fill = light if row_idx % 2 == 0 else PatternFill()
@@ -1145,7 +1147,6 @@ def show_court(court: int) -> None:
     state = _get()
     if not state.get("schedule"):
         st.warning("No schedule yet — go to **Setup** first.")
-        _nav(f"court{court}")
         return
 
     court_games = [g for g in state["schedule"] if g["court"] == court]
@@ -1153,7 +1154,6 @@ def show_court(court: int) -> None:
 
     if not court_games:
         st.info(f"No games for Court {court}.")
-        _nav(f"court{court}")
         return
 
     done  = sum(1 for g in court_games if scores.get(g["game_id"], {}).get("submitted"))
@@ -1264,7 +1264,6 @@ def show_court(court: int) -> None:
                     st.success(f"🤝 Draw!  {sa} – {sb}")
 
 
-    _nav(f"court{court}")
 
 
 # ===========================================================================
@@ -1287,7 +1286,6 @@ def show_leaderboard() -> None:
 
     if not state.get("schedule"):
         st.info("No schedule yet — go to **Setup** first.")
-        _nav("leaderboard")
         return
 
     from services.leaderboard_service import LeaderboardService
@@ -1300,7 +1298,6 @@ def show_leaderboard() -> None:
 
     if not lb:
         st.info("No scores yet — enter them on the Court pages.")
-        _nav("leaderboard")
         return
 
     # ── Podium ───────────────────────────────────────────────────────────────
@@ -1360,7 +1357,6 @@ def show_leaderboard() -> None:
         height=250,
     )
 
-    _nav("leaderboard")
 
 
 # ===========================================================================
@@ -1531,6 +1527,8 @@ if not st.session_state.phone_verified:
     show_welcome()
 else:
     _page = st.session_state.page
+    _nav(_page)
+    st.markdown("---")
     if _page == "setup":
         show_setup()
     elif _page == "leaderboard":
