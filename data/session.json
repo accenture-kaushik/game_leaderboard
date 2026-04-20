@@ -3,21 +3,21 @@
     "Neha",
     "Harpreet",
     "Shreya",
-    "Sandeep",
+    "Kaushik",
     "Leenav",
     "AK",
     "Vaishnav",
-    "Kaushik"
+    "Sandeep"
   ],
   "skill_levels": {
     "Neha": "intermediate",
     "Harpreet": "intermediate",
     "Shreya": "intermediate",
-    "Sandeep": "intermediate",
+    "Kaushik": "intermediate",
     "Leenav": "intermediate",
     "AK": "intermediate",
     "Vaishnav": "intermediate",
-    "Kaushik": "intermediate"
+    "Sandeep": "intermediate"
   },
   "num_courts": 2,
   "games_per_hour": 4,
@@ -61,7 +61,7 @@
       "court": 1,
       "team_a": [
         "Neha",
-        "Shreya"
+        "Kaushik"
       ],
       "team_b": [
         "Harpreet",
@@ -80,7 +80,7 @@
       ],
       "team_b": [
         "AK",
-        "Kaushik"
+        "Shreya"
       ],
       "sitting_out": [],
       "time_slot": "10\u201320 min",
