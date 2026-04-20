@@ -842,6 +842,7 @@ def show_setup() -> None:
                             and _saved_courts == num_courts
                         )
 
+                        st.caption("⏱ Hang On there! Might take around 5 mins to generate.")
                         with st.spinner("Generating schedule… 🤖"):
                             try:
                                 if use_agent and has_key:
@@ -953,7 +954,7 @@ def show_setup() -> None:
             st.divider()
             st.subheader(f"📋 Schedule  ·  {len(schedule)} games")
 
-            dl_col1, dl_col2 = st.columns(2)
+            dl_col1, dl_col2, dl_col3 = st.columns(3)
             with dl_col1:
                 st.download_button(
                     "⬇️ Download Schedule (Word)",
@@ -968,6 +969,14 @@ def show_setup() -> None:
                     data=_build_xlsx(schedule, scores),
                     file_name="game_schedule.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    use_container_width=True,
+                )
+            with dl_col3:
+                st.download_button(
+                    "⬇️ Download Schedule (CSV)",
+                    data=_build_csv(schedule, scores),
+                    file_name="game_schedule.csv",
+                    mime="text/csv",
                     use_container_width=True,
                 )
 
@@ -1127,6 +1136,31 @@ def _build_xlsx(schedule: List[dict], scores: dict = None) -> bytes:
                 if col_idx in centre_cols:
                     cell.alignment = Alignment(horizontal="center")
 
+    buf.seek(0)
+    return buf.getvalue()
+
+
+def _build_csv(schedule: List[dict], scores: dict = None) -> bytes:
+    import io
+    import pandas as pd
+
+    scores = scores or {}
+    rows = []
+    for game_num, g in enumerate(schedule, start=1):
+        sd   = scores.get(g.get("game_id", ""), {})
+        done = sd.get("submitted", False)
+        rows.append({
+            "Game":        game_num,
+            "Court":       g.get("court", ""),
+            "Team A":      " & ".join(g.get("team_a", [])),
+            "Score A":     sd["score_a"] if done else "",
+            "Team B":      " & ".join(g.get("team_b", [])),
+            "Score B":     sd["score_b"] if done else "",
+            "Sitting Out": ", ".join(g.get("sitting_out", [])),
+        })
+
+    buf = io.BytesIO()
+    pd.DataFrame(rows).to_csv(buf, index=False)
     buf.seek(0)
     return buf.getvalue()
 
