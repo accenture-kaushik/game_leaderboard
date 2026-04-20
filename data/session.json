@@ -247,9 +247,7 @@
         "Shreya",
         "Sandeep"
       ],
-      "sitting_out": [
-        "Kaushik"
-      ],
+      "sitting_out": [],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c1"
     },
@@ -262,11 +260,9 @@
       ],
       "team_b": [
         "Boy2",
-        "Sandeep"
-      ],
-      "sitting_out": [
         "Kaushik"
       ],
+      "sitting_out": [],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c2"
     }
@@ -353,6 +349,6 @@
       "submitted": false
     }
   },
-  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. There are 2 girls in the player list. The name of the girls in the player list are - Neha and Shreya. Also, do not keep games for Kaushik at the last round. ",
+  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. There are 2 girls in the player list. The name of the girls in the player list are - Neha and Shreya. Also, do not keep games for Kaushik at the last round. The current schedule generated shows Sandeep playing on both courts at the same time, Kaushik is rested. Change this as we have 8 players and 8 players will have to play. ",
   "session_active": true
 }
