@@ -214,8 +214,8 @@
       "submitted": true
     },
     "r1_c2": {
-      "score_a": 8,
-      "score_b": 11,
+      "score_a": 11,
+      "score_b": 8,
       "submitted": true
     },
     "r2_c1": {
@@ -249,9 +249,9 @@
       "submitted": true
     },
     "r5_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 8,
+      "score_b": 11,
+      "submitted": true
     },
     "r5_c2": {
       "score_a": 11,
@@ -275,24 +275,24 @@
     "picks": [
       {
         "rank": 1,
-        "name": "Kaushik",
-        "reason": "Kaushik dominated the tournament with an impressive 80% win rate and a massive +20 net score. His offensive prowess secured him the undisputed first place."
+        "name": "Sandeep",
+        "reason": "Sandeep dominated the court with an unmatched 80% win rate and four victories. His stellar +14 net points secure his undisputed first-place finish."
       },
       {
         "rank": 2,
-        "name": "Sandeep",
-        "reason": "Sandeep secured second place with a stellar four wins and a +14 net score. He consistently outplayed opponents to maintain a highly competitive 80% win rate."
+        "name": "Kaushik",
+        "reason": "Kaushik secured second place with an impressive fifty points scored and a solid +14 net. His offensive prowess made him the most lethal attacker among the runner-ups."
       },
       {
         "rank": 3,
         "name": "Shreya",
-        "reason": "Shreya takes third place with three crucial wins and a strong 60% win rate. She scored an impressive 39 points, showing great resilience against tough mixed-gender matchups."
+        "reason": "Shreya claims the final podium spot by securing three hard-fought wins against tough mixed matchups. Conceding only forty-one points highlights her exceptional defensive resilience throughout the tournament."
       }
     ],
     "quips": [
-      "{name}'s paddle is clearly smarter than others.",
-      "We're not saying {name} cheated. We're just saying\u2026 how?",
-      "{name}, stop acting like you didn't practise in your sleep."
+      "Wait {name}, how did you get up here?",
+      "{name}'s game plan was: win. It worked.",
+      "{name} is technically on the podium. Emotionally in orbit."
     ]
   }
 }
