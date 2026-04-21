@@ -1,0 +1,57 @@
+{
+  "results": [
+    {
+      "timestamp": "2026-04-21 08:59:04 UTC",
+      "players": [
+        {
+          "name": "Sandeep",
+          "wins": 4,
+          "losses": 1,
+          "net_points": 14
+        },
+        {
+          "name": "Kaushik",
+          "wins": 3,
+          "losses": 2,
+          "net_points": 14
+        },
+        {
+          "name": "AK",
+          "wins": 3,
+          "losses": 2,
+          "net_points": 5
+        },
+        {
+          "name": "Leenav",
+          "wins": 3,
+          "losses": 2,
+          "net_points": 1
+        },
+        {
+          "name": "Shreya",
+          "wins": 3,
+          "losses": 2,
+          "net_points": -2
+        },
+        {
+          "name": "Harpreet",
+          "wins": 3,
+          "losses": 2,
+          "net_points": -3
+        },
+        {
+          "name": "Neha",
+          "wins": 1,
+          "losses": 4,
+          "net_points": -1
+        },
+        {
+          "name": "Vaishnav",
+          "wins": 0,
+          "losses": 5,
+          "net_points": -28
+        }
+      ]
+    }
+  ]
+}
