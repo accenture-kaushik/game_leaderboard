@@ -571,7 +571,7 @@ def _nav(active: str) -> None:
     nav = [("setup", "⚙️", "Setup")]
     for c in range(1, num_courts + 1):
         nav.append((f"court{c}", "🏟", f"Crt {c}"))
-    nav.append(("leaderboard", "🏆", "Board"))
+    nav.append(("leaderboard", "🏆", "Leaderboard"))
 
     cols = st.columns(len(nav))
     for col, (pid, icon, label) in zip(cols, nav):
