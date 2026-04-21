@@ -276,23 +276,23 @@
       {
         "rank": 1,
         "name": "Kaushik",
-        "reason": "Kaushik dominated the tournament with an impressive 80% win rate and a massive +20 net score. His offensive prowess secured him the undisputed first place."
+        "reason": "Kaushik dominated the court with an impressive 80% win rate and a tournament-high +20 net points. His offensive prowess of 53 points scored makes him the undisputed champion."
       },
       {
         "rank": 2,
         "name": "Sandeep",
-        "reason": "Sandeep secured second place with a stellar four wins and a +14 net score. He consistently outplayed opponents to maintain a highly competitive 80% win rate."
+        "reason": "Sandeep secured a brilliant 80% win rate alongside a solid +14 net score. His consistent defensive play, conceding only 35 points, easily earns him the runner-up spot."
       },
       {
         "rank": 3,
         "name": "Shreya",
-        "reason": "Shreya takes third place with three crucial wins and a strong 60% win rate. She scored an impressive 39 points, showing great resilience against tough mixed-gender matchups."
+        "reason": "Shreya claims the final podium spot with a commendable 60% win rate against tough mixed matchups. She conceded only 41 points, proving her resilience and tactical defensive skills."
       }
     ],
     "quips": [
-      "{name}'s paddle is clearly smarter than others.",
-      "We're not saying {name} cheated. We're just saying\u2026 how?",
-      "{name}, stop acting like you didn't practise in your sleep."
+      "{name}, you're just here for the post-game snacks, aren't you?",
+      "{name}, we didn't see that coming. Neither did the ball.",
+      "The ball feared {name} today."
     ]
   }
 }
