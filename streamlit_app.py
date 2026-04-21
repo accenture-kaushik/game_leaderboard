@@ -1493,7 +1493,9 @@ def show_leaderboard() -> None:
 
     # ── Winner Podium (by points) ─────────────────────────────────────────────
     st.markdown(
-        '<div style="font-size:1rem;font-weight:700;color:#E8EAF0;margin-bottom:0.6rem;">'
+        '<div style="background:#F9A825;border-radius:10px;padding:0.75rem 1rem;'
+        'text-align:center;font-size:1rem;font-weight:700;color:#1A1200;'
+        'margin-bottom:0.75rem;letter-spacing:0.01em;">'
         '🏆 Winner Podium (by points)</div>',
         unsafe_allow_html=True,
     )
