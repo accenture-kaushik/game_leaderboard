@@ -29,6 +29,11 @@ _ALL_QUIPS = _quips_module.QUIPS
 import pandas as pd
 import streamlit as st
 import yaml
+try:
+    import extra_streamlit_components as stx
+    _HAS_COOKIES = True
+except ImportError:
+    _HAS_COOKIES = False
 
 logging.basicConfig(level=logging.INFO)
 
@@ -180,6 +185,28 @@ def _github_save_file(gh_path: str, data: dict, commit_msg: str = "update") -> N
 def _github_load() -> Optional[dict]:
     return _github_load_file("data/session.json", default=_empty_state())
 
+
+def _publish_leaderboard(lb: list) -> None:
+    """Append current leaderboard snapshot with timestamp to published_results.json on GitHub."""
+    from datetime import datetime
+    existing = _github_load_file("data/published_results.json", default={"results": []})
+    if not isinstance(existing, dict):
+        existing = {"results": []}
+    entry = {
+        "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
+        "players": [
+            {
+                "name":       p["name"],
+                "wins":       p["games_won"],
+                "losses":     p["games_lost"],
+                "net_points": p["net_points"],
+            }
+            for p in lb
+        ],
+    }
+    existing["results"].append(entry)
+    _github_save_file("data/published_results.json", existing, "leaderboard: publish results")
+
 def _github_save(state: dict) -> None:
     _github_save_file("data/session.json", state, "leaderboard: update session")
 
@@ -217,6 +244,7 @@ def _empty_state() -> dict:
         "schedule": [],
         "scores": {},
         "session_active": False,
+        "critics_choice": None,
     }
 
 
@@ -458,14 +486,41 @@ def _init_ui():
             "The name of the girls in the player list are - aa, bb, cc"
         ),
         "phone_add_counter": 0,
+        "show_pub_pw": False,
+        "show_rst_pw": False,
+        "show_rst1_pw": False,
+        "show_rst1_select": False,
+        "show_rst_confirm": False,
+        "show_rst1_confirm": False,
+        "rst1_pending_delete": [],
     }
     for k, v in defaults.items():
         if k not in st.session_state:
             st.session_state[k] = v
 
+    # Restore court hours from persisted state on every fresh browser load.
+    # This must run in _init_ui (not just show_setup) so the slider values are
+    # correct regardless of which page the user lands on first.
+    if not st.session_state.get("_court_hours_init"):
+        _s = _get()
+        if _s.get("session_active") and _s.get("court_hours"):
+            for _c, _hrs in _s["court_hours"].items():
+                st.session_state[f"court_hours_{_c}"] = float(_hrs)
+        st.session_state._court_hours_init = True
+
 
 _init_ui()
 
+# ── Cookie-based auto-login (2-hour window) ──────────────────────────────────
+_cm = stx.CookieManager(key="lb_cm") if _HAS_COOKIES else None
+if _cm and not st.session_state.phone_verified:
+    _cookie_phone = _cm.get("lb_auth")
+    if _cookie_phone:
+        _cu = _get_users()
+        if _cookie_phone in _cu.get("allowed_phones", []):
+            st.session_state.phone_verified = True
+            st.session_state.verified_phone = _cookie_phone
+            st.rerun()
 
 # ===========================================================================
 # Sidebar
@@ -570,6 +625,11 @@ def show_setup() -> None:
             value=st.session_state.num_players, step=1,
         )
         if num_players != st.session_state.num_players:
+            # Snapshot court hours before rerun so Streamlit doesn't lose them
+            for _c in range(1, st.session_state.get("num_courts", 2) + 1):
+                _hk = f"court_hours_{_c}"
+                if _hk in st.session_state:
+                    st.session_state[f"_bk_{_hk}"] = st.session_state[_hk]
             st.session_state.num_players = num_players
             cur = st.session_state.player_names
             if num_players > len(cur):
@@ -584,6 +644,10 @@ def show_setup() -> None:
             value=st.session_state.get("num_courts", 2), step=1,
         )
         if num_courts != st.session_state.get("num_courts", 2):
+            for _c in range(1, st.session_state.get("num_courts", 2) + 1):
+                _hk = f"court_hours_{_c}"
+                if _hk in st.session_state:
+                    st.session_state[f"_bk_{_hk}"] = st.session_state[_hk]
             st.session_state.num_courts = num_courts
             st.rerun()
 
@@ -604,7 +668,13 @@ def show_setup() -> None:
         for c in range(1, num_courts + 1):
             hrs_key = f"court_hours_{c}"
             if hrs_key not in st.session_state:
-                st.session_state[hrs_key] = 2.0
+                bk_key = f"_bk_{hrs_key}"
+                if bk_key in st.session_state:
+                    st.session_state[hrs_key] = st.session_state[bk_key]
+                else:
+                    _saved_ch = _get().get("court_hours", {})
+                    _v = _saved_ch.get(c) or _saved_ch.get(str(c))
+                    st.session_state[hrs_key] = float(_v) if _v is not None else 2.0
             court_hrs = st.slider(
                 f"Court {c}",
                 min_value=0.5, max_value=6.0, step=0.5,
@@ -1305,6 +1375,76 @@ def show_court(court: int) -> None:
 # Page: Leaderboard
 # ===========================================================================
 
+def _get_critics_choice(lb: list, special_instructions: str) -> Optional[list]:
+    """Call Gemini to pick Critic's Choice top 3. Returns [{rank, name, reason}] or None.
+    Uses the same config loading path as the schedule agent."""
+    import json as _json
+    import google.generativeai as genai
+    from agent.react_agent import _load_gemini_config, _load_api_key
+
+    gcfg    = _load_gemini_config()
+    api_key = _load_api_key()
+    if not api_key:
+        raise ValueError("Gemini API key not found — check secrets.toml or config.yaml.")
+
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel(
+        model_name=gcfg.get("model_name", "gemini-2.0-flash"),
+        generation_config=genai.GenerationConfig(
+            temperature=float(gcfg.get("temperature", 0.7)),
+            top_p=float(gcfg.get("top_p", 0.95)),
+            max_output_tokens=int(gcfg.get("max_output_tokens", 8192)),
+        ),
+    )
+
+    stats_lines = "\n".join(
+        f"- {p['name']}: {p['games_won']}W / {p['games_lost']}L, "
+        f"For: {p['points_gained']}, Against: {p['points_conceded']}, "
+        f"Net: {p['net_points']:+d}, Win rate: {p['win_rate']}%"
+        for p in lb
+    )
+
+    prompt = (
+        "You are a sharp, fair game critic reviewing a doubles sports tournament.\n\n"
+        "PLAYER STATISTICS:\n"
+        + stats_lines
+        + "\n\nTOURNAMENT CONTEXT (use this to identify girl players and any other notes):\n"
+        + (special_instructions or "No gender context provided.")
+        + "\n\nYOUR TASK — select the Critic's Choice top 3 podium:\n"
+        "1. Primary: wins, net points, win rate\n"
+        "2. Gender fairness: if girls are mentioned in the context, their performance "
+        "against mixed/boy-heavy opponents is commendable — reward players who scored "
+        "many points or conceded fewer despite tougher matchups\n"
+        "3. MANDATORY RULE: if there are 2 or more girls in the tournament (check context "
+        "for names), at least 1 girl MUST appear in your top 3\n\n"
+        "Write a 2-sentence reason (max 30 words total) for each pick — be specific.\n\n"
+        'Respond ONLY in valid JSON, no markdown, no code fences, no extra text:\n'
+        '{"podium": [{"rank": 1, "name": "ExactName", "reason": "..."}, '
+        '{"rank": 2, "name": "ExactName", "reason": "..."}, '
+        '{"rank": 3, "name": "ExactName", "reason": "..."}]}\n\n'
+        "Names must exactly match names from the stats list."
+    )
+
+    response = model.generate_content(prompt)
+    text = response.text.strip()
+    if "```" in text:
+        parts = text.split("```")
+        text = parts[1] if len(parts) > 1 else parts[0]
+        if text.startswith("json"):
+            text = text[4:]
+    text = text.strip()
+
+    data   = _json.loads(text)
+    podium = data.get("podium", [])
+    valid_names = {p["name"] for p in lb}
+    podium = [e for e in podium if e.get("name") in valid_names][:3]
+
+    if len(podium) < 3:
+        raise ValueError(f"Gemini returned fewer than 3 valid picks: {podium}")
+
+    return podium
+
+
 def show_leaderboard() -> None:
     st.markdown(
         '<div class="page-header">'
@@ -1318,6 +1458,12 @@ def show_leaderboard() -> None:
         st.rerun()
 
     state = _get()
+
+    # ── Load published results history from GitHub ────────────────────────────
+    _pub = _github_load_file("data/published_results.json", default={"results": []})
+    published_history = (_pub.get("results", []) if isinstance(_pub, dict) else [])
+    # published_history is a list of dicts: [{timestamp, players: [{name, wins, losses, net_points}]}]
+    # UI representation to be built later
 
     if not state.get("schedule"):
         st.info("No schedule yet — go to **Setup** first.")
@@ -1341,7 +1487,7 @@ def show_leaderboard() -> None:
     _medal_border = ["#F9A825", "#9E9E9E", "#EF5350"]
     _medals       = ["🥇", "🥈", "🥉"]
 
-    raw_quips = random.sample(_ALL_QUIPS, 3)
+    raw_quips = random.sample(_ALL_QUIPS, min(3, len(_ALL_QUIPS)))
 
     cols = st.columns(podium)
     for col, medal, p, bg, border, raw_quip in zip(
@@ -1366,13 +1512,14 @@ def show_leaderboard() -> None:
     # ── Table ────────────────────────────────────────────────────────────────
     rows = [
         {
-            "#":    p["rank"],
+            "#":      p["rank"],
             "Player": p["name"],
-            "W":    p["games_won"],
-            "L":    p["games_lost"],
-            "For":  p["points_gained"],
-            "Agst": p["points_conceded"],
-            "Net":  p["net_points"],
+            "Pts":    p["games_won"] * 2,
+            "W":      p["games_won"],
+            "L":      p["games_lost"],
+            "For":    p["points_gained"],
+            "Agst":   p["points_conceded"],
+            "Net":    p["net_points"],
         }
         for p in lb
     ]
@@ -1383,14 +1530,231 @@ def show_leaderboard() -> None:
         column_config={"Net": st.column_config.NumberColumn("Net", format="%+d")},
     )
 
-    # ── Bar chart ────────────────────────────────────────────────────────────
+    # ── Critic's Choice Podium ────────────────────────────────────────────────
     st.divider()
-    st.caption("Points scored per player")
-    st.bar_chart(
-        pd.DataFrame({"Player": [p["name"] for p in lb], "Pts": [p["points_gained"] for p in lb]})
-        .set_index("Player"),
-        height=250,
-    )
+
+    active_lb = [p for p in lb if p.get("games_played", 0) > 0]
+    special_instructions = state.get("special_instructions", "")
+
+    if st.button("🎭 Critic's Choice Podium", type="primary", use_container_width=True):
+        if len(active_lb) >= 3:
+            try:
+                with st.spinner("🎭 Critic is reviewing the game… this may take a moment"):
+                    cc_picks = _get_critics_choice(active_lb, special_instructions)
+                cc_quips = random.sample(_ALL_QUIPS, min(3, len(_ALL_QUIPS)))
+                new_state = copy.deepcopy(_get())
+                new_state["critics_choice"] = {"picks": cc_picks, "quips": cc_quips}
+                with st.spinner("Saving…"):
+                    _put(new_state)
+                st.rerun()
+            except Exception as _cc_err:
+                st.error(f"Critic's analysis failed: {_cc_err}")
+        else:
+            st.warning("Need at least 3 players with games played.")
+
+    cc_shared = state.get("critics_choice")
+    if cc_shared and cc_shared.get("picks"):
+        cc_picks  = cc_shared["picks"]
+        cc_quips  = cc_shared.get("quips") or random.sample(_ALL_QUIPS, 3)
+        _cc_bg     = ["#0D1526", "#130D26", "#1A0D1A"]
+        _cc_border = ["#29B6F6", "#CE93D8", "#F48FB1"]
+        _cc_medals = ["🥇", "🥈", "🥉"]
+        cc_cols = st.columns(3)
+        for col, medal, pick, bg, border, quip_tmpl in zip(
+            cc_cols, _cc_medals, cc_picks, _cc_bg, _cc_border, cc_quips
+        ):
+            quip = quip_tmpl.format(name=pick["name"])
+            with col:
+                st.markdown(
+                    f'<div style="background:{bg};border-top:4px solid {border};'
+                    f'border-radius:12px;padding:0.9rem 0.6rem;text-align:center;">'
+                    f'<div style="font-size:1.8rem;line-height:1">{medal}</div>'
+                    f'<div style="font-weight:700;font-size:0.95rem;margin-top:0.4rem;color:#E8EAF0;">'
+                    f'{pick["name"]}</div>'
+                    f'<div style="font-size:0.72rem;color:#aaa;margin-top:0.45rem;'
+                    f'font-style:italic;line-height:1.4">{quip}</div>'
+                    f'<div style="border-top:1px solid #2a2a3a;margin-top:0.55rem;'
+                    f'padding-top:0.45rem;font-size:0.62rem;color:#90A4AE;'
+                    f'line-height:1.5;text-align:left;">'
+                    f'🎭 {pick["reason"]}</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+    # ── Publish / Reset ───────────────────────────────────────────────────────
+    st.divider()
+    pub_col, rst_all_col, rst1_col = st.columns(3)
+    with pub_col:
+        if st.button("📤 Publish", type="primary", use_container_width=True):
+            st.session_state.show_pub_pw   = True
+            st.session_state.show_rst_pw   = False
+            st.session_state.show_rst1_pw  = False
+            st.session_state.show_rst1_select = False
+            st.rerun()
+    with rst_all_col:
+        if st.button("🗑 Reset All", use_container_width=True):
+            st.session_state.show_rst_pw   = True
+            st.session_state.show_pub_pw   = False
+            st.session_state.show_rst1_pw  = False
+            st.session_state.show_rst1_select = False
+            st.rerun()
+    with rst1_col:
+        if st.button("✂️ Reset 1 Game", use_container_width=True):
+            st.session_state.show_rst1_pw  = True
+            st.session_state.show_pub_pw   = False
+            st.session_state.show_rst_pw   = False
+            st.session_state.show_rst1_select = False
+            st.rerun()
+
+    # ── Publish password prompt ───────────────────────────────────────────────
+    if st.session_state.show_pub_pw:
+        st.caption("Enter password to publish leaderboard")
+        pp_col, pg_col = st.columns([5, 2])
+        with pp_col:
+            pub_pw = st.text_input(
+                "pub_pw", type="password", placeholder="Password…",
+                label_visibility="collapsed", key="pub_pw_field",
+            )
+        with pg_col:
+            if st.button("Confirm", key="btn_pub_confirm",
+                         type="primary", use_container_width=True):
+                if pub_pw == _admin_password():
+                    st.session_state.show_pub_pw = False
+                    _publish_leaderboard(lb)
+                    st.success("✅ Leaderboard published!")
+                else:
+                    st.error("Incorrect password.")
+                st.rerun()
+
+    # ── Reset All — password then type-to-confirm ─────────────────────────────
+    if st.session_state.show_rst_pw and not st.session_state.show_rst_confirm:
+        st.caption("Enter password to reset all previous games")
+        rp_col, rg_col = st.columns([5, 2])
+        with rp_col:
+            rst_pw = st.text_input(
+                "rst_pw", type="password", placeholder="Password…",
+                label_visibility="collapsed", key="rst_pw_field",
+            )
+        with rg_col:
+            if st.button("Confirm", key="btn_rst_confirm",
+                         type="primary", use_container_width=True):
+                if rst_pw == _admin_password():
+                    st.session_state.show_rst_pw      = False
+                    st.session_state.show_rst_confirm = True
+                else:
+                    st.error("Incorrect password.")
+                st.rerun()
+
+    if st.session_state.show_rst_confirm:
+        st.warning("This will delete **all** published game history. This cannot be undone.")
+        st.caption('Type **reset** below to confirm')
+        rc_col, rcc_col, rcancel_col = st.columns([4, 2, 2])
+        with rc_col:
+            confirm_text = st.text_input(
+                "confirm_reset", placeholder='type "reset"',
+                label_visibility="collapsed", key="rst_confirm_field",
+            )
+        with rcc_col:
+            if st.button("Delete All", key="btn_rst_delete",
+                         type="primary", use_container_width=True):
+                if confirm_text.strip() == "reset":
+                    st.session_state.show_rst_confirm = False
+                    pass  # placeholder — functionality to be added later
+                    st.info("Reset All functionality coming soon.")
+                else:
+                    st.error('Please type "reset" exactly.')
+                st.rerun()
+        with rcancel_col:
+            if st.button("Cancel", key="btn_rst_cancel", use_container_width=True):
+                st.session_state.show_rst_confirm = False
+                st.session_state.show_rst_pw      = False
+                st.rerun()
+
+    # ── Reset 1 Game — password then selection ────────────────────────────────
+    if st.session_state.show_rst1_pw and not st.session_state.show_rst1_select:
+        st.caption("Enter password to delete a published entry")
+        r1p_col, r1g_col = st.columns([5, 2])
+        with r1p_col:
+            rst1_pw = st.text_input(
+                "rst1_pw", type="password", placeholder="Password…",
+                label_visibility="collapsed", key="rst1_pw_field",
+            )
+        with r1g_col:
+            if st.button("Confirm", key="btn_rst1_confirm",
+                         type="primary", use_container_width=True):
+                if rst1_pw == _admin_password():
+                    st.session_state.show_rst1_pw     = False
+                    st.session_state.show_rst1_select = True
+                else:
+                    st.error("Incorrect password.")
+                st.rerun()
+
+    if st.session_state.show_rst1_select:
+        _pub2 = _github_load_file("data/published_results.json", default={"results": []})
+        _all_results = (_pub2.get("results", []) if isinstance(_pub2, dict) else [])
+        _recent = sorted(_all_results, key=lambda x: x.get("timestamp", ""), reverse=True)[:5]
+
+        if not _recent:
+            st.info("No published entries found.")
+            st.session_state.show_rst1_select = False
+        else:
+            st.caption("Select entries to delete:")
+            selected_idxs = []
+            for i, entry in enumerate(_recent):
+                ts = entry.get("timestamp", f"Entry {i + 1}")
+                if st.checkbox(ts, key=f"rst1_chk_{i}"):
+                    selected_idxs.append(i)
+
+            del_col, cancel_col = st.columns(2)
+            with del_col:
+                if st.button("🗑 Delete Selected", type="primary", use_container_width=True):
+                    if selected_idxs:
+                        st.session_state.rst1_pending_delete = selected_idxs
+                        st.session_state.show_rst1_confirm   = True
+                    else:
+                        st.warning("No entries selected.")
+                    st.rerun()
+            with cancel_col:
+                if st.button("Cancel", use_container_width=True):
+                    st.session_state.show_rst1_select  = False
+                    st.session_state.show_rst1_confirm = False
+                    st.rerun()
+
+        if st.session_state.show_rst1_confirm:
+            st.warning(f"About to delete **{len(st.session_state.rst1_pending_delete)}** entry/entries. This cannot be undone.")
+            st.caption('Type **reset** below to confirm')
+            r1c_col, r1cc_col = st.columns([5, 2])
+            with r1c_col:
+                rst1_confirm_text = st.text_input(
+                    "rst1_confirm", placeholder='type "reset"',
+                    label_visibility="collapsed", key="rst1_confirm_field",
+                )
+            with r1cc_col:
+                if st.button("Delete", key="btn_rst1_delete",
+                             type="primary", use_container_width=True):
+                    if rst1_confirm_text.strip() == "reset":
+                        timestamps_to_delete = {
+                            _recent[i]["timestamp"]
+                            for i in st.session_state.rst1_pending_delete
+                        }
+                        _all_results[:] = [
+                            r for r in _all_results
+                            if r.get("timestamp") not in timestamps_to_delete
+                        ]
+                        _github_save_file(
+                            "data/published_results.json",
+                            {"results": _all_results},
+                            "leaderboard: delete published entries",
+                        )
+                        for i in st.session_state.rst1_pending_delete:
+                            st.session_state.pop(f"rst1_chk_{i}", None)
+                        st.session_state.show_rst1_select  = False
+                        st.session_state.show_rst1_confirm = False
+                        st.session_state.rst1_pending_delete = []
+                        st.success(f"✅ Deleted {len(timestamps_to_delete)} entry/entries.")
+                    else:
+                        st.error('Please type "reset" exactly.')
+                    st.rerun()
 
 
 
@@ -1430,6 +1794,9 @@ def show_welcome() -> None:
             if p in users.get("allowed_phones", []):
                 st.session_state.phone_verified = True
                 st.session_state.verified_phone = p
+                if _cm:
+                    from datetime import datetime, timedelta
+                    _cm.set("lb_auth", p, expires_at=datetime.now() + timedelta(hours=2))
                 st.rerun()
             else:
                 st.error("This number is not registered for this tournament.")
