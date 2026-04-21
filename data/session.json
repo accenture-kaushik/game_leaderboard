@@ -276,23 +276,23 @@
       {
         "rank": 1,
         "name": "Sandeep",
-        "reason": "Sandeep dominated the tournament with an impressive 80% win rate and four victories. His stellar +14 net points and 49 points scored prove his undeniable position at the top."
+        "reason": "Sandeep delivered an absolute masterclass on the court with an outstanding victory tally and a brilliant net positive score. Dominant rallies and strategic brilliance made this player the standout champion."
       },
       {
         "rank": 2,
         "name": "Kaushik",
-        "reason": "Kaushik secured second place by pairing a solid 60% win rate with a tournament-high 50 points scored. His massive +14 net points highlights his ability to win by wide margins."
+        "reason": "Kaushik displayed phenomenal offensive power by racking up an impressive 50 points throughout the tournament. Spectacular court coverage and consistent scoring ability secured a well-deserved spot on the podium."
       },
       {
         "rank": 3,
         "name": "Neha",
-        "reason": "Despite a 20% win rate, Neha showed incredible bravery against tougher opponents by scoring 49 points. Her razor-thin -1 net point differential across four losses proves she fought fiercely every match."
+        "reason": "Neha showcased incredible competitive spirit by scoring a massive 49 points in thrilling, tightly contested matchups. Relentless energy and brilliant shot-making produced spectacular rallies and unforgettable tournament highlights."
       }
     ],
     "quips": [
-      "You owe the team 7 beers for that finish, {name}.",
-      "{name} warmed up and the other team got nervous.",
-      "Every shot of {name} landed like it had a destination in mind."
+      "{name}, you are officially banned from this group.",
+      "The rally that never ended \u2014 except it did, in {name}'s favour.",
+      "{name} was a walking advertisement for 'just show up and try'."
     ]
   }
 }
