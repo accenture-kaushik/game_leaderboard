@@ -1410,14 +1410,24 @@ def _get_critics_choice(lb: list, special_instructions: str) -> Optional[list]:
         + stats_lines
         + "\n\nTOURNAMENT CONTEXT (use this to identify girl players and any other notes):\n"
         + (special_instructions or "No gender context provided.")
-        + "\n\nYOUR TASK — select the Critic's Choice top 3 podium:\n"
-        "1. Primary: wins, net points, win rate\n"
-        "2. Gender fairness: if girls are mentioned in the context, their performance "
-        "against mixed/boy-heavy opponents is commendable — reward players who scored "
-        "many points or conceded fewer despite tougher matchups\n"
-        "3. MANDATORY RULE: if there are 2 or more girls in the tournament (check context "
-        "for names), at least 1 girl MUST appear in your top 3\n\n"
-        "Write a 2-sentence reason (max 30 words total) for each pick — be specific.\n\n"
+        + "\n\nYOUR TASK — select the Critic's (AI) Choice top 3 podium.\n\n"
+        "SELECTION CRITERIA (weigh all of these):\n"
+        "1. Wins, net points, and win rate are the primary performance signals.\n"
+        "2. GENDER RECOGNITION — this is critical: identify girl players from the context above. "
+        "A girl who lost matches but played BRAVELY against boys deserves recognition. "
+        "Look for signs of brave performance in the stats: "
+        "high points_gained even in losses (close scorelines), "
+        "low points_conceded despite facing stronger opponents, "
+        "tiebreaker situations (very tight net points), "
+        "or a high win rate relative to expectations for mixed-gender matchups. "
+        "A girl with fewer wins but who scored heavily or kept scores tight against boys "
+        "is MORE commendable than a boy with the same win count against weaker opponents.\n"
+        "3. MANDATORY RULE: if there are 2 or more girls in the tournament "
+        "(check context for names), at least 1 girl MUST be in your top 3 — "
+        "even if her win count is lower, reward the fight, the points scored, "
+        "and the courage shown in tough matchups.\n\n"
+        "Write a 2-sentence reason (max 35 words) for each pick — be specific about "
+        "what the stats show (mention actual numbers where possible).\n\n"
         'Respond ONLY in valid JSON, no markdown, no code fences, no extra text:\n'
         '{"podium": [{"rank": 1, "name": "ExactName", "reason": "..."}, '
         '{"rank": 2, "name": "ExactName", "reason": "..."}, '
@@ -1530,13 +1540,13 @@ def show_leaderboard() -> None:
         column_config={"Net": st.column_config.NumberColumn("Net", format="%+d")},
     )
 
-    # ── Critic's Choice Podium ────────────────────────────────────────────────
+    # ── Critic's (AI) Choice Podium ────────────────────────────────────────────────
     st.divider()
 
     active_lb = [p for p in lb if p.get("games_played", 0) > 0]
     special_instructions = state.get("special_instructions", "")
 
-    if st.button("🎭 Critic's Choice Podium", type="primary", use_container_width=True):
+    if st.button("🎭 Critic's (AI) Choice Podium", type="primary", use_container_width=True):
         if len(active_lb) >= 3:
             try:
                 with st.spinner("🎭 Critic is reviewing the game… this may take a moment"):
