@@ -392,11 +392,22 @@ st.markdown(
     .stTextInput input  { font-size: 1rem !important; height: 44px !important; }
     .stSelectbox > div > div { font-size: 1rem !important; min-height: 44px; }
 
+    /* ── Force all column rows to stay horizontal on mobile ── */
+    [data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        gap: 0.4rem !important;
+    }
+    [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+        min-width: 0 !important;
+        overflow: visible;
+    }
+
     /* ── Win buttons (court page) ───────────────────────── */
     .stButton > button[kind="secondary"] {
-        font-size: 0.88rem !important;
-        padding: 0.25rem 0.3rem !important;
+        font-size: 0.85rem !important;
+        padding: 0.3rem 0.2rem !important;
         white-space: nowrap;
+        min-width: 72px;
     }
 
 
@@ -1294,7 +1305,7 @@ def show_court(court: int) -> None:
         icon = "✅" if submitted else "⏳"
         with st.expander(f"{icon}  Game {game_num}", expanded=not submitted):
             # Team A row: card + Win button
-            col_card_a, col_btn_a = st.columns([3, 2], vertical_alignment="center")
+            col_card_a, col_btn_a = st.columns([5, 3], vertical_alignment="center")
             with col_card_a:
                 st.markdown(
                     f'<div class="team-card-a">'
@@ -1314,7 +1325,7 @@ def show_court(court: int) -> None:
                     st.rerun()
 
             # Team B row: card + Win button
-            col_card_b, col_btn_b = st.columns([3, 2], vertical_alignment="center")
+            col_card_b, col_btn_b = st.columns([5, 3], vertical_alignment="center")
             with col_card_b:
                 st.markdown(
                     f'<div class="team-card-b">'
