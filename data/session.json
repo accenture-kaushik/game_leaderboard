@@ -276,23 +276,23 @@
       {
         "rank": 1,
         "name": "Sandeep",
-        "reason": "Sandeep dominated the court with an unmatched 80% win rate and four victories. His stellar +14 net points secure his undisputed first-place finish."
+        "reason": "Sandeep dominated the tournament with an 80.0% win rate and a +14 net score. Securing 4 wins and 49 points, he is the undisputed top performer."
       },
       {
         "rank": 2,
         "name": "Kaushik",
-        "reason": "Kaushik secured second place with an impressive fifty points scored and a solid +14 net. His offensive prowess made him the most lethal attacker among the runner-ups."
+        "reason": "Kaushik secured second place with a stellar +14 net and 50 total points scored. His strong 60.0% win rate proves his consistent offensive impact on the court."
       },
       {
         "rank": 3,
-        "name": "Shreya",
-        "reason": "Shreya claims the final podium spot by securing three hard-fought wins against tough mixed matchups. Conceding only forty-one points highlights her exceptional defensive resilience throughout the tournament."
+        "name": "Neha",
+        "reason": "Despite a 20.0% win rate, Neha showed immense courage by scoring 48 points with a tight -2 net. Her incredibly close losses against tougher opponents earn her this spot."
       }
     ],
     "quips": [
-      "Wait {name}, how did you get up here?",
-      "{name}'s game plan was: win. It worked.",
-      "{name} is technically on the podium. Emotionally in orbit."
+      "{name} was solid, steady, and suspiciously consistent.",
+      "{name}, you are officially banned from this group.",
+      "{name} won so often today it started feeling normal."
     ]
   }
 }
