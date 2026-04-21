@@ -276,23 +276,23 @@
       {
         "rank": 1,
         "name": "Sandeep",
-        "reason": "Sandeep delivered an absolute masterclass on the court with an outstanding victory tally and a brilliant net positive score. Dominant rallies and strategic brilliance made this player the standout champion."
+        "reason": "Sandeep dominated the court with spectacular victories and a massive 49 points scored. This brilliant net play and commanding presence created an ultimate championship performance."
       },
       {
         "rank": 2,
         "name": "Kaushik",
-        "reason": "Kaushik displayed phenomenal offensive power by racking up an impressive 50 points throughout the tournament. Spectacular court coverage and consistent scoring ability secured a well-deserved spot on the podium."
+        "reason": "Kaushik showcased phenomenal offensive skills by racking up a tournament-high 50 points alongside fantastic wins. These powerful rallies and consistent scoring pressure were truly a joy to watch."
       },
       {
         "rank": 3,
         "name": "Neha",
-        "reason": "Neha showcased incredible competitive spirit by scoring a massive 49 points in thrilling, tightly contested matchups. Relentless energy and brilliant shot-making produced spectacular rallies and unforgettable tournament highlights."
+        "reason": "Neha delivered thrilling, tightly contested matches while racking up an impressive 49 points. This incredible resilience and brilliant shot-making created a truly standout competitive performance."
       }
     ],
     "quips": [
+      "{name}, stop acting like you didn't practise in your sleep.",
       "{name}, you are officially banned from this group.",
-      "The rally that never ended \u2014 except it did, in {name}'s favour.",
-      "{name} was a walking advertisement for 'just show up and try'."
+      "The scoreboard struggled to keep up with {name}."
     ]
   }
 }
