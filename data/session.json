@@ -270,5 +270,29 @@
     }
   },
   "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. There are 2 girls in the player list. The name of the girls in the player list are - aa, bb, cc",
-  "session_active": true
+  "session_active": true,
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "Kaushik",
+        "reason": "Kaushik dominated the tournament with an impressive 80% win rate and a massive +20 net score. His offensive prowess secured him the undisputed first place."
+      },
+      {
+        "rank": 2,
+        "name": "Sandeep",
+        "reason": "Sandeep secured second place with a stellar four wins and a +14 net score. He consistently outplayed opponents to maintain a highly competitive 80% win rate."
+      },
+      {
+        "rank": 3,
+        "name": "Shreya",
+        "reason": "Shreya takes third place with three crucial wins and a strong 60% win rate. She scored an impressive 39 points, showing great resilience against tough mixed-gender matchups."
+      }
+    ],
+    "quips": [
+      "{name}'s paddle is clearly smarter than others.",
+      "We're not saying {name} cheated. We're just saying\u2026 how?",
+      "{name}, stop acting like you didn't practise in your sleep."
+    ]
+  }
 }
