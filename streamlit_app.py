@@ -350,22 +350,26 @@ st.markdown(
     .team-card-a {
         background: #0D2137;
         border-left: 4px solid #29B6F6;
-        padding: 0.55rem 0.75rem;
+        padding: 0.4rem 0.5rem;
         border-radius: 8px;
-        margin-bottom: 0.4rem;
-        font-size: 0.95rem;
-        line-height: 1.5;
+        margin-bottom: 0.3rem;
+        font-size: 0.82rem;
+        line-height: 1.35;
         color: #E8EAF0;
+        max-width: 100%;
+        box-sizing: border-box;
     }
     .team-card-b {
         background: #2A0D12;
         border-left: 4px solid #EF5350;
-        padding: 0.55rem 0.75rem;
+        padding: 0.4rem 0.5rem;
         border-radius: 8px;
-        margin-bottom: 0.6rem;
-        font-size: 0.95rem;
-        line-height: 1.5;
+        margin-bottom: 0.3rem;
+        font-size: 0.82rem;
+        line-height: 1.35;
         color: #E8EAF0;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     /* ── Buttons ─────────────────────────────────────────── */
@@ -405,9 +409,10 @@ st.markdown(
 
     /* ── Win buttons (court page) ───────────────────────── */
     .stButton > button[kind="secondary"] {
-        font-size: 0.88rem !important;
-        padding: 0.25rem 0.3rem !important;
+        font-size: 0.8rem !important;
+        padding: 0.3rem 0.15rem !important;
         white-space: nowrap;
+        min-height: 44px !important;
     }
 
 
@@ -1305,7 +1310,7 @@ def show_court(court: int) -> None:
         icon = "✅" if submitted else "⏳"
         with st.expander(f"{icon}  Game {game_num}", expanded=not submitted):
             # Team A row: card + Win button
-            col_card_a, col_btn_a = st.columns([5, 2], vertical_alignment="center")
+            col_card_a, col_btn_a = st.columns([3, 1], vertical_alignment="center")
             with col_card_a:
                 st.markdown(
                     f'<div class="team-card-a">'
@@ -1325,7 +1330,7 @@ def show_court(court: int) -> None:
                     st.rerun()
 
             # Team B row: card + Win button
-            col_card_b, col_btn_b = st.columns([5, 2], vertical_alignment="center")
+            col_card_b, col_btn_b = st.columns([3, 1], vertical_alignment="center")
             with col_card_b:
                 st.markdown(
                     f'<div class="team-card-b">'
