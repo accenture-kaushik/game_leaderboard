@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 import random
+import time as _time
 
 import requests
 
@@ -29,11 +30,6 @@ _ALL_QUIPS = _quips_module.QUIPS
 import pandas as pd
 import streamlit as st
 import yaml
-try:
-    import extra_streamlit_components as stx
-    _HAS_COOKIES = True
-except ImportError:
-    _HAS_COOKIES = False
 
 logging.basicConfig(level=logging.INFO)
 
@@ -511,16 +507,36 @@ def _init_ui():
 
 _init_ui()
 
-# ── Cookie-based auto-login (2-hour window) ──────────────────────────────────
-_cm = stx.CookieManager(key="lb_cm") if _HAS_COOKIES else None
-if _cm and not st.session_state.phone_verified:
-    _cookie_phone = _cm.get("lb_auth")
-    if _cookie_phone:
+# ── Auto-login: query-param check (same tab / bookmarked URL) ────────────────
+if not st.session_state.phone_verified:
+    _qp_phone = st.query_params.get("lb_auth", "")
+    if _qp_phone:
         _cu = _get_users()
-        if _cookie_phone in _cu.get("allowed_phones", []):
+        if _qp_phone in _cu.get("allowed_phones", []):
             st.session_state.phone_verified = True
-            st.session_state.verified_phone = _cookie_phone
+            st.session_state.verified_phone = _qp_phone
             st.rerun()
+    else:
+        # No query param — try localStorage (cross-tab, new session same browser)
+        st.components.v1.html(
+            """<script>
+            (function(){
+                try {
+                    var d = JSON.parse(window.localStorage.getItem("lb_auth") || "null");
+                    if (d && d.p && d.t && (Date.now()/1000 - d.t) < 7200) {
+                        var u = new URL(window.top.location.href);
+                        if (!u.searchParams.get("lb_auth")) {
+                            u.searchParams.set("lb_auth", d.p);
+                            window.top.location.replace(u.toString());
+                        }
+                    } else if (d) {
+                        window.localStorage.removeItem("lb_auth");
+                    }
+                } catch(e) {}
+            })();
+            </script>""",
+            height=0,
+        )
 
 # ===========================================================================
 # Sidebar
@@ -1815,9 +1831,8 @@ def show_welcome() -> None:
             if p in users.get("allowed_phones", []):
                 st.session_state.phone_verified = True
                 st.session_state.verified_phone = p
-                if _cm:
-                    from datetime import datetime, timedelta
-                    _cm.set("lb_auth", p, expires_at=datetime.now() + timedelta(hours=2))
+                st.query_params["lb_auth"] = p
+                st.session_state._ls_write_phone = p
                 st.rerun()
             else:
                 st.error("This number is not registered for this tournament.")
@@ -1949,6 +1964,16 @@ def show_welcome() -> None:
 if not st.session_state.phone_verified:
     show_welcome()
 else:
+    # Write phone to localStorage once right after login
+    if st.session_state.get("_ls_write_phone"):
+        _lsp = st.session_state.pop("_ls_write_phone")
+        _lst = int(_time.time())
+        st.components.v1.html(
+            f'<script>try{{window.localStorage.setItem("lb_auth",'
+            f'JSON.stringify({{p:"{_lsp}",t:{_lst}}}))}}catch(e){{}}</script>',
+            height=0,
+        )
+
     _page = st.session_state.page
     _nav(_page)
     st.markdown("---")
