@@ -1491,7 +1491,13 @@ def show_leaderboard() -> None:
         st.info("No scores yet — enter them on the Court pages.")
         return
 
-    # ── Podium ───────────────────────────────────────────────────────────────
+    # ── Winner Podium (by points) ─────────────────────────────────────────────
+    st.markdown(
+        '<div style="font-size:1rem;font-weight:700;color:#E8EAF0;margin-bottom:0.6rem;">'
+        '🏆 Winner Podium (by points)</div>',
+        unsafe_allow_html=True,
+    )
+
     podium = min(len(lb), 3)
     _medal_bg     = ["#1E1A0A", "#161616", "#1A0E0A"]
     _medal_border = ["#F9A825", "#9E9E9E", "#EF5350"]
@@ -1519,30 +1525,7 @@ def show_leaderboard() -> None:
 
     st.divider()
 
-    # ── Table ────────────────────────────────────────────────────────────────
-    rows = [
-        {
-            "#":      p["rank"],
-            "Player": p["name"],
-            "Pts":    p["games_won"] * 2,
-            "W":      p["games_won"],
-            "L":      p["games_lost"],
-            "For":    p["points_gained"],
-            "Agst":   p["points_conceded"],
-            "Net":    p["net_points"],
-        }
-        for p in lb
-    ]
-    st.dataframe(
-        pd.DataFrame(rows),
-        use_container_width=True,
-        hide_index=True,
-        column_config={"Net": st.column_config.NumberColumn("Net", format="%+d")},
-    )
-
-    # ── Critic's (AI) Choice Podium ────────────────────────────────────────────────
-    st.divider()
-
+    # ── Critic's (AI) Choice Podium ───────────────────────────────────────────
     active_lb = [p for p in lb if p.get("games_played", 0) > 0]
     special_instructions = state.get("special_instructions", "")
 
@@ -1590,6 +1573,29 @@ def show_leaderboard() -> None:
                     f'</div>',
                     unsafe_allow_html=True,
                 )
+
+    st.divider()
+
+    # ── Table ────────────────────────────────────────────────────────────────
+    rows = [
+        {
+            "#":      p["rank"],
+            "Player": p["name"],
+            "Pts":    p["games_won"] * 2,
+            "W":      p["games_won"],
+            "L":      p["games_lost"],
+            "For":    p["points_gained"],
+            "Agst":   p["points_conceded"],
+            "Net":    p["net_points"],
+        }
+        for p in lb
+    ]
+    st.dataframe(
+        pd.DataFrame(rows),
+        use_container_width=True,
+        hide_index=True,
+        column_config={"Net": st.column_config.NumberColumn("Net", format="%+d")},
+    )
 
     # ── Publish / Reset ───────────────────────────────────────────────────────
     st.divider()
