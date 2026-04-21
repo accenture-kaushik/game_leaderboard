@@ -393,11 +393,10 @@ st.markdown(
     .stSelectbox > div > div { font-size: 1rem !important; min-height: 44px; }
 
     /* ── Win buttons (court page) ───────────────────────── */
-    [data-testid="stHorizontalBlock"]:has(.team-card-a) + div .stButton > button,
-    [data-testid="stHorizontalBlock"]:has(.team-card-b) + div .stButton > button {
-        min-height: 44px !important;
+    .stButton > button[kind="secondary"] {
         font-size: 0.88rem !important;
         padding: 0.25rem 0.3rem !important;
+        white-space: nowrap;
     }
 
 
@@ -1295,7 +1294,7 @@ def show_court(court: int) -> None:
         icon = "✅" if submitted else "⏳"
         with st.expander(f"{icon}  Game {game_num}", expanded=not submitted):
             # Team A row: card + Win button
-            col_card_a, col_btn_a = st.columns([5, 2])
+            col_card_a, col_btn_a = st.columns([3, 2], vertical_alignment="center")
             with col_card_a:
                 st.markdown(
                     f'<div class="team-card-a">'
@@ -1315,7 +1314,7 @@ def show_court(court: int) -> None:
                     st.rerun()
 
             # Team B row: card + Win button
-            col_card_b, col_btn_b = st.columns([5, 2])
+            col_card_b, col_btn_b = st.columns([3, 2], vertical_alignment="center")
             with col_card_b:
                 st.markdown(
                     f'<div class="team-card-b">'
