@@ -1426,8 +1426,11 @@ def _get_critics_choice(lb: list, special_instructions: str) -> Optional[list]:
         "(check context for names), at least 1 girl MUST be in your top 3 — "
         "even if her win count is lower, reward the fight, the points scored, "
         "and the courage shown in tough matchups.\n\n"
-        "Write a 2-sentence reason (max 35 words) for each pick — be specific about "
-        "what the stats show (mention actual numbers where possible).\n\n"
+        "Write a 2-sentence reason (max 35 words) for each pick. "
+        "CRITICAL: Only mention POSITIVE achievements — great points scored, impressive wins, "
+        "strong rallies, standout performances. "
+        "Do NOT mention losses, loss counts, win/loss percentages, gender, or any negative stats. "
+        "The tone must be celebratory and encouraging throughout.\n\n"
         'Respond ONLY in valid JSON, no markdown, no code fences, no extra text:\n'
         '{"podium": [{"rank": 1, "name": "ExactName", "reason": "..."}, '
         '{"rank": 2, "name": "ExactName", "reason": "..."}, '
@@ -1531,7 +1534,7 @@ def show_leaderboard() -> None:
     active_lb = [p for p in lb if p.get("games_played", 0) > 0]
     special_instructions = state.get("special_instructions", "")
 
-    if st.button("🎭 Critic's (AI) Choice Podium", type="primary", use_container_width=True):
+    if st.button("🎭 Critic's Choice Podium  ᴬᴵ ᵍᵉⁿᵉʳᵃᵗᵉᵈ", type="primary", use_container_width=True):
         if len(active_lb) >= 3:
             try:
                 with st.spinner("🎭 Critic is reviewing the game… this may take a moment"):
