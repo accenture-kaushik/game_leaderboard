@@ -350,26 +350,22 @@ st.markdown(
     .team-card-a {
         background: #0D2137;
         border-left: 4px solid #29B6F6;
-        padding: 0.4rem 0.5rem;
+        padding: 0.55rem 0.75rem;
         border-radius: 8px;
-        margin-bottom: 0.3rem;
-        font-size: 0.82rem;
-        line-height: 1.35;
+        margin-bottom: 0.4rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
         color: #E8EAF0;
-        max-width: 100%;
-        box-sizing: border-box;
     }
     .team-card-b {
         background: #2A0D12;
         border-left: 4px solid #EF5350;
-        padding: 0.4rem 0.5rem;
+        padding: 0.55rem 0.75rem;
         border-radius: 8px;
-        margin-bottom: 0.3rem;
-        font-size: 0.82rem;
-        line-height: 1.35;
+        margin-bottom: 0.6rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
         color: #E8EAF0;
-        max-width: 100%;
-        box-sizing: border-box;
     }
 
     /* ── Buttons ─────────────────────────────────────────── */
@@ -396,23 +392,12 @@ st.markdown(
     .stTextInput input  { font-size: 1rem !important; height: 44px !important; }
     .stSelectbox > div > div { font-size: 1rem !important; min-height: 44px; }
 
-    /* ── Team+Win rows only: stay horizontal, never wrap ────── */
-    [data-testid="stHorizontalBlock"]:has(.team-card-a),
-    [data-testid="stHorizontalBlock"]:has(.team-card-b) {
-        flex-wrap: nowrap !important;
-        gap: 0.4rem !important;
-    }
-    [data-testid="stHorizontalBlock"]:has(.team-card-a) > [data-testid="column"],
-    [data-testid="stHorizontalBlock"]:has(.team-card-b) > [data-testid="column"] {
-        min-width: 0 !important;
-    }
-
     /* ── Win buttons (court page) ───────────────────────── */
-    .stButton > button[kind="secondary"] {
-        font-size: 0.8rem !important;
-        padding: 0.3rem 0.15rem !important;
-        white-space: nowrap;
+    [data-testid="stHorizontalBlock"]:has(.team-card-a) + div .stButton > button,
+    [data-testid="stHorizontalBlock"]:has(.team-card-b) + div .stButton > button {
         min-height: 44px !important;
+        font-size: 0.88rem !important;
+        padding: 0.25rem 0.3rem !important;
     }
 
 
@@ -1310,7 +1295,7 @@ def show_court(court: int) -> None:
         icon = "✅" if submitted else "⏳"
         with st.expander(f"{icon}  Game {game_num}", expanded=not submitted):
             # Team A row: card + Win button
-            col_card_a, col_btn_a = st.columns([3, 1], vertical_alignment="center")
+            col_card_a, col_btn_a = st.columns([5, 2])
             with col_card_a:
                 st.markdown(
                     f'<div class="team-card-a">'
@@ -1330,7 +1315,7 @@ def show_court(court: int) -> None:
                     st.rerun()
 
             # Team B row: card + Win button
-            col_card_b, col_btn_b = st.columns([3, 1], vertical_alignment="center")
+            col_card_b, col_btn_b = st.columns([5, 2])
             with col_card_b:
                 st.markdown(
                     f'<div class="team-card-b">'
