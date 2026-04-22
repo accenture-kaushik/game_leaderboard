@@ -1,34 +1,8 @@
 {
-  "players": [
-    "Neha",
-    "Harpreet",
-    "Shreya",
-    "Kaushik",
-    "Leenav",
-    "Piyusha",
-    "Ayush",
-    "Sandeep",
-    "Prashant"
-  ],
-  "skill_levels": {
-    "Neha": "intermediate",
-    "Harpreet": "intermediate",
-    "Shreya": "intermediate",
-    "Kaushik": "intermediate",
-    "Leenav": "intermediate",
-    "Piyusha": "intermediate",
-    "Ayush": "intermediate",
-    "Sandeep": "intermediate",
-    "Prashant": "intermediate"
-  },
-  "num_courts": 2,
-  "games_per_hour": 5,
-  "court_hours": {
-    "1": 1.5,
-    "2": 1.5
-  },
+  "players": [],
+  "skill_levels": {},
   "schedule": [],
   "scores": {},
-  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. There are 3 girls in the player list. The name of the girls in the player list are - Neha, Piyusha, Shreya.  Do not keep Kaushik in the game 13, 14, 15, 16 (2 rounds rest for Kaushik). Do not keep Ayush in the games 1,2.  Do not schedule any games of Neha, Harpreet, Piyusha and Shreya on court 2 (Strict rule)",
-  "session_active": true
+  "session_active": false,
+  "critics_choice": null
 }
