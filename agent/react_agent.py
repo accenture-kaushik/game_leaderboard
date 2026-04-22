@@ -31,7 +31,7 @@ SYSTEM_PROMPT = """You are an expert sports tournament scheduler.
 Your job is to generate a complete doubles game schedule as valid JSON.
 When given feedback about violations in a previous attempt, fix every one of them
 and return the complete corrected schedule.
-Always output ONLY the raw JSON array — no explanations, no markdown code fences.
+Output ONLY a JSON array — start with [ and end with ]. No markdown, no explanations, no code fences.
 """
 
 
@@ -86,7 +86,7 @@ class GamePlannerAgent:
         generation_config = genai.GenerationConfig(
             temperature=float(gcfg.get("temperature", 0.7)),
             top_p=float(gcfg.get("top_p", 0.95)),
-            max_output_tokens=int(gcfg.get("max_output_tokens", 8192)),
+            response_mime_type="application/json",
         )
 
         self.model = genai.GenerativeModel(
@@ -95,11 +95,10 @@ class GamePlannerAgent:
             generation_config=generation_config,
         )
         logger.info(
-            "Gemini model ready: %s | temp=%.1f | top_p=%.2f | max_tokens=%d",
+            "Gemini model ready: %s | temp=%.1f | top_p=%.2f",
             gcfg.get("model_name", "gemini-2.0-flash"),
             generation_config.temperature,
             generation_config.top_p,
-            generation_config.max_output_tokens,
         )
 
     # =========================================================================
@@ -474,13 +473,15 @@ Exactly {num_rounds * num_courts} entries total.
     def _parse_schedule_json(self, text: str) -> Optional[List[Dict]]:
         """Extract a JSON array from the LLM response, stripping any markdown fences."""
         text = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
-        match = re.search(r"\[.*\]", text, re.DOTALL)
-        if not match:
+        idx = text.find("[")
+        if idx == -1:
             return None
         try:
-            data = json.loads(match.group())
-            if isinstance(data, list):
-                return data
+            # raw_decode stops at the end of the first valid JSON value,
+            # ignoring any trailing text or explanation the model appends
+            obj, _ = json.JSONDecoder().raw_decode(text, idx)
+            if isinstance(obj, list):
+                return obj
         except json.JSONDecodeError:
             pass
         return None

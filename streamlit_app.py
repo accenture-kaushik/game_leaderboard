@@ -1409,7 +1409,7 @@ def _get_critics_choice(lb: list, special_instructions: str) -> Optional[list]:
         generation_config=genai.GenerationConfig(
             temperature=float(gcfg.get("temperature", 0.7)),
             top_p=float(gcfg.get("top_p", 0.95)),
-            max_output_tokens=int(gcfg.get("max_output_tokens", 8192)),
+            response_mime_type="application/json",
         ),
     )
 
