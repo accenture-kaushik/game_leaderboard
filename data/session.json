@@ -22,7 +22,7 @@
     "Prashant": "intermediate"
   },
   "num_courts": 2,
-  "games_per_hour": 5,
+  "games_per_hour": 4,
   "court_hours": {
     "1": 1.5,
     "2": 1.5
