@@ -1474,6 +1474,24 @@ def _get_critics_choice(lb: list, special_instructions: str) -> Optional[list]:
     return podium
 
 
+def _identify_girls(player_names: list, special_instructions: str) -> set:
+    """Return the set of player names identified as girls from special_instructions text."""
+    if not special_instructions:
+        return set()
+    text = special_instructions.lower()
+    gender_words = {"girl", "female", "she", "her ", "woman", "women", "ladies", "lady"}
+    girls: set = set()
+    for name in player_names:
+        idx = text.find(name.lower())
+        while idx != -1:
+            window = text[max(0, idx - 60) : idx + len(name) + 60]
+            if any(w in window for w in gender_words):
+                girls.add(name)
+                break
+            idx = text.find(name.lower(), idx + 1)
+    return girls
+
+
 def show_leaderboard() -> None:
     st.markdown(
         '<div class="page-header">'
@@ -1510,35 +1528,61 @@ def show_leaderboard() -> None:
         st.info("No scores yet — enter them on the Court pages.")
         return
 
-    # ── Winner Podium (by points) ─────────────────────────────────────────────
+    # ── Winner Podium (by avg points per game) ───────────────────────────────
     st.markdown(
         '<div style="background:#F9A825;border-radius:10px;padding:0.75rem 1rem;'
         'text-align:center;font-size:1rem;font-weight:700;color:#1A1200;'
         'margin-bottom:0.75rem;letter-spacing:0.01em;">'
-        '🏆 Winner Podium (by points)</div>',
+        '🏆 Winner Podium (by avg points)</div>',
         unsafe_allow_html=True,
     )
 
-    podium = min(len(lb), 3)
+    def _avg_pts(p: dict) -> float:
+        gp = p.get("games_played", 0)
+        return p.get("points_gained", 0) / gp if gp > 0 else 0.0
+
+    active_for_podium = [p for p in lb if p.get("games_played", 0) > 0]
+    all_names  = [p["name"] for p in active_for_podium]
+    girl_names = _identify_girls(all_names, state.get("special_instructions", ""))
+
+    girls_pool = sorted([p for p in active_for_podium if p["name"] in girl_names],
+                        key=_avg_pts, reverse=True)
+    boys_pool  = sorted([p for p in active_for_podium if p["name"] not in girl_names],
+                        key=_avg_pts, reverse=True)
+
+    # 2 boys + 1 girl only when ≥2 girls are in the tournament
+    if len(girls_pool) >= 2 and len(boys_pool) >= 2:
+        selected = boys_pool[:2] + girls_pool[:1]
+    else:
+        selected = sorted(active_for_podium, key=_avg_pts, reverse=True)[:3]
+
+    podium_players = sorted(selected, key=_avg_pts, reverse=True)
+
     _medal_bg     = ["#1E1A0A", "#161616", "#1A0E0A"]
     _medal_border = ["#F9A825", "#9E9E9E", "#EF5350"]
     _medals       = ["🥇", "🥈", "🥉"]
 
-    raw_quips = random.sample(_ALL_QUIPS, min(3, len(_ALL_QUIPS)))
+    raw_quips = random.sample(_ALL_QUIPS, min(len(podium_players), len(_ALL_QUIPS)))
 
-    cols = st.columns(podium)
+    cols = st.columns(len(podium_players))
     for col, medal, p, bg, border, raw_quip in zip(
-        cols, _medals, lb[:podium], _medal_bg, _medal_border, raw_quips
+        cols, _medals, podium_players, _medal_bg, _medal_border, raw_quips
     ):
-        quip = raw_quip.format(name=p["name"])
+        quip        = raw_quip.format(name=p["name"])
+        is_girl     = p["name"] in girl_names
+        gender_icon = "👧" if is_girl else "👦"
+        avg         = _avg_pts(p)
         with col:
             st.markdown(
                 f'<div style="background:{bg};border-top:4px solid {border};'
                 f'border-radius:12px;padding:0.9rem 0.6rem;text-align:center;">'
                 f'<div style="font-size:1.8rem;line-height:1">{medal}</div>'
-                f'<div style="font-weight:700;font-size:0.95rem;margin-top:0.4rem;color:#E8EAF0;">'
+                f'<div style="font-size:1rem;line-height:1;margin-top:0.3rem">{gender_icon}</div>'
+                f'<div style="font-weight:700;font-size:0.95rem;margin-top:0.3rem;color:#E8EAF0;">'
                 f'{p["name"]}</div>'
-                f'<div style="font-size:0.75rem;color:#aaa;margin-top:0.5rem;'
+                f'<div style="font-size:0.72rem;color:#F9A825;margin-top:0.2rem;font-weight:600;">'
+                f'avg {avg:.1f} pts/game</div>'
+                f'<div style="font-size:0.75rem;color:#aaa;margin-top:0.4rem;'
                 f'font-style:italic;line-height:1.4">{quip}</div>'
                 f'</div>',
                 unsafe_allow_html=True,
