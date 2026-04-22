@@ -29,6 +29,6 @@
   },
   "schedule": [],
   "scores": {},
-  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. There are 3 girls in the player list. The name of the girls in the player list are - Neha, Piyush, Shreya.  Do not schedule game for Kaushik in last 2 rounds (2 rounds rest). Do not schedule game for Ayush in 1st round. Do not schedule game for the girls and Harpreet on court 2",
+  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. There are 3 girls in the player list. The name of the girls in the player list are - Neha, Piyush, Shreya.  Do not schedule game for kaushik in last 2 rounds (2 rounds rest). Do not schedule game for Ayush in 1st round. Do not schedule game for the girls and Harpreet on court 2",
   "session_active": true
 }
