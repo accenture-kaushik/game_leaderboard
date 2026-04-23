@@ -235,24 +235,24 @@
     "picks": [
       {
         "rank": 1,
-        "name": "Sandeep",
-        "reason": "Sandeep showcased exceptional skill and strategic play, securing an impressive number of victories. His outstanding point differential highlights a dominant and consistent performance throughout the tournament."
+        "name": "Ayush",
+        "reason": "His exceptional 57 points scored and dominant +18 net score highlight a masterclass in consistent, high-level play. Ayush delivered powerful performances and numerous standout rallies."
       },
       {
         "rank": 2,
-        "name": "Ayush",
-        "reason": "Ayush demonstrated remarkable offensive power, accumulating the highest net points in the competition. His strong rallies and consistent scoring were a true highlight."
+        "name": "Shreya",
+        "reason": "Her impressive 44 points scored demonstrates remarkable offensive prowess and consistent effort throughout the tournament. She showcased incredible resilience and delivered many standout rallies."
       },
       {
         "rank": 3,
-        "name": "Neha",
-        "reason": "Neha delivered a fantastic performance, achieving multiple impressive wins and scoring heavily. Her tenacious play and significant point contributions were truly inspiring."
+        "name": "Prashant",
+        "reason": "Prashant's solid +7 net score reflects his consistent positive impact and strategic play on the court. He demonstrated excellent teamwork and contributed significantly to every match."
       }
     ],
     "quips": [
-      "{name}'s serve should be registered as a weapon.",
-      "We're still replaying {name}'s last smash in our heads.",
-      "{name} was cool, calm, and absolutely lethal on the court."
+      "The rally that never ended \u2014 except it did, in {name}'s favour.",
+      "{name} was cool, calm, and absolutely lethal on the court.",
+      "{name} was solid, steady, and suspiciously consistent."
     ]
   }
 }
