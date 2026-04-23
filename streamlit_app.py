@@ -450,6 +450,10 @@ st.markdown(
     /* ── Alert / info boxes ──────────────────────────────── */
     [data-testid="stAlert"] { border-radius: 10px; }
 
+    /* ── Boys / Girls section headings ──────────────────── */
+    .roster-heading-boys { color: #5B9BD5; font-weight: 700; font-size: 1rem; margin: 0.6rem 0 0.25rem 0; }
+    .roster-heading-girls { color: #E07090; font-weight: 700; font-size: 1rem; margin: 0.6rem 0 0.25rem 0; }
+
     /* ── Hide Streamlit chrome ───────────────────────────── */
     #MainMenu, footer { visibility: hidden; }
     header[data-testid="stHeader"] { height: 2rem; }
@@ -491,6 +495,7 @@ def _init_ui():
         "show_rst_confirm": False,
         "show_rst1_confirm": False,
         "rst1_pending_delete": [],
+        "_active_setup_tab": 0,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -605,6 +610,32 @@ def _nav(active: str) -> None:
                 st.session_state.page = pid
                 st.rerun()
 
+    # Normalize button heights: the 🏆 emoji renders taller than others in some browsers
+    st.components.v1.html(
+        """<script>
+        (function() {
+            function fixNavBtns() {
+                var main = window.parent.document.querySelector('[data-testid="stMain"]');
+                if (!main) return;
+                var hblocks = main.querySelectorAll('[data-testid="stHorizontalBlock"]');
+                if (!hblocks.length) return;
+                var navBlock = hblocks[0];
+                navBlock.querySelectorAll('button').forEach(function(b) {
+                    b.style.setProperty('height', '3.2rem', 'important');
+                    b.style.setProperty('max-height', '3.2rem', 'important');
+                    b.style.setProperty('overflow', 'hidden', 'important');
+                    b.style.setProperty('font-size', '0.7rem', 'important');
+                    b.style.setProperty('line-height', '1.15', 'important');
+                    b.style.setProperty('padding', '0.1rem 0.15rem', 'important');
+                });
+            }
+            setTimeout(fixNavBtns, 100);
+            setTimeout(fixNavBtns, 400);
+        })();
+        </script>""",
+        height=0,
+    )
+
 
 # ===========================================================================
 # Page: Setup & Schedule
@@ -648,6 +679,19 @@ def show_setup() -> None:
     )
 
     tab_p, tab_s = st.tabs(["👥 Players & Courts", "⚙️ Generate Schedule"])
+
+    # Re-select the Generate Schedule tab after rerun if user was on it
+    if st.session_state.get("_active_setup_tab") == 1:
+        st.session_state._active_setup_tab = 0
+        st.components.v1.html(
+            """<script>
+            setTimeout(function() {
+                var tabs = window.parent.document.querySelectorAll('[data-baseweb="tab"]');
+                if (tabs && tabs.length > 1) { tabs[1].click(); }
+            }, 150);
+            </script>""",
+            height=0,
+        )
 
     # ── Players tab ──────────────────────────────────────────────────────────
     with tab_p:
@@ -732,7 +776,7 @@ def show_setup() -> None:
                 st.rerun()
 
         # ── Boys ──────────────────────────────────────────────────────────────
-        st.markdown('**👦 Boys**', unsafe_allow_html=False)
+        st.markdown('<p class="roster-heading-boys">👦 Boys</p>', unsafe_allow_html=True)
         num_boys = st.number_input(
             "Number of boys", min_value=0, max_value=16, step=1,
             value=st.session_state.get("num_boys", 6),
@@ -782,7 +826,7 @@ def show_setup() -> None:
                 )
 
         # ── Girls ─────────────────────────────────────────────────────────────
-        st.markdown('**👧 Girls**', unsafe_allow_html=False)
+        st.markdown('<p class="roster-heading-girls">👧 Girls</p>', unsafe_allow_html=True)
         num_girls = st.number_input(
             "Number of girls", min_value=0, max_value=8, step=1,
             value=st.session_state.get("num_girls", 4),
@@ -937,6 +981,7 @@ def show_setup() -> None:
         if st.button("🎲 Generate Schedule", type="primary", use_container_width=True):
             st.session_state.show_gen_pw   = True
             st.session_state.show_reset_pw = False
+            st.session_state._active_setup_tab = 1
             st.rerun()
 
         if st.session_state.show_gen_pw:
@@ -1054,6 +1099,7 @@ def show_setup() -> None:
 
                         label = "refined" if _is_refine else "generated"
                         st.success(f"✅ {len(schedule)} games {label} via {method}")
+                        st.session_state._active_setup_tab = 1
                         st.rerun()
                     else:
                         st.error("Incorrect password.")
@@ -1063,6 +1109,7 @@ def show_setup() -> None:
         if st.button("🔄 Reset Session", use_container_width=True):
             st.session_state.show_reset_pw = True
             st.session_state.show_gen_pw   = False
+            st.session_state._active_setup_tab = 1
             st.rerun()
 
         if st.session_state.show_reset_pw:
@@ -1099,6 +1146,7 @@ def show_setup() -> None:
                         with st.spinner("Resetting…"):
                             _put(_empty_state())
                         st.info("Tournament reset. Please refresh your browser to start fresh.")
+                        st.session_state._active_setup_tab = 1
                         st.rerun()
                     else:
                         st.error("Incorrect password.")
