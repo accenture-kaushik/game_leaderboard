@@ -231,5 +231,28 @@
   },
   "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. There are 3 girls in the player list. The name of the girls in the player list are - Neha, Piyush, Shreya.  Do not schedule game for kaushik in last 2 rounds (2 rounds rest). Do not rest kaushik except for these last 2 rounds (if possible). Do not schedule game for Ayush in 1st round. Do not schedule game for the girls and Harpreet on court 2 (if possible). ",
   "session_active": true,
-  "critics_choice": null
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "Ayush",
+        "reason": "Ayush demonstrated exceptional offensive prowess, scoring the highest points in the tournament. His dominant net performance showcased consistent, high-level play and standout rallies."
+      },
+      {
+        "rank": 2,
+        "name": "Prashant",
+        "reason": "Prashant exhibited remarkable consistency and strategic play, achieving a strong positive net score. His impressive points scored highlight a well-rounded and effective tournament performance."
+      },
+      {
+        "rank": 3,
+        "name": "Shreya",
+        "reason": "Shreya displayed immense courage and resilience, consistently scoring high points even in challenging matches. Her tenacious play and standout rallies were truly inspiring."
+      }
+    ],
+    "quips": [
+      "The court bowed when {name} walked in.",
+      "{name}, we didn't see that coming. Neither did the ball.",
+      "Even the opponents were secretly cheering for {name}."
+    ]
+  }
 }
