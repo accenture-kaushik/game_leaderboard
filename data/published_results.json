@@ -51,6 +51,11 @@
           "losses": 5,
           "net_points": -28
         }
+      ],
+      "girl_names": [
+        "Neha",
+        "Shreya",
+        "Piyusha"
       ]
     },
     {
@@ -104,6 +109,11 @@
           "losses": 4,
           "net_points": -24
         }
+      ],
+      "girl_names": [
+        "Neha",
+        "Shreya",
+        "Piyusha"
       ]
     }
   ]
