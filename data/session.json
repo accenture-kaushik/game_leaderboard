@@ -236,23 +236,23 @@
       {
         "rank": 1,
         "name": "Ayush",
-        "reason": "His exceptional 57 points scored and dominant +18 net score highlight a masterclass in consistent, high-level play. Ayush delivered powerful performances and numerous standout rallies."
+        "reason": "Ayush demonstrated exceptional offensive prowess, scoring the highest points in the tournament. His dominant net performance showcased consistent, high-level play and standout rallies."
       },
       {
         "rank": 2,
-        "name": "Shreya",
-        "reason": "Her impressive 44 points scored demonstrates remarkable offensive prowess and consistent effort throughout the tournament. She showcased incredible resilience and delivered many standout rallies."
+        "name": "Prashant",
+        "reason": "Prashant exhibited remarkable consistency and strategic play, achieving a strong positive net score. His impressive points scored highlight a well-rounded and effective tournament performance."
       },
       {
         "rank": 3,
-        "name": "Prashant",
-        "reason": "Prashant's solid +7 net score reflects his consistent positive impact and strategic play on the court. He demonstrated excellent teamwork and contributed significantly to every match."
+        "name": "Shreya",
+        "reason": "Shreya displayed immense courage and resilience, consistently scoring high points even in challenging matches. Her tenacious play and standout rallies were truly inspiring."
       }
     ],
     "quips": [
-      "The rally that never ended \u2014 except it did, in {name}'s favour.",
-      "{name} was cool, calm, and absolutely lethal on the court.",
-      "{name} was solid, steady, and suspiciously consistent."
+      "The court bowed when {name} walked in.",
+      "{name}, we didn't see that coming. Neither did the ball.",
+      "Even the opponents were secretly cheering for {name}."
     ]
   }
 }

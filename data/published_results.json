@@ -52,6 +52,59 @@
           "net_points": -28
         }
       ]
+    },
+    {
+      "timestamp": "2026-04-23 09:44:20 UTC",
+      "players": [
+        {
+          "name": "Ayush",
+          "wins": 3,
+          "losses": 2,
+          "net_points": 18
+        },
+        {
+          "name": "Sandeep",
+          "wins": 3,
+          "losses": 1,
+          "net_points": 15
+        },
+        {
+          "name": "Neha",
+          "wins": 3,
+          "losses": 2,
+          "net_points": 3
+        },
+        {
+          "name": "Prashant",
+          "wins": 2,
+          "losses": 2,
+          "net_points": 7
+        },
+        {
+          "name": "Shreya",
+          "wins": 2,
+          "losses": 3,
+          "net_points": -3
+        },
+        {
+          "name": "Piyusha",
+          "wins": 2,
+          "losses": 2,
+          "net_points": -7
+        },
+        {
+          "name": "Kaushik",
+          "wins": 2,
+          "losses": 2,
+          "net_points": -9
+        },
+        {
+          "name": "Harpreet",
+          "wins": 1,
+          "losses": 4,
+          "net_points": -24
+        }
+      ]
     }
   ]
 }
