@@ -1889,8 +1889,8 @@ def show_all_time_leaderboard() -> None:
         return
 
     # ── Aggregate per-player stats across all filtered sessions ──────────────
-    agg: dict = {}
     girl_names_all: set = set()
+    agg: dict = {}
 
     for entry in filtered:
         girl_names_all.update(entry.get("girl_names", []))
