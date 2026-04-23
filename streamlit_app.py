@@ -464,6 +464,10 @@ st.markdown(
 def _init_ui():
     defaults = {
         "page": "setup",
+        "num_boys":    6,
+        "num_girls":   4,
+        "boy_names":   [""] * 6,
+        "girl_names":  [""] * 4,
         "num_players": 10,
         "num_courts": 2,
         "games_per_hour": 5,
@@ -476,11 +480,7 @@ def _init_ui():
         "verified_phone": "",
         "show_admin_pw": False,
         "show_admin_panel": False,
-        "special_instructions": (
-            "Avoid a team with 2 girls if the opponent team has a boy. "
-            "There are {xx} girls in the player list. "
-            "The name of the girls in the player list are - aa, bb, cc"
-        ),
+        "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy.",
         "phone_add_counter": 0,
         "show_pub_pw": False,
         "show_rst_pw": False,
@@ -617,8 +617,20 @@ def show_setup() -> None:
         for _c, _hrs in _s.get("court_hours", {}).items():
             st.session_state[f"court_hours_{_c}"] = float(_hrs)
         if _s.get("players"):
-            st.session_state.num_players  = len(_s["players"])
-            st.session_state.player_names = list(_s["players"])
+            _all_p      = list(_s["players"])
+            _saved_gset = set(_s.get("girl_names", []))
+            _bnames     = [p for p in _all_p if p not in _saved_gset]
+            _gnames     = [p for p in _all_p if p in _saved_gset]
+            st.session_state.num_boys      = len(_bnames)
+            st.session_state.num_girls     = len(_gnames)
+            st.session_state.boy_names     = _bnames
+            st.session_state.girl_names    = _gnames
+            st.session_state.num_players   = len(_all_p)
+            st.session_state.player_names  = _all_p
+            for _i, _nm in enumerate(_bnames):
+                st.session_state[f"pname_boy_{_i}"] = _nm
+            for _i, _nm in enumerate(_gnames):
+                st.session_state[f"pname_girl_{_i}"] = _nm
         if "special_instructions" in _s:
             st.session_state.special_instructions = _s["special_instructions"]
         st.session_state._setup_restored = True
@@ -635,25 +647,6 @@ def show_setup() -> None:
 
     # ── Players tab ──────────────────────────────────────────────────────────
     with tab_p:
-        # Number of players
-        num_players = st.number_input(
-            "Number of players", min_value=4, max_value=20,
-            value=st.session_state.num_players, step=1,
-        )
-        if num_players != st.session_state.num_players:
-            # Snapshot court hours before rerun so Streamlit doesn't lose them
-            for _c in range(1, st.session_state.get("num_courts", 2) + 1):
-                _hk = f"court_hours_{_c}"
-                if _hk in st.session_state:
-                    st.session_state[f"_bk_{_hk}"] = st.session_state[_hk]
-            st.session_state.num_players = num_players
-            cur = st.session_state.player_names
-            if num_players > len(cur):
-                cur += [f"Player {i + 1}" for i in range(len(cur), num_players)]
-            else:
-                st.session_state.player_names = cur[:num_players]
-            st.rerun()
-
         # Number of courts
         num_courts = st.number_input(
             "Number of courts", min_value=1, max_value=4,
@@ -700,7 +693,8 @@ def show_setup() -> None:
             st.caption(f"→ {num_games_per_court[c]} games")
 
         # Session summary info box
-        n           = st.session_state.num_players
+        n           = st.session_state.get("num_boys", 6) + st.session_state.get("num_girls", 4)
+        st.session_state.num_players = n
         total_games = sum(num_games_per_court.values())
         detail      = "  \n".join(
             f"Court {c}: {g} games ({st.session_state.get(f'court_hours_{c}', 2.0):.1f}h)"
@@ -715,56 +709,121 @@ def show_setup() -> None:
 
         st.markdown('<div class="section-label">Player roster</div>', unsafe_allow_html=True)
 
-        # ── Test Fill (dev only — visible to specific phone number) ───────────
+        # ── Test Fill (dev only) ──────────────────────────────────────────────
         if st.session_state.get("verified_phone") == "7261979719":
             if st.button("🧪 Test Fill", key="btn_test_fill", use_container_width=True):
-                n = st.session_state.num_players
-                girl_names = [f"Girl{i + 1}" for i in range(4)]
-                boy_names  = [f"Boy{i + 1}"  for i in range(max(0, n - 4))]
-                test_names = (girl_names + boy_names)[:n]
-                st.session_state.player_names = test_names + [""] * max(0, n - len(test_names))
-                for i in range(n):
-                    st.session_state[f"pname_{i}"] = st.session_state.player_names[i]
-                    st.session_state[f"skill_{i}"] = "intermediate"
-                actual_girls = [g for g in girl_names if g in test_names]
+                _tb = [f"Boy{i+1}"  for i in range(st.session_state.get("num_boys", 6))]
+                _tg = [f"Girl{i+1}" for i in range(st.session_state.get("num_girls", 4))]
+                st.session_state.boy_names  = _tb
+                st.session_state.girl_names = _tg
+                for _i, _nm in enumerate(_tb):
+                    st.session_state[f"pname_boy_{_i}"]  = _nm
+                    st.session_state[f"skill_boy_{_i}"]  = "intermediate"
+                for _i, _nm in enumerate(_tg):
+                    st.session_state[f"pname_girl_{_i}"] = _nm
+                    st.session_state[f"skill_girl_{_i}"] = "intermediate"
                 st.session_state.special_instructions = (
-                    f"Avoid a team with 2 girls if the opponent team has a boy. "
-                    f"There are {len(actual_girls)} girls in the player list. "
-                    f"The name of the girls in the player list are - {', '.join(actual_girls)}"
+                    "Avoid a team with 2 girls if the opponent team has only boys."
                 )
                 st.rerun()
 
-        # ── Player rows ───────────────────────────────────────────────────────
-        for i in range(st.session_state.num_players):
-            # Ensure skill default is set even when radio is hidden
-            if f"skill_{i}" not in st.session_state:
-                st.session_state[f"skill_{i}"] = "intermediate"
+        # ── Boys ──────────────────────────────────────────────────────────────
+        st.markdown('**👦 Boys**', unsafe_allow_html=False)
+        num_boys = st.number_input(
+            "Number of boys", min_value=0, max_value=16, step=1,
+            value=st.session_state.get("num_boys", 6),
+            key="num_boys_input",
+        )
+        if num_boys != st.session_state.get("num_boys", 6):
+            for _c in range(1, st.session_state.get("num_courts", 2) + 1):
+                _hk = f"court_hours_{_c}"
+                if _hk in st.session_state:
+                    st.session_state[f"_bk_{_hk}"] = st.session_state[_hk]
+            cur = st.session_state.get("boy_names", [])
+            if num_boys > len(cur):
+                cur = cur + [""] * (num_boys - len(cur))
+            else:
+                cur = cur[:num_boys]
+            st.session_state.boy_names = cur
+            st.session_state.num_boys  = num_boys
+            st.rerun()
 
+        for i in range(st.session_state.get("num_boys", 6)):
+            if f"skill_boy_{i}" not in st.session_state:
+                st.session_state[f"skill_boy_{i}"] = "intermediate"
             default = (
-                st.session_state.player_names[i]
-                if i < len(st.session_state.player_names)
+                st.session_state.get("boy_names", [""] * 20)[i]
+                if i < len(st.session_state.get("boy_names", []))
                 else ""
             )
             if st.session_state.skill_visible:
                 c_name, c_skill = st.columns([5, 4])
                 with c_name:
                     st.text_input(
-                        f"P{i + 1}", value=default,
-                        key=f"pname_{i}", placeholder=f"Player {i + 1}",
+                        f"B{i+1}", value=default,
+                        key=f"pname_boy_{i}", placeholder=f"Boy {i+1}",
                         label_visibility="collapsed",
                     )
                 with c_skill:
                     st.radio(
-                        "Level",
-                        options=["intermediate", "beginner"],
-                        key=f"skill_{i}",
-                        horizontal=True,
+                        "Level", options=["intermediate", "beginner"],
+                        key=f"skill_boy_{i}", horizontal=True,
                         label_visibility="collapsed",
                     )
             else:
                 st.text_input(
-                    f"P{i + 1}", value=default,
-                    key=f"pname_{i}", placeholder=f"Player {i + 1}",
+                    f"B{i+1}", value=default,
+                    key=f"pname_boy_{i}", placeholder=f"Boy {i+1}",
+                    label_visibility="collapsed",
+                )
+
+        # ── Girls ─────────────────────────────────────────────────────────────
+        st.markdown('**👧 Girls**', unsafe_allow_html=False)
+        num_girls = st.number_input(
+            "Number of girls", min_value=0, max_value=8, step=1,
+            value=st.session_state.get("num_girls", 4),
+            key="num_girls_input",
+        )
+        if num_girls != st.session_state.get("num_girls", 4):
+            for _c in range(1, st.session_state.get("num_courts", 2) + 1):
+                _hk = f"court_hours_{_c}"
+                if _hk in st.session_state:
+                    st.session_state[f"_bk_{_hk}"] = st.session_state[_hk]
+            cur = st.session_state.get("girl_names", [])
+            if num_girls > len(cur):
+                cur = cur + [""] * (num_girls - len(cur))
+            else:
+                cur = cur[:num_girls]
+            st.session_state.girl_names = cur
+            st.session_state.num_girls  = num_girls
+            st.rerun()
+
+        for i in range(st.session_state.get("num_girls", 4)):
+            if f"skill_girl_{i}" not in st.session_state:
+                st.session_state[f"skill_girl_{i}"] = "intermediate"
+            default = (
+                st.session_state.get("girl_names", [""] * 10)[i]
+                if i < len(st.session_state.get("girl_names", []))
+                else ""
+            )
+            if st.session_state.skill_visible:
+                c_name, c_skill = st.columns([5, 4])
+                with c_name:
+                    st.text_input(
+                        f"G{i+1}", value=default,
+                        key=f"pname_girl_{i}", placeholder=f"Girl {i+1}",
+                        label_visibility="collapsed",
+                    )
+                with c_skill:
+                    st.radio(
+                        "Level", options=["intermediate", "beginner"],
+                        key=f"skill_girl_{i}", horizontal=True,
+                        label_visibility="collapsed",
+                    )
+            else:
+                st.text_input(
+                    f"G{i+1}", value=default,
+                    key=f"pname_girl_{i}", placeholder=f"Girl {i+1}",
                     label_visibility="collapsed",
                 )
 
@@ -894,15 +953,17 @@ def show_setup() -> None:
                         for _g in old_schedule:
                             for _prefix in ("sa_", "sb_", "btn_"):
                                 st.session_state.pop(f"{_prefix}{_g['game_id']}", None)
-                        # ── Collect names & skills ──────────────────────────
-                        raw_names = [
-                            (st.session_state.get(f"pname_{i}") or f"Player {i + 1}").strip()
-                            for i in range(st.session_state.num_players)
-                        ]
-                        raw_skills = [
-                            st.session_state.get(f"skill_{i}", "intermediate")
-                            for i in range(st.session_state.num_players)
-                        ]
+                        # ── Collect names & skills from boys + girls sections ─
+                        _nb = st.session_state.get("num_boys", 6)
+                        _ng = st.session_state.get("num_girls", 4)
+                        raw_names = (
+                            [(st.session_state.get(f"pname_boy_{i}") or f"Boy {i+1}").strip()  for i in range(_nb)] +
+                            [(st.session_state.get(f"pname_girl_{i}") or f"Girl {i+1}").strip() for i in range(_ng)]
+                        )
+                        raw_skills = (
+                            [st.session_state.get(f"skill_boy_{i}", "intermediate")  for i in range(_nb)] +
+                            [st.session_state.get(f"skill_girl_{i}", "intermediate") for i in range(_ng)]
+                        )
                         seen: Dict[str, int] = {}
                         players: List[str] = []
                         skill_levels: Dict[str, str] = {}
@@ -915,7 +976,10 @@ def show_setup() -> None:
                                 seen[nm] = 1
                             players.append(nm)
                             skill_levels[nm] = sk
+                        # Resolved girl names (after dedup) = last _ng entries
+                        resolved_girl_names = players[_nb:]
                         st.session_state.player_names = players
+                        st.session_state.girl_names   = resolved_girl_names
 
                         # ── Detect refine vs fresh ──────────────────────────
                         _saved         = _get()
@@ -967,6 +1031,7 @@ def show_setup() -> None:
 
                             _put({
                                 "players":        players,
+                                "girl_names":     resolved_girl_names,
                                 "skill_levels":   skill_levels,
                                 "num_courts":     num_courts,
                                 "games_per_hour": games_per_hour,
@@ -1014,14 +1079,19 @@ def show_setup() -> None:
                             if k.startswith(("sa_", "sb_", "winner_", "win_a_", "win_b_", "court_hours_")):
                                 del st.session_state[k]
                         # Reset setup widgets to defaults
+                        st.session_state.num_boys      = 6
+                        st.session_state.num_girls     = 4
                         st.session_state.num_players   = 10
                         st.session_state.num_courts    = 2
                         st.session_state.games_per_hour = 5
-                        st.session_state.player_names        = [f"Player {i + 1}" for i in range(10)]
+                        st.session_state.boy_names     = [""] * 6
+                        st.session_state.girl_names    = [""] * 4
+                        st.session_state.player_names  = [""] * 10
                         st.session_state.special_instructions = ""
-                        # Delete pname_X keys so text_input widgets re-render with defaults
                         for _i in range(20):
                             st.session_state.pop(f"pname_{_i}", None)
+                            st.session_state.pop(f"pname_boy_{_i}", None)
+                            st.session_state.pop(f"pname_girl_{_i}", None)
                         with st.spinner("Resetting…"):
                             _put(_empty_state())
                         st.info("Tournament reset. Please refresh your browser to start fresh.")
@@ -1066,6 +1136,59 @@ def show_setup() -> None:
                     mime="text/csv",
                     use_container_width=True,
                 )
+
+            # ── Upload revised schedule ───────────────────────────────────────
+            with st.expander("📤 Upload Revised Schedule (Excel)", expanded=False):
+                st.caption(
+                    "Download the Excel above, edit player names / courts / scores offline, "
+                    "then upload it here to replace the current schedule."
+                )
+                uploaded_xl = st.file_uploader(
+                    "Choose Excel file",
+                    type=["xlsx"],
+                    key="schedule_upload",
+                    label_visibility="collapsed",
+                )
+                if uploaded_xl is not None:
+                    parsed_sched, parsed_scores, parse_err = _parse_uploaded_xlsx(uploaded_xl.read())
+                    if parse_err:
+                        st.error(parse_err)
+                    else:
+                        submitted_count = sum(
+                            1 for v in parsed_scores.values() if v.get("submitted")
+                        )
+                        st.success(
+                            f"✓ {len(parsed_sched)} games parsed · "
+                            f"{submitted_count} with scores · "
+                            f"{len(parsed_sched) - submitted_count} pending"
+                        )
+                        _render_table(parsed_sched, parsed_scores, show_court=True)
+                        st.caption("Enter admin password to apply this schedule")
+                        up_pw_col, up_go_col = st.columns([5, 2])
+                        with up_pw_col:
+                            up_pw = st.text_input(
+                                "up_pw", type="password", placeholder="Password…",
+                                label_visibility="collapsed", key="upload_pw_field",
+                            )
+                        with up_go_col:
+                            if st.button(
+                                "✅ Apply", key="btn_upload_apply",
+                                type="primary", use_container_width=True,
+                            ):
+                                if up_pw == _admin_password():
+                                    new_state = copy.deepcopy(_get())
+                                    new_state["schedule"]       = parsed_sched
+                                    new_state["scores"]         = parsed_scores
+                                    new_state["critics_choice"] = None
+                                    new_state["num_courts"]     = max(
+                                        (g["court"] for g in parsed_sched), default=2
+                                    )
+                                    with st.spinner("Saving revised schedule…"):
+                                        _put(new_state)
+                                    st.success("Schedule updated. Refresh the court pages.")
+                                    st.rerun()
+                                else:
+                                    st.error("Incorrect password.")
 
             num_courts_now = state.get("num_courts", 2)
             sched_tab_labels = [f"🏟 Court {c}" for c in range(1, num_courts_now + 1)] + ["📄 All"]
@@ -1172,6 +1295,116 @@ def _build_docx(schedule: List[dict], scores: dict = None) -> bytes:
     doc.save(buf)
     buf.seek(0)
     return buf.getvalue()
+
+
+def _parse_uploaded_xlsx(file_bytes: bytes):
+    """Parse an uploaded schedule Excel into (schedule, scores, error_string).
+
+    Expects the same columns produced by _build_xlsx:
+      Game, Court, Team A, Score A, Team B, Score B, Sitting Out
+    Returns (None, None, error_msg) on failure.
+    """
+    import io
+    import math
+    import pandas as pd
+
+    def _safe_str(val) -> str:
+        if val is None:
+            return ""
+        try:
+            if math.isnan(float(val)):
+                return ""
+        except (TypeError, ValueError):
+            pass
+        return str(val).strip()
+
+    try:
+        try:
+            df = pd.read_excel(io.BytesIO(file_bytes), sheet_name="Schedule")
+        except Exception:
+            df = pd.read_excel(io.BytesIO(file_bytes))
+    except Exception as exc:
+        return None, None, f"Could not read file: {exc}"
+
+    required_cols = {"Court", "Team A", "Team B"}
+    missing = required_cols - set(df.columns)
+    if missing:
+        return None, None, f"Missing required columns: {', '.join(sorted(missing))}"
+
+    schedule: List[dict] = []
+    scores: dict = {}
+    seen_ids: set = set()
+    errors: List[str] = []
+
+    round_num = 0
+    prev_court = 0
+
+    for row_num, (_, row) in enumerate(df.iterrows()):
+        court_raw = _safe_str(row.get("Court", ""))
+        if not court_raw:
+            continue
+        try:
+            court = int(float(court_raw))
+        except ValueError:
+            errors.append(f"Row {row_num + 2}: invalid Court value '{court_raw}'")
+            continue
+
+        # Detect new round whenever court resets to a lower/equal value
+        if row_num == 0 or court <= prev_court:
+            round_num += 1
+        prev_court = court
+
+        team_a_str = _safe_str(row.get("Team A", ""))
+        team_b_str = _safe_str(row.get("Team B", ""))
+        sitting_str = _safe_str(row.get("Sitting Out", ""))
+
+        team_a = [n.strip() for n in team_a_str.split("&") if n.strip()]
+        team_b = [n.strip() for n in team_b_str.split("&") if n.strip()]
+        sitting = [n.strip() for n in sitting_str.split(",") if n.strip()]
+
+        if len(team_a) != 2 or len(team_b) != 2:
+            errors.append(
+                f"Row {row_num + 2}: Team A or Team B must have exactly 2 players "
+                f"(use 'Player1 & Player2' format). Got: '{team_a_str}' vs '{team_b_str}'"
+            )
+            continue
+
+        # Ensure unique game_id
+        game_id = f"r{round_num}_c{court}"
+        suffix = 1
+        while game_id in seen_ids:
+            game_id = f"r{round_num}_c{court}_{suffix}"
+            suffix += 1
+        seen_ids.add(game_id)
+
+        schedule.append({
+            "round":       round_num,
+            "court":       court,
+            "team_a":      team_a,
+            "team_b":      team_b,
+            "sitting_out": sitting,
+            "time_slot":   f"{(round_num - 1) * 10}–{round_num * 10} min",
+            "game_id":     game_id,
+        })
+
+        score_a_raw = _safe_str(row.get("Score A", ""))
+        score_b_raw = _safe_str(row.get("Score B", ""))
+        if score_a_raw and score_b_raw:
+            try:
+                scores[game_id] = {
+                    "score_a":   int(float(score_a_raw)),
+                    "score_b":   int(float(score_b_raw)),
+                    "submitted": True,
+                }
+            except ValueError:
+                pass  # malformed scores → treat as not submitted
+
+    if errors:
+        return None, None, "\n".join(errors)
+    if not schedule:
+        return None, None, "No valid game rows found in the file."
+
+    return schedule, scores, None
 
 
 def _build_xlsx(schedule: List[dict], scores: dict = None) -> bytes:
@@ -1391,9 +1624,19 @@ def show_court(court: int) -> None:
 # Page: Leaderboard
 # ===========================================================================
 
-def _get_critics_choice(lb: list, special_instructions: str) -> Optional[list]:
-    """Call Gemini to pick Critic's Choice top 3. Returns [{rank, name, reason}] or None.
-    Uses the same config loading path as the schedule agent."""
+def _get_critics_choice(
+    lb: list,
+    special_instructions: str,  # kept for call-site compat, not used in prompt
+    podium_names: list = None,
+    girl_names: set = None,
+) -> Optional[list]:
+    """Call Gemini to pick Critic's Choice top 3.
+
+    Rules enforced both in the prompt and in post-processing:
+    - At most 1 player may overlap with the Winner Podium (podium_names).
+    - At least 1 girl must be included (when girls are available).
+    - The girl chosen must NOT be the same girl already on the Winner Podium.
+    """
     import json as _json
     import google.generativeai as genai
     from agent.react_agent import _load_gemini_config, _load_api_key
@@ -1402,6 +1645,12 @@ def _get_critics_choice(lb: list, special_instructions: str) -> Optional[list]:
     api_key = _load_api_key()
     if not api_key:
         raise ValueError("Gemini API key not found — check secrets.toml or config.yaml.")
+
+    podium_names  = list(podium_names or [])
+    girl_names    = set(girl_names or [])
+    podium_set    = set(podium_names)
+    winner_girls  = girl_names & podium_set          # girls already on winner podium
+    available_girls = girl_names - podium_set        # girls NOT on winner podium
 
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel(
@@ -1420,28 +1669,46 @@ def _get_critics_choice(lb: list, special_instructions: str) -> Optional[list]:
         for p in lb
     )
 
+    # Build constraint block for the prompt
+    constraint_lines = []
+    if podium_names:
+        constraint_lines.append(
+            f"WINNER PODIUM (by avg points) players are: {', '.join(podium_names)}. "
+            "AT MOST 1 of these players may appear in your Critic's Choice podium. "
+            "The other 2 picks MUST come from outside this list."
+        )
+    if girl_names:
+        if available_girls:
+            constraint_lines.append(
+                f"Girl players NOT on the winner podium: {', '.join(sorted(available_girls))}. "
+                "You MUST include at least 1 of these girls in your top 3. "
+                + (
+                    f"Do NOT pick {', '.join(sorted(winner_girls))} as your girl pick "
+                    f"— {'she is' if len(winner_girls) == 1 else 'they are'} already on the winner podium."
+                    if winner_girls else ""
+                )
+            )
+        elif girl_names:
+            constraint_lines.append(
+                f"Girl players: {', '.join(sorted(girl_names))}. "
+                "Include at least 1 girl in your top 3."
+            )
+
+    constraints_block = (
+        "\n\nMANDATORY CONSTRAINTS (non-negotiable):\n" + "\n".join(f"{i+1}. {c}" for i, c in enumerate(constraint_lines))
+        if constraint_lines else ""
+    )
+
     prompt = (
         "You are a sharp, fair game critic reviewing a doubles sports tournament.\n\n"
         "PLAYER STATISTICS:\n"
         + stats_lines
-        + "\n\nTOURNAMENT CONTEXT (use this to identify girl players and any other notes):\n"
-        + (special_instructions or "No gender context provided.")
+        + constraints_block
         + "\n\nYOUR TASK — select the Critic's (AI) Choice top 3 podium.\n\n"
-        "SELECTION CRITERIA (weigh all of these):\n"
-        "1. Wins, net points, and win rate are the primary performance signals.\n"
-        "2. GENDER RECOGNITION — this is critical: identify girl players from the context above. "
-        "A girl who lost matches but played BRAVELY against boys deserves recognition. "
-        "Look for signs of brave performance in the stats: "
-        "high points_gained even in losses (close scorelines), "
-        "low points_conceded despite facing stronger opponents, "
-        "tiebreaker situations (very tight net points), "
-        "or a high win rate relative to expectations for mixed-gender matchups. "
-        "A girl with fewer wins but who scored heavily or kept scores tight against boys "
-        "is MORE commendable than a boy with the same win count against weaker opponents.\n"
-        "3. MANDATORY RULE: if there are 2 or more girls in the tournament "
-        "(check context for names), at least 1 girl MUST be in your top 3 — "
-        "even if her win count is lower, reward the fight, the points scored, "
-        "and the courage shown in tough matchups.\n\n"
+        "SELECTION CRITERIA:\n"
+        "1. Look beyond raw wins — reward bravery, consistency, close scorelines, and standout rallies.\n"
+        "2. A girl who played hard against stronger opponents deserves recognition — "
+        "high points_gained in losses shows courage.\n\n"
         "Write a 2-sentence reason (max 35 words) for each pick. "
         "CRITICAL: Only mention POSITIVE achievements — great points scored, impressive wins, "
         "strong rallies, standout performances. "
@@ -1463,32 +1730,77 @@ def _get_critics_choice(lb: list, special_instructions: str) -> Optional[list]:
             text = text[4:]
     text = text.strip()
 
-    data   = _json.loads(text)
-    podium = data.get("podium", [])
+    data        = _json.loads(text)
+    podium      = data.get("podium", [])
     valid_names = {p["name"] for p in lb}
-    podium = [e for e in podium if e.get("name") in valid_names][:3]
+    podium      = [e for e in podium if e.get("name") in valid_names][:3]
 
     if len(podium) < 3:
         raise ValueError(f"Gemini returned fewer than 3 valid picks: {podium}")
+
+    # ── Post-processing validation ────────────────────────────────────────────
+    # Rule 1: at most 1 overlap with winner podium
+    overlap = [e["name"] for e in podium if e["name"] in podium_set]
+    if len(overlap) > 1:
+        raise ValueError(
+            f"Critic's Choice overlaps winner podium on {overlap} — max 1 allowed. "
+            "Please try again."
+        )
+
+    # Rule 2 & 3: at least 1 girl, and not the same girl as winner podium
+    if girl_names:
+        cc_girls = [e["name"] for e in podium if e["name"] in girl_names]
+        if not cc_girls:
+            raise ValueError("Critic's Choice has no girls — at least 1 required. Please try again.")
+        if available_girls:
+            bad_girls = [n for n in cc_girls if n in winner_girls]
+            if bad_girls:
+                raise ValueError(
+                    f"{', '.join(bad_girls)} is already on the winner podium — "
+                    "the girl pick must be different. Please try again."
+                )
 
     return podium
 
 
 def _identify_girls(player_names: list, special_instructions: str) -> set:
-    """Return the set of player names identified as girls from special_instructions text."""
+    """Return player names explicitly introduced as girls in special_instructions.
+
+    Only names that appear AFTER a gender keyword within the same sentence/clause
+    are included, preventing false positives from names that merely appear nearby.
+    """
+    import re as _re
     if not special_instructions:
         return set()
-    text = special_instructions.lower()
-    gender_words = {"girl", "female", "she", "her ", "woman", "women", "ladies", "lady"}
+
+    name_map  = {n.lower(): n for n in player_names}
     girls: set = set()
-    for name in player_names:
-        idx = text.find(name.lower())
-        while idx != -1:
-            window = text[max(0, idx - 60) : idx + len(name) + 60]
-            if any(w in window for w in gender_words):
-                girls.add(name)
-                break
-            idx = text.find(name.lower(), idx + 1)
+    gender_re  = _re.compile(r'\b(?:girls?|females?|women|woman|ladies|lady)\b')
+
+    # Split into clauses on sentence-ending punctuation or newlines
+    clauses = _re.split(r'[.;!\n]+', special_instructions.lower())
+
+    for clause in clauses:
+        gm = gender_re.search(clause)
+        if not gm:
+            continue
+        # Only consider names that appear AFTER the gender keyword in this clause
+        after = clause[gm.start():]
+        for name_lower, name_orig in name_map.items():
+            if name_lower in after:
+                girls.add(name_orig)
+
+        # Also handle reverse pattern: "[Name1, Name2] are girls"
+        before_match = _re.match(
+            r'^(.*?)\bare\s+(?:a\s+)?(?:girls?|females?|women|woman|ladies?)\b',
+            clause,
+        )
+        if before_match:
+            before_text = before_match.group(1)
+            for name_lower, name_orig in name_map.items():
+                if name_lower in before_text:
+                    girls.add(name_orig)
+
     return girls
 
 
@@ -1538,46 +1850,70 @@ def show_leaderboard() -> None:
     )
 
     def _avg_pts(p: dict) -> float:
+        # avg league-points per game: (wins × 2) / games_played
         gp = p.get("games_played", 0)
-        return p.get("points_gained", 0) / gp if gp > 0 else 0.0
+        return (p.get("games_won", 0) * 2) / gp if gp > 0 else 0.0
+
+    def _rank_key(p: dict):
+        return (_avg_pts(p), p.get("net_points", 0))
 
     active_for_podium = [p for p in lb if p.get("games_played", 0) > 0]
     all_names  = [p["name"] for p in active_for_podium]
-    girl_names = _identify_girls(all_names, state.get("special_instructions", ""))
+    _saved_girls = set(state.get("girl_names", []))
+    girl_names   = _saved_girls if _saved_girls else _identify_girls(all_names, state.get("special_instructions", ""))
 
     girls_pool = sorted([p for p in active_for_podium if p["name"] in girl_names],
-                        key=_avg_pts, reverse=True)
+                        key=_rank_key, reverse=True)
     boys_pool  = sorted([p for p in active_for_podium if p["name"] not in girl_names],
-                        key=_avg_pts, reverse=True)
+                        key=_rank_key, reverse=True)
 
     # 2 boys + 1 girl only when ≥2 girls are in the tournament
     if len(girls_pool) >= 2 and len(boys_pool) >= 2:
         selected = boys_pool[:2] + girls_pool[:1]
     else:
-        selected = sorted(active_for_podium, key=_avg_pts, reverse=True)[:3]
+        selected = sorted(active_for_podium, key=_rank_key, reverse=True)[:3]
 
-    podium_players = sorted(selected, key=_avg_pts, reverse=True)
+    podium_players = sorted(selected, key=_rank_key, reverse=True)
 
-    _medal_bg     = ["#1E1A0A", "#161616", "#1A0E0A"]
     _medal_border = ["#F9A825", "#9E9E9E", "#EF5350"]
-    _medals       = ["🥇", "🥈", "🥉"]
+    _BOY_BG  = "#0A1628"   # dark navy
+    _GIRL_BG = "#1E0818"   # dark rose
+
+    _GIRL_SVG = '<span style="font-size:2.4rem;line-height:1">👧</span>'
+    _BOY_SVG  = '<span style="font-size:2.4rem;line-height:1">👱</span>'
+
+    def _medal_svg(fill: str, stroke: str) -> str:
+        return (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 50" width="38" height="38">'
+            f'<rect x="16" y="0" width="8" height="14" fill="{stroke}" rx="3"/>'
+            f'<circle cx="20" cy="32" r="17" fill="{fill}" stroke="{stroke}" stroke-width="2"/>'
+            f'<circle cx="20" cy="32" r="11" fill="none" stroke="{stroke}" stroke-width="1.5" opacity="0.45"/>'
+            '</svg>'
+        )
+
+    _MEDAL_SVGS = [
+        _medal_svg("#FFD700", "#B8860B"),   # gold
+        _medal_svg("#D8D8D8", "#888888"),   # silver
+        _medal_svg("#CD7F32", "#8B4513"),   # bronze
+    ]
 
     raw_quips = random.sample(_ALL_QUIPS, min(len(podium_players), len(_ALL_QUIPS)))
 
     cols = st.columns(len(podium_players))
-    for col, medal, p, bg, border, raw_quip in zip(
-        cols, _medals, podium_players, _medal_bg, _medal_border, raw_quips
+    for col, medal_svg, p, border, raw_quip in zip(
+        cols, _MEDAL_SVGS, podium_players, _medal_border, raw_quips
     ):
-        quip        = raw_quip.format(name=p["name"])
-        is_girl     = p["name"] in girl_names
-        gender_icon = "👧" if is_girl else "👦"
-        avg         = _avg_pts(p)
+        quip    = raw_quip.format(name=p["name"])
+        is_girl = p["name"] in girl_names
+        icon    = _GIRL_SVG if is_girl else _BOY_SVG
+        bg      = _GIRL_BG if is_girl else _BOY_BG
+        avg     = _avg_pts(p)
         with col:
             st.markdown(
                 f'<div style="background:{bg};border-top:4px solid {border};'
                 f'border-radius:12px;padding:0.9rem 0.6rem;text-align:center;">'
-                f'<div style="font-size:1.8rem;line-height:1">{medal}</div>'
-                f'<div style="font-size:1rem;line-height:1;margin-top:0.3rem">{gender_icon}</div>'
+                f'<div style="line-height:1;margin-bottom:0.1rem">{medal_svg}</div>'
+                f'<div style="line-height:1;margin-bottom:0.2rem">{icon}</div>'
                 f'<div style="font-weight:700;font-size:0.95rem;margin-top:0.3rem;color:#E8EAF0;">'
                 f'{p["name"]}</div>'
                 f'<div style="font-size:0.72rem;color:#F9A825;margin-top:0.2rem;font-weight:600;">'
@@ -1598,7 +1934,12 @@ def show_leaderboard() -> None:
         if len(active_lb) >= 3:
             try:
                 with st.spinner("🎭 Critic is reviewing the game… this may take a moment"):
-                    cc_picks = _get_critics_choice(active_lb, special_instructions)
+                    cc_picks = _get_critics_choice(
+                        active_lb,
+                        special_instructions,
+                        podium_names=[p["name"] for p in podium_players],
+                        girl_names=girl_names,
+                    )
                 cc_quips = random.sample(_ALL_QUIPS, min(3, len(_ALL_QUIPS)))
                 new_state = copy.deepcopy(_get())
                 new_state["critics_choice"] = {"picks": cc_picks, "quips": cc_quips}
@@ -1616,17 +1957,21 @@ def show_leaderboard() -> None:
         cc_quips  = cc_shared.get("quips") or random.sample(_ALL_QUIPS, 3)
         _cc_bg     = ["#0D1526", "#130D26", "#1A0D1A"]
         _cc_border = ["#29B6F6", "#CE93D8", "#F48FB1"]
-        _cc_medals = ["🥇", "🥈", "🥉"]
+        _cc_medal_svgs = [
+            _medal_svg("#FFD700", "#B8860B"),
+            _medal_svg("#D8D8D8", "#888888"),
+            _medal_svg("#CD7F32", "#8B4513"),
+        ]
         cc_cols = st.columns(3)
-        for col, medal, pick, bg, border, quip_tmpl in zip(
-            cc_cols, _cc_medals, cc_picks, _cc_bg, _cc_border, cc_quips
+        for col, medal_svg, pick, bg, border, quip_tmpl in zip(
+            cc_cols, _cc_medal_svgs, cc_picks, _cc_bg, _cc_border, cc_quips
         ):
             quip = quip_tmpl.format(name=pick["name"])
             with col:
                 st.markdown(
                     f'<div style="background:{bg};border-top:4px solid {border};'
                     f'border-radius:12px;padding:0.9rem 0.6rem;text-align:center;">'
-                    f'<div style="font-size:1.8rem;line-height:1">{medal}</div>'
+                    f'<div style="line-height:1;margin-bottom:0.1rem">{medal_svg}</div>'
                     f'<div style="font-weight:700;font-size:0.95rem;margin-top:0.4rem;color:#E8EAF0;">'
                     f'{pick["name"]}</div>'
                     f'<div style="font-size:0.72rem;color:#aaa;margin-top:0.45rem;'
