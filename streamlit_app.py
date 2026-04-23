@@ -184,12 +184,14 @@ def _github_load() -> Optional[dict]:
 
 def _publish_leaderboard(lb: list) -> None:
     """Append current leaderboard snapshot with timestamp to published_results.json on GitHub."""
-    from datetime import datetime
+    from datetime import datetime, timezone
     existing = _github_load_file("data/published_results.json", default={"results": []})
     if not isinstance(existing, dict):
         existing = {"results": []}
+    _state = _get()
     entry = {
-        "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
+        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
+        "girl_names": list(_state.get("girl_names", [])),
         "players": [
             {
                 "name":       p["name"],
@@ -553,6 +555,7 @@ with st.sidebar:
     for _c in range(1, _num_courts_state + 1):
         _sb_nav.append((f"court{_c}", f"🏟️  Court {_c}"))
     _sb_nav.append(("leaderboard", "🏆  Leaderboard"))
+    _sb_nav.append(("alltime", "📊  All Time"))
 
     for pid, label in _sb_nav:
         if st.button(
@@ -588,6 +591,7 @@ def _nav(active: str) -> None:
     for c in range(1, num_courts + 1):
         nav.append((f"court{c}", "🏟", f"Crt {c}"))
     nav.append(("leaderboard", "🏆", "Leaderboard"))
+    nav.append(("alltime", "📊", "All Time"))
 
     cols = st.columns(len(nav))
     for col, (pid, icon, label) in zip(cols, nav):
@@ -1804,6 +1808,160 @@ def _identify_girls(player_names: list, special_instructions: str) -> set:
     return girls
 
 
+def show_all_time_leaderboard() -> None:
+    from datetime import datetime, timedelta, timezone
+
+    st.markdown(
+        '<div class="page-header">'
+        '<h1>📊 All-Time Leaderboard</h1>'
+        '<p>Aggregate standings · last 30 days</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+    if st.button("🔄 Refresh", use_container_width=True):
+        st.rerun()
+
+    pub = _github_load_file("data/published_results.json", default={"results": []})
+    all_results = pub.get("results", []) if isinstance(pub, dict) else []
+
+    cutoff = datetime.now(timezone.utc) - timedelta(days=30)
+    cutoff_naive = cutoff.replace(tzinfo=None)
+    filtered = []
+    for entry in all_results:
+        try:
+            ts = datetime.strptime(entry["timestamp"], "%Y-%m-%d %H:%M:%S UTC")
+            if ts >= cutoff_naive:
+                filtered.append(entry)
+        except (KeyError, ValueError):
+            pass
+
+    if not filtered:
+        st.info("No published results in the last 30 days. Publish a session from the Leaderboard page to start building history.")
+        return
+
+    # ── Aggregate per-player stats across all filtered sessions ──────────────
+    agg: dict = {}
+    girl_names_all: set = set()
+
+    for entry in filtered:
+        girl_names_all.update(entry.get("girl_names", []))
+        for p in entry.get("players", []):
+            name = p["name"]
+            if name not in agg:
+                agg[name] = {"name": name, "wins": 0, "losses": 0, "net_points": 0}
+            agg[name]["wins"]       += p.get("wins", 0)
+            agg[name]["losses"]     += p.get("losses", 0)
+            agg[name]["net_points"] += p.get("net_points", 0)
+
+    for stat in agg.values():
+        stat["games_played"] = stat["wins"] + stat["losses"]
+
+    active = [p for p in agg.values() if p["games_played"] > 0]
+
+    if not active:
+        st.info("No player data found in the filtered results.")
+        return
+
+    # ── Podium helpers (same as daily leaderboard) ────────────────────────────
+    def _avg_pts(p: dict) -> float:
+        gp = p.get("games_played", 0)
+        return (p.get("wins", 0) * 2) / gp if gp > 0 else 0.0
+
+    def _rank_key(p: dict):
+        return (_avg_pts(p), p.get("net_points", 0))
+
+    girls_pool = sorted([p for p in active if p["name"] in girl_names_all], key=_rank_key, reverse=True)
+    boys_pool  = sorted([p for p in active if p["name"] not in girl_names_all], key=_rank_key, reverse=True)
+
+    if len(girls_pool) >= 2 and len(boys_pool) >= 2:
+        selected = boys_pool[:2] + girls_pool[:1]
+    else:
+        selected = sorted(active, key=_rank_key, reverse=True)[:3]
+
+    podium_players = sorted(selected, key=_rank_key, reverse=True)
+
+    # ── Render podium ─────────────────────────────────────────────────────────
+    st.markdown(
+        '<div style="background:#F9A825;border-radius:10px;padding:0.75rem 1rem;'
+        'text-align:center;font-size:1rem;font-weight:700;color:#1A1200;'
+        'margin-bottom:0.75rem;letter-spacing:0.01em;">'
+        '🏆 All-Time Winner Podium (by avg points)</div>',
+        unsafe_allow_html=True,
+    )
+
+    _medal_border = ["#F9A825", "#9E9E9E", "#EF5350"]
+    _BOY_BG  = "#0A1628"
+    _GIRL_BG = "#1E0818"
+    _GIRL_SVG = '<span style="font-size:2.4rem;line-height:1">👧</span>'
+    _BOY_SVG  = '<span style="font-size:2.4rem;line-height:1">👱</span>'
+
+    def _medal_svg(fill: str, stroke: str) -> str:
+        return (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 50" width="38" height="38">'
+            f'<rect x="16" y="0" width="8" height="14" fill="{stroke}" rx="3"/>'
+            f'<circle cx="20" cy="32" r="17" fill="{fill}" stroke="{stroke}" stroke-width="2"/>'
+            f'<circle cx="20" cy="32" r="11" fill="none" stroke="{stroke}" stroke-width="1.5" opacity="0.45"/>'
+            '</svg>'
+        )
+
+    _MEDAL_SVGS = [
+        _medal_svg("#FFD700", "#B8860B"),
+        _medal_svg("#D8D8D8", "#888888"),
+        _medal_svg("#CD7F32", "#8B4513"),
+    ]
+
+    cols = st.columns(len(podium_players))
+    for col, medal_svg, p, border in zip(cols, _MEDAL_SVGS, podium_players, _medal_border):
+        is_girl = p["name"] in girl_names_all
+        icon = _GIRL_SVG if is_girl else _BOY_SVG
+        bg   = _GIRL_BG if is_girl else _BOY_BG
+        avg  = _avg_pts(p)
+        with col:
+            st.markdown(
+                f'<div style="background:{bg};border-top:4px solid {border};'
+                f'border-radius:12px;padding:0.9rem 0.6rem;text-align:center;">'
+                f'<div style="line-height:1;margin-bottom:0.1rem">{medal_svg}</div>'
+                f'<div style="line-height:1;margin-bottom:0.2rem">{icon}</div>'
+                f'<div style="font-weight:700;font-size:0.95rem;margin-top:0.3rem;color:#E8EAF0;">'
+                f'{p["name"]}</div>'
+                f'<div style="font-size:0.72rem;color:#F9A825;margin-top:0.2rem;font-weight:600;">'
+                f'avg {avg:.1f} pts/game</div>'
+                f'<div style="font-size:0.65rem;color:#aaa;margin-top:0.3rem;">'
+                f'{p["wins"]}W · {p["losses"]}L · net {p["net_points"]:+d}</div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+
+    st.divider()
+
+    # ── Full table ────────────────────────────────────────────────────────────
+    ranked = sorted(active, key=_rank_key, reverse=True)
+    rows = [
+        {
+            "#":       i + 1,
+            "Player":  p["name"],
+            "Avg Pts": round(_avg_pts(p), 2),
+            "W":       p["wins"],
+            "L":       p["losses"],
+            "GP":      p["games_played"],
+            "Net":     p["net_points"],
+        }
+        for i, p in enumerate(ranked)
+    ]
+    st.dataframe(
+        pd.DataFrame(rows),
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "Net":     st.column_config.NumberColumn("Net", format="%+d"),
+            "Avg Pts": st.column_config.NumberColumn("Avg Pts", format="%.2f"),
+        },
+    )
+
+    st.caption(f"Data from {len(filtered)} session(s) published in the last 30 days.")
+
+
 def show_leaderboard() -> None:
     st.markdown(
         '<div class="page-header">'
@@ -2370,6 +2528,8 @@ else:
         show_setup()
     elif _page == "leaderboard":
         show_leaderboard()
+    elif _page == "alltime":
+        show_all_time_leaderboard()
     elif _page.startswith("court"):
         try:
             show_court(int(_page[5:]))
