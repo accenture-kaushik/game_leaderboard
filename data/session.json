@@ -21,7 +21,7 @@
     "Animesh": "intermediate",
     "Ayush": "intermediate",
     "Neha": "intermediate",
-    "Shivani": "beginner"
+    "Shivani": "intermediate"
   },
   "num_courts": 2,
   "games_per_hour": 5,
@@ -129,7 +129,7 @@
       ],
       "team_b": [
         "Neha",
-        "Ayush"
+        "CJ"
       ],
       "sitting_out": [],
       "time_slot": "30\u201340 min",
@@ -144,7 +144,7 @@
       ],
       "team_b": [
         "Kaushik",
-        "CJ"
+        "Ayush"
       ],
       "sitting_out": [],
       "time_slot": "30\u201340 min",
@@ -331,8 +331,108 @@
       "game_id": "r10_c2"
     }
   ],
-  "scores": {},
-  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Same partners should not be repeated more than 2 times in the tournament. ",
-  "session_active": true,
-  "critics_choice": null
+  "scores": {
+    "r1_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r1_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r3_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r3_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r4_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r4_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r5_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r5_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r6_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r6_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r7_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r7_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r8_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r8_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r9_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r9_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r10_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r10_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    }
+  },
+  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Same partners should not be repeated more than 2 times in the tournament. Neha & CJ should partner 2 ",
+  "session_active": true
 }
