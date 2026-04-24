@@ -6,6 +6,7 @@
     "Monish",
     "Animesh",
     "Ayush",
+    "Mayank",
     "Neha",
     "Shivani"
   ],
@@ -20,8 +21,9 @@
     "Monish": "intermediate",
     "Animesh": "intermediate",
     "Ayush": "intermediate",
+    "Mayank": "beginner",
     "Neha": "intermediate",
-    "Shivani": "intermediate"
+    "Shivani": "beginner"
   },
   "num_courts": 2,
   "games_per_hour": 5,
@@ -34,14 +36,16 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "Shivani",
-        "Monish"
-      ],
-      "team_b": [
         "Neha",
         "CJ"
       ],
-      "sitting_out": [],
+      "team_b": [
+        "Monish",
+        "Animesh"
+      ],
+      "sitting_out": [
+        "Mayank"
+      ],
       "time_slot": "0\u201310 min",
       "game_id": "r1_c1"
     },
@@ -49,14 +53,16 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Harpreet",
-        "Ayush"
+        "Shivani",
+        "Harpreet"
       ],
       "team_b": [
         "Kaushik",
-        "Animesh"
+        "Ayush"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Mayank"
+      ],
       "time_slot": "0\u201310 min",
       "game_id": "r1_c2"
     },
@@ -64,14 +70,16 @@
       "round": 2,
       "court": 1,
       "team_a": [
-        "Shivani",
-        "Ayush"
+        "Neha",
+        "CJ"
       ],
       "team_b": [
-        "Neha",
-        "Monish"
+        "Harpreet",
+        "Kaushik"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Shivani"
+      ],
       "time_slot": "10\u201320 min",
       "game_id": "r2_c1"
     },
@@ -79,14 +87,16 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Harpreet",
-        "Kaushik"
+        "Mayank",
+        "Monish"
       ],
       "team_b": [
         "Animesh",
-        "CJ"
+        "Ayush"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Shivani"
+      ],
       "time_slot": "10\u201320 min",
       "game_id": "r2_c2"
     },
@@ -98,10 +108,12 @@
         "Kaushik"
       ],
       "team_b": [
-        "Neha",
+        "Mayank",
+        "CJ"
+      ],
+      "sitting_out": [
         "Harpreet"
       ],
-      "sitting_out": [],
       "time_slot": "20\u201330 min",
       "game_id": "r3_c1"
     },
@@ -109,14 +121,16 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "CJ",
-        "Ayush"
-      ],
-      "team_b": [
         "Monish",
         "Animesh"
       ],
-      "sitting_out": [],
+      "team_b": [
+        "Ayush",
+        "Neha"
+      ],
+      "sitting_out": [
+        "Harpreet"
+      ],
       "time_slot": "20\u201330 min",
       "game_id": "r3_c2"
     },
@@ -125,13 +139,15 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Harpreet"
+        "Monish"
       ],
       "team_b": [
-        "Animesh",
-        "Ayush"
+        "Mayank",
+        "Animesh"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Kaushik"
+      ],
       "time_slot": "30\u201340 min",
       "game_id": "r4_c1"
     },
@@ -139,14 +155,16 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Neha",
+        "Harpreet",
         "CJ"
       ],
       "team_b": [
-        "Monish",
+        "Ayush",
+        "Neha"
+      ],
+      "sitting_out": [
         "Kaushik"
       ],
-      "sitting_out": [],
       "time_slot": "30\u201340 min",
       "game_id": "r4_c2"
     },
@@ -155,13 +173,15 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Animesh"
-      ],
-      "team_b": [
-        "Neha",
         "Ayush"
       ],
-      "sitting_out": [],
+      "team_b": [
+        "Mayank",
+        "Harpreet"
+      ],
+      "sitting_out": [
+        "CJ"
+      ],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c1"
     },
@@ -169,14 +189,16 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Harpreet",
+        "Kaushik",
         "Monish"
       ],
       "team_b": [
-        "Kaushik",
+        "Animesh",
+        "Neha"
+      ],
+      "sitting_out": [
         "CJ"
       ],
-      "sitting_out": [],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c2"
     },
@@ -185,13 +207,15 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Harpreet"
+        "Animesh"
       ],
       "team_b": [
-        "Neha",
+        "Mayank",
         "Kaushik"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Monish"
+      ],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c1"
     },
@@ -199,14 +223,16 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "CJ",
-        "Animesh"
-      ],
-      "team_b": [
-        "Monish",
+        "Harpreet",
         "Ayush"
       ],
-      "sitting_out": [],
+      "team_b": [
+        "CJ",
+        "Neha"
+      ],
+      "sitting_out": [
+        "Monish"
+      ],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c2"
     },
@@ -215,13 +241,15 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Kaushik"
+        "CJ"
       ],
       "team_b": [
-        "Neha",
-        "Harpreet"
+        "Mayank",
+        "Ayush"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Animesh"
+      ],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c1"
     },
@@ -229,14 +257,16 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "CJ",
-        "Ayush"
+        "Harpreet",
+        "Monish"
       ],
       "team_b": [
-        "Monish",
+        "Kaushik",
+        "Neha"
+      ],
+      "sitting_out": [
         "Animesh"
       ],
-      "sitting_out": [],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c2"
     },
@@ -245,13 +275,15 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Ayush"
+        "Harpreet"
       ],
       "team_b": [
-        "Neha",
-        "Animesh"
+        "Mayank",
+        "Monish"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Ayush"
+      ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c1"
     },
@@ -259,14 +291,16 @@
       "round": 8,
       "court": 2,
       "team_a": [
-        "Harpreet",
+        "Kaushik",
         "CJ"
       ],
       "team_b": [
-        "Kaushik",
-        "Monish"
+        "Animesh",
+        "Neha"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Ayush"
+      ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c2"
     },
@@ -275,13 +309,15 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "CJ"
+        "Kaushik"
       ],
       "team_b": [
-        "Neha",
-        "Monish"
+        "Mayank",
+        "Animesh"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Neha"
+      ],
       "time_slot": "80\u201390 min",
       "game_id": "r9_c1"
     },
@@ -290,13 +326,15 @@
       "court": 2,
       "team_a": [
         "Harpreet",
-        "Animesh"
+        "CJ"
       ],
       "team_b": [
-        "Kaushik",
+        "Monish",
         "Ayush"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Neha"
+      ],
       "time_slot": "80\u201390 min",
       "game_id": "r9_c2"
     },
@@ -305,13 +343,15 @@
       "court": 1,
       "team_a": [
         "Shivani",
-        "Animesh"
+        "Monish"
       ],
       "team_b": [
-        "Neha",
-        "Ayush"
+        "Harpreet",
+        "Kaushik"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Mayank"
+      ],
       "time_slot": "90\u2013100 min",
       "game_id": "r10_c1"
     },
@@ -319,20 +359,122 @@
       "round": 10,
       "court": 2,
       "team_a": [
-        "Harpreet",
-        "Kaushik"
+        "CJ",
+        "Neha"
       ],
       "team_b": [
-        "CJ",
-        "Monish"
+        "Animesh",
+        "Ayush"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Mayank"
+      ],
       "time_slot": "90\u2013100 min",
       "game_id": "r10_c2"
     }
   ],
-  "scores": {},
-  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Same partners should not be repeated more than 2 times in the tournament. Neha & CJ should partner 2 games at minimum. Neha and CJ games should be scheduled towards the beginning of the tournament. ",
-  "session_active": true,
-  "critics_choice": null
+  "scores": {
+    "r1_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r1_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r3_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r3_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r4_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r4_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r5_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r5_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r6_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r6_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r7_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r7_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r8_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r8_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r9_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r9_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r10_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r10_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    }
+  },
+  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Same partners should not be repeated more than 2 times in the tournament. Neha & CJ should partner 2 games at minimum. Neha and CJ games should be scheduled towards the beginning of the tournament. Give lesser number of games to beginners compared to intermediates.  ",
+  "session_active": true
 }
