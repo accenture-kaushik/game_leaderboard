@@ -33,8 +33,8 @@
     "Neha": "intermediate",
     "Piyusha": "intermediate",
     "Shreya": "intermediate",
-    "Shivani": "beginner",
-    "Anal": "beginner"
+    "Shivani": "intermediate",
+    "Anal": "intermediate"
   },
   "num_courts": 3,
   "games_per_hour": 4,
@@ -303,15 +303,15 @@
       "round": 6,
       "court": 1,
       "team_a": [
-        "Shivani",
-        "Ayush"
-      ],
-      "team_b": [
-        "Kishan",
+        "Anal",
         "Monish"
       ],
+      "team_b": [
+        "Ayush",
+        "Kaushik"
+      ],
       "sitting_out": [
-        "Anal"
+        "Kishan"
       ],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c1"
@@ -320,15 +320,15 @@
       "round": 6,
       "court": 2,
       "team_a": [
+        "Neha",
+        "Animesh"
+      ],
+      "team_b": [
         "Piyusha",
         "CJ"
       ],
-      "team_b": [
-        "Kaushik",
-        "Sandeep"
-      ],
       "sitting_out": [
-        "Anal"
+        "Kishan"
       ],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c2"
@@ -337,15 +337,15 @@
       "round": 6,
       "court": 3,
       "team_a": [
-        "Neha",
-        "Animesh"
-      ],
-      "team_b": [
         "Shreya",
         "Harpreet"
       ],
+      "team_b": [
+        "Shivani",
+        "Sandeep"
+      ],
       "sitting_out": [
-        "Anal"
+        "Kishan"
       ],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c3"
@@ -354,15 +354,15 @@
       "round": 7,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Shivani"
+        "Anal",
+        "Kishan"
       ],
       "team_b": [
-        "Shreya",
-        "Anal"
+        "Neha",
+        "Sandeep"
       ],
       "sitting_out": [
-        "Animesh"
+        "Monish"
       ],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c1"
@@ -372,14 +372,14 @@
       "court": 2,
       "team_a": [
         "Piyusha",
-        "CJ"
+        "Ayush"
       ],
       "team_b": [
-        "Ayush",
-        "Kaushik"
+        "Shreya",
+        "CJ"
       ],
       "sitting_out": [
-        "Animesh"
+        "Monish"
       ],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c2"
@@ -392,11 +392,11 @@
         "Ayush"
       ],
       "team_b": [
-        "CJ",
-        "Kaushik"
+        "Neha",
+        "Harpreet"
       ],
       "sitting_out": [
-        "Shivani"
+        "Sandeep"
       ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c1"
@@ -405,15 +405,15 @@
       "round": 8,
       "court": 2,
       "team_a": [
-        "Neha",
-        "Sandeep"
+        "Piyusha",
+        "Kishan"
       ],
       "team_b": [
-        "Piyusha",
-        "Harpreet"
+        "Shreya",
+        "Monish"
       ],
       "sitting_out": [
-        "Shivani"
+        "Sandeep"
       ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c2"
@@ -531,6 +531,6 @@
       "submitted": false
     }
   },
-  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Keep 2 matches with Neha & CJ as a team. Keep 1 match where Neha plays against CJ. Rest beginners more compared to intermediate players. Try to schedule so that 1 player does not play against beginners more than 2 times. ",
+  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Keep 2 matches with Neha & CJ as a team. Keep 1 match where Neha plays against CJ. Rest beginners more compared to intermediate players. Try to schedule so that 1 player does not play against beginners more than 2 times. Same partners in a team can be for 2 games maximum. ",
   "session_active": true
 }
