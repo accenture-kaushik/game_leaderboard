@@ -41,7 +41,7 @@
   "court_hours": {
     "1": 2.0,
     "2": 2.0,
-    "3": 2.0
+    "3": 1.5
   },
   "schedule": [
     {
@@ -372,7 +372,7 @@
       "court": 2,
       "team_a": [
         "Piyusha",
-        "Ayush"
+        "Kaushik"
       ],
       "team_b": [
         "Shreya",
@@ -383,23 +383,6 @@
       ],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c2"
-    },
-    {
-      "round": 7,
-      "court": 3,
-      "team_a": [
-        "Kaushik",
-        "Animesh"
-      ],
-      "team_b": [
-        "Harpreet",
-        "Shivani"
-      ],
-      "sitting_out": [
-        "Monish"
-      ],
-      "time_slot": "60\u201370 min",
-      "game_id": "r7_c3"
     },
     {
       "round": 8,
@@ -434,23 +417,6 @@
       ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c2"
-    },
-    {
-      "round": 8,
-      "court": 3,
-      "team_a": [
-        "CJ",
-        "Animesh"
-      ],
-      "team_b": [
-        "Kaushik",
-        "Shivani"
-      ],
-      "sitting_out": [
-        "Sandeep"
-      ],
-      "time_slot": "70\u201380 min",
-      "game_id": "r8_c3"
     }
   ],
   "scores": {
@@ -554,22 +520,12 @@
       "score_b": null,
       "submitted": false
     },
-    "r7_c3": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
     "r8_c1": {
       "score_a": null,
       "score_b": null,
       "submitted": false
     },
     "r8_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r8_c3": {
       "score_a": null,
       "score_b": null,
       "submitted": false
