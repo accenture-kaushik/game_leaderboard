@@ -115,6 +115,63 @@
         "Shreya",
         "Piyusha"
       ]
+    },
+    {
+      "timestamp": "2026-04-25 10:15:55 UTC",
+      "girl_names": [
+        "Neha",
+        "Shivani"
+      ],
+      "players": [
+        {
+          "name": "CJ",
+          "wins": 7,
+          "losses": 1,
+          "net_points": 43
+        },
+        {
+          "name": "Kaushik",
+          "wins": 6,
+          "losses": 2,
+          "net_points": 15
+        },
+        {
+          "name": "Ayush",
+          "wins": 5,
+          "losses": 3,
+          "net_points": 15
+        },
+        {
+          "name": "Animesh",
+          "wins": 5,
+          "losses": 3,
+          "net_points": 10
+        },
+        {
+          "name": "Neha",
+          "wins": 4,
+          "losses": 4,
+          "net_points": 11
+        },
+        {
+          "name": "Shivani",
+          "wins": 3,
+          "losses": 5,
+          "net_points": -23
+        },
+        {
+          "name": "Harpreet",
+          "wins": 1,
+          "losses": 7,
+          "net_points": -27
+        },
+        {
+          "name": "Monish",
+          "wins": 1,
+          "losses": 7,
+          "net_points": -44
+        }
+      ]
     }
   ]
 }
