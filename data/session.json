@@ -417,5 +417,28 @@
   },
   "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Same partners should not be repeated more than 2 times in the tournament. Neha & CJ should partner 2 games at minimum. Neha and CJ games should be scheduled towards the beginning of the tournament. Give lesser number of games to beginners compared to intermediates.  ",
   "session_active": true,
-  "critics_choice": null
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "CJ",
+        "reason": "CJ demonstrated exceptional dominance throughout the tournament, consistently delivering powerful performances. His impressive points scored highlight his unmatched skill and strategic play."
+      },
+      {
+        "rank": 2,
+        "name": "Ayush",
+        "reason": "Ayush showcased remarkable consistency and strategic depth, accumulating a strong tally of points. His ability to maintain high performance levels made him a formidable competitor."
+      },
+      {
+        "rank": 3,
+        "name": "Shivani",
+        "reason": "Shivani displayed incredible bravery and resilience, scoring a significant number of points against tough opponents. Her courageous play and standout rallies were truly inspiring."
+      }
+    ],
+    "quips": [
+      "Not here to take part. {name} was here to take over.",
+      "Training? What training? This was pure {name}'s talent.",
+      "You owe the team 7 beers for that finish, {name}."
+    ]
+  }
 }
