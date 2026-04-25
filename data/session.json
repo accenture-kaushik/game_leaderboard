@@ -53,13 +53,12 @@
       ],
       "team_b": [
         "Harpreet",
-        "Ayush"
+        "Monish"
       ],
       "sitting_out": [
         "Kaushik",
-        "Monish",
         "Kishan",
-        "Shreya",
+        "Shivani",
         "Anal"
       ],
       "time_slot": "0\u201310 min",
@@ -69,18 +68,17 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Shivani",
-        "Prashant"
+        "Prashant",
+        "Piyusha"
       ],
       "team_b": [
-        "Piyusha",
-        "Sandeep"
+        "Sandeep",
+        "Shreya"
       ],
       "sitting_out": [
         "Kaushik",
-        "Monish",
         "Kishan",
-        "Shreya",
+        "Shivani",
         "Anal"
       ],
       "time_slot": "0\u201310 min",
@@ -98,9 +96,8 @@
         "Kaushik"
       ],
       "sitting_out": [
-        "CJ",
-        "Neha",
-        "Piyusha",
+        "Prashant",
+        "Harpreet",
         "Shivani",
         "Anal"
       ],
@@ -111,17 +108,16 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Prashant",
-        "Ayush"
+        "Neha",
+        "CJ"
       ],
       "team_b": [
         "Sandeep",
-        "Harpreet"
+        "Piyusha"
       ],
       "sitting_out": [
-        "CJ",
-        "Neha",
-        "Piyusha",
+        "Prashant",
+        "Harpreet",
         "Shivani",
         "Anal"
       ],
@@ -140,7 +136,7 @@
         "Monish"
       ],
       "sitting_out": [
-        "Shivani"
+        "\u2014"
       ],
       "time_slot": "20\u201330 min",
       "game_id": "r3_c1"
@@ -157,7 +153,7 @@
         "Kaushik"
       ],
       "sitting_out": [
-        "Shivani"
+        "\u2014"
       ],
       "time_slot": "20\u201330 min",
       "game_id": "r3_c2"
@@ -171,10 +167,10 @@
       ],
       "team_b": [
         "CJ",
-        "Ayush"
+        "Shivani"
       ],
       "sitting_out": [
-        "Shivani"
+        "\u2014"
       ],
       "time_slot": "20\u201330 min",
       "game_id": "r3_c3"
@@ -191,7 +187,7 @@
         "Kaushik"
       ],
       "sitting_out": [
-        "Anal"
+        "\u2014"
       ],
       "time_slot": "30\u201340 min",
       "game_id": "r4_c1"
@@ -208,7 +204,7 @@
         "Monish"
       ],
       "sitting_out": [
-        "Anal"
+        "\u2014"
       ],
       "time_slot": "30\u201340 min",
       "game_id": "r4_c2"
@@ -218,14 +214,14 @@
       "court": 3,
       "team_a": [
         "Sandeep",
-        "Shivani"
+        "Anal"
       ],
       "team_b": [
         "Harpreet",
-        "Ayush"
+        "Shivani"
       ],
       "sitting_out": [
-        "Anal"
+        "\u2014"
       ],
       "time_slot": "30\u201340 min",
       "game_id": "r4_c3"
@@ -238,11 +234,11 @@
         "Kaushik"
       ],
       "team_b": [
-        "Ayush",
-        "Monish"
+        "Monish",
+        "Prashant"
       ],
       "sitting_out": [
-        "Shivani"
+        "\u2014"
       ],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c1"
@@ -259,7 +255,7 @@
         "Sandeep"
       ],
       "sitting_out": [
-        "Shivani"
+        "\u2014"
       ],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c2"
@@ -269,14 +265,14 @@
       "court": 3,
       "team_a": [
         "Shreya",
-        "Prashant"
+        "Kishan"
       ],
       "team_b": [
         "Piyusha",
-        "Kishan"
+        "Shivani"
       ],
       "sitting_out": [
-        "Shivani"
+        "\u2014"
       ],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c3"
@@ -293,7 +289,7 @@
         "CJ"
       ],
       "sitting_out": [
-        "Anal"
+        "\u2014"
       ],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c1"
@@ -303,14 +299,14 @@
       "court": 2,
       "team_a": [
         "Shivani",
-        "Ayush"
+        "Monish"
       ],
       "team_b": [
-        "Monish",
-        "Harpreet"
+        "Harpreet",
+        "Kishan"
       ],
       "sitting_out": [
-        "Anal"
+        "\u2014"
       ],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c2"
@@ -319,15 +315,15 @@
       "round": 6,
       "court": 3,
       "team_a": [
-        "Piyusha",
+        "Anal",
         "Sandeep"
       ],
       "team_b": [
         "Shreya",
-        "Kishan"
+        "Piyusha"
       ],
       "sitting_out": [
-        "Anal"
+        "\u2014"
       ],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c3"
@@ -337,14 +333,14 @@
       "court": 1,
       "team_a": [
         "Piyusha",
-        "Ayush"
-      ],
-      "team_b": [
-        "Kaushik",
         "Monish"
       ],
+      "team_b": [
+        "Kishan",
+        "Prashant"
+      ],
       "sitting_out": [
-        "Shivani"
+        "\u2014"
       ],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c1"
@@ -353,7 +349,7 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Kishan",
+        "Kaushik",
         "Anal"
       ],
       "team_b": [
@@ -361,7 +357,7 @@
         "Shreya"
       ],
       "sitting_out": [
-        "Shivani"
+        "\u2014"
       ],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c2"
@@ -374,11 +370,11 @@
         "Harpreet"
       ],
       "team_b": [
-        "Prashant",
-        "Sandeep"
+        "Sandeep",
+        "Shivani"
       ],
       "sitting_out": [
-        "Shivani"
+        "\u2014"
       ],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c3"
@@ -391,11 +387,11 @@
         "Piyusha"
       ],
       "team_b": [
-        "Ayush",
-        "Kishan"
+        "Kishan",
+        "Sandeep"
       ],
       "sitting_out": [
-        "Anal"
+        "\u2014"
       ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c1"
@@ -405,14 +401,14 @@
       "court": 2,
       "team_a": [
         "Neha",
-        "Sandeep"
+        "Anal"
       ],
       "team_b": [
         "Shreya",
         "CJ"
       ],
       "sitting_out": [
-        "Anal"
+        "\u2014"
       ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c2"
@@ -422,14 +418,14 @@
       "court": 3,
       "team_a": [
         "Monish",
-        "Shivani"
+        "Kaushik"
       ],
       "team_b": [
-        "Kaushik",
-        "Prashant"
+        "Prashant",
+        "Shivani"
       ],
       "sitting_out": [
-        "Anal"
+        "\u2014"
       ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c3"
