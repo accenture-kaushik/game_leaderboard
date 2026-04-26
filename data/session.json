@@ -495,5 +495,28 @@
   },
   "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Keep 2 matches with Neha & CJ as a team. Keep 1 match where Neha plays against CJ. Rest beginners more compared to intermediate players. Try to schedule so that 1 player does not play against beginners more than 2 times.  Same partners in a team can be for 2 games maximum. ",
   "session_active": true,
-  "critics_choice": null
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "Monish",
+        "reason": "Monish delivered an absolutely flawless performance, securing every match with impressive skill. His consistent high scoring and strategic play were a true highlight of the tournament."
+      },
+      {
+        "rank": 2,
+        "name": "Neha",
+        "reason": "Neha showcased incredible resilience and a powerful offensive game throughout her matches. She consistently scored high points, demonstrating remarkable courage and determination on the court."
+      },
+      {
+        "rank": 3,
+        "name": "CJ",
+        "reason": "CJ displayed exceptional consistency and fought valiantly in every single game. His ability to score many points and engage in numerous close matches truly stood out."
+      }
+    ],
+    "quips": [
+      "{name} was playing since breakfast and it shows.",
+      "Somehow even {name}'s mistakes looked intentional.",
+      "{name} is always one step ahead. Literally and figuratively."
+    ]
+  }
 }
