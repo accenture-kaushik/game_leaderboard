@@ -500,23 +500,23 @@
       {
         "rank": 1,
         "name": "Monish",
-        "reason": "Monish delivered an absolutely flawless performance, securing every match with impressive skill. His consistent high scoring and strategic play were a true highlight of the tournament."
+        "reason": "Monish displayed unparalleled consistency, achieving a flawless record with exceptional point differentials. His strategic play and dominant performance truly set him apart."
       },
       {
         "rank": 2,
         "name": "Neha",
-        "reason": "Neha showcased incredible resilience and a powerful offensive game throughout her matches. She consistently scored high points, demonstrating remarkable courage and determination on the court."
+        "reason": "Neha demonstrated incredible resilience, consistently scoring high points against tough opponents. Her tenacious spirit and powerful rallies were a highlight of the tournament."
       },
       {
         "rank": 3,
-        "name": "CJ",
-        "reason": "CJ displayed exceptional consistency and fought valiantly in every single game. His ability to score many points and engage in numerous close matches truly stood out."
+        "name": "Kaushik",
+        "reason": "Kaushik displayed incredible bravery, consistently challenging opponents and scoring valuable points in every match. His tenacious spirit and competitive rallies were a joy to watch."
       }
     ],
     "quips": [
-      "{name} was playing since breakfast and it shows.",
-      "Somehow even {name}'s mistakes looked intentional.",
-      "{name} is always one step ahead. Literally and figuratively."
+      "{name} is always one step ahead. Literally and figuratively.",
+      "{name}, you are officially banned from this group.",
+      "We're checking {name}'s shoes for illegal motors."
     ]
   }
 }
