@@ -1595,14 +1595,19 @@ def show_court(court: int) -> None:
 
         icon = "✅" if submitted else "⏳"
         with st.expander(f"{icon}  Game {game_num}", expanded=not submitted):
-            # Team A row: card + Win button
-            col_card_a, col_btn_a = st.columns([5, 2])
-            with col_card_a:
-                st.markdown(
-                    f'<div class="team-card-a">'
-                    f'<strong>Team A</strong> &nbsp; {" &amp; ".join(game["team_a"])}'
-                    f'</div>',
-                    unsafe_allow_html=True,
+            # Team A card
+            st.markdown(
+                f'<div class="team-card-a">'
+                f'<strong>Team A</strong> &nbsp; {" &amp; ".join(game["team_a"])}'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+            # Team A score + Win button on same row
+            col_sa, col_btn_a = st.columns([5, 2])
+            with col_sa:
+                score_a = st.number_input(
+                    "Team A score", min_value=0, max_value=30,
+                    key=f"sa_{gid}",
                 )
             with col_btn_a:
                 if st.button(
@@ -1615,14 +1620,21 @@ def show_court(court: int) -> None:
                     st.session_state[f"sa_{gid}"] = max(11, st.session_state.get(f"sa_{gid}", 0))
                     st.rerun()
 
-            # Team B row: card + Win button
-            col_card_b, col_btn_b = st.columns([5, 2])
-            with col_card_b:
-                st.markdown(
-                    f'<div class="team-card-b">'
-                    f'<strong>Team B</strong> &nbsp; {" &amp; ".join(game["team_b"])}'
-                    f'</div>',
-                    unsafe_allow_html=True,
+            st.markdown("<div style='margin-top:0.5rem'></div>", unsafe_allow_html=True)
+
+            # Team B card
+            st.markdown(
+                f'<div class="team-card-b">'
+                f'<strong>Team B</strong> &nbsp; {" &amp; ".join(game["team_b"])}'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+            # Team B score + Win button on same row
+            col_sb, col_btn_b = st.columns([5, 2])
+            with col_sb:
+                score_b = st.number_input(
+                    "Team B score", min_value=0, max_value=30,
+                    key=f"sb_{gid}",
                 )
             with col_btn_b:
                 if st.button(
@@ -1634,19 +1646,6 @@ def show_court(court: int) -> None:
                     st.session_state[f"winner_{gid}"] = "Team B"
                     st.session_state[f"sb_{gid}"] = max(11, st.session_state.get(f"sb_{gid}", 0))
                     st.rerun()
-
-            # Score inputs — winner defaults to 11, max 30 for tie-breaks
-            col_a, col_b = st.columns(2)
-            with col_a:
-                score_a = st.number_input(
-                    "Team A score", min_value=0, max_value=30,
-                    key=f"sa_{gid}",
-                )
-            with col_b:
-                score_b = st.number_input(
-                    "Team B score", min_value=0, max_value=30,
-                    key=f"sb_{gid}",
-                )
 
             btn = "✏️ Update Score" if submitted else "✅ Submit Score"
             if st.button(btn, key=f"btn_{gid}", type="primary", use_container_width=True):
