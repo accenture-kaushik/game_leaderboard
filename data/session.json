@@ -35,12 +35,12 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Kaushik"
+        "Kaushik",
+        "Sandeep"
       ],
       "team_b": [
-        "Shreya",
-        "Ayush"
+        "AK",
+        "Shreya"
       ],
       "sitting_out": [],
       "time_slot": "0\u201310 min",
@@ -50,12 +50,12 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Piyusha",
-        "Sandeep"
+        "Ayush",
+        "Piyusha"
       ],
       "team_b": [
-        "AK",
-        "Animesh"
+        "Animesh",
+        "Neha"
       ],
       "sitting_out": [],
       "time_slot": "0\u201310 min",
@@ -65,12 +65,12 @@
       "round": 2,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Ayush"
+        "Kaushik",
+        "Neha"
       ],
       "team_b": [
-        "Shreya",
-        "Sandeep"
+        "Ayush",
+        "Piyusha"
       ],
       "sitting_out": [],
       "time_slot": "10\u201320 min",
@@ -80,12 +80,12 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Piyusha",
-        "AK"
+        "Animesh",
+        "Sandeep"
       ],
       "team_b": [
-        "Kaushik",
-        "Animesh"
+        "AK",
+        "Shreya"
       ],
       "sitting_out": [],
       "time_slot": "10\u201320 min",
@@ -95,12 +95,12 @@
       "round": 3,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Sandeep"
+        "AK",
+        "Kaushik"
       ],
       "team_b": [
-        "Shreya",
-        "AK"
+        "Ayush",
+        "Neha"
       ],
       "sitting_out": [],
       "time_slot": "20\u201330 min",
@@ -110,12 +110,12 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Piyusha",
-        "Animesh"
+        "Animesh",
+        "Piyusha"
       ],
       "team_b": [
-        "Kaushik",
-        "Ayush"
+        "Sandeep",
+        "Shreya"
       ],
       "sitting_out": [],
       "time_slot": "20\u201330 min",
@@ -125,12 +125,12 @@
       "round": 4,
       "court": 1,
       "team_a": [
-        "Neha",
-        "AK"
+        "Animesh",
+        "Kaushik"
       ],
       "team_b": [
-        "Shreya",
-        "Animesh"
+        "Neha",
+        "Sandeep"
       ],
       "sitting_out": [],
       "time_slot": "30\u201340 min",
@@ -140,12 +140,12 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Piyusha",
-        "Kaushik"
+        "Ayush",
+        "Shreya"
       ],
       "team_b": [
-        "Ayush",
-        "Sandeep"
+        "AK",
+        "Piyusha"
       ],
       "sitting_out": [],
       "time_slot": "30\u201340 min",
@@ -155,12 +155,12 @@
       "round": 5,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Animesh"
+        "Ayush",
+        "Kaushik"
       ],
       "team_b": [
-        "Shreya",
-        "Kaushik"
+        "Piyusha",
+        "Sandeep"
       ],
       "sitting_out": [],
       "time_slot": "40\u201350 min",
@@ -170,12 +170,12 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Piyusha",
-        "Ayush"
+        "Animesh",
+        "Shreya"
       ],
       "team_b": [
-        "Sandeep",
-        "AK"
+        "AK",
+        "Neha"
       ],
       "sitting_out": [],
       "time_slot": "40\u201350 min",
@@ -185,12 +185,12 @@
       "round": 6,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Ayush"
+        "Kaushik",
+        "Piyusha"
       ],
       "team_b": [
-        "Shreya",
-        "AK"
+        "AK",
+        "Animesh"
       ],
       "sitting_out": [],
       "time_slot": "50\u201360 min",
@@ -200,80 +200,20 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Piyusha",
-        "Animesh"
+        "Sandeep",
+        "Shreya"
       ],
       "team_b": [
-        "Kaushik",
-        "Sandeep"
+        "Ayush",
+        "Neha"
       ],
       "sitting_out": [],
       "time_slot": "50\u201360 min",
       "game_id": "r6_c2"
     }
   ],
-  "scores": {
-    "r1_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r1_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r2_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r2_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r3_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r3_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r4_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r4_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r5_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r5_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r6_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r6_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    }
-  },
+  "scores": {},
   "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. D",
-  "session_active": true
+  "session_active": true,
+  "critics_choice": null
 }
