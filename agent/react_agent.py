@@ -1,11 +1,12 @@
 """
 Agentic Game Planner — Gemini Flash.
 
-Four validation layers (applied in priority order):
-  1  HARD            : slot conflict, skill mismatch, girls rule, no_same_group  → 10 000 each
-  2  PARTNER_REPEAT  : same pair partnered > MAX_PARTNER_REPEAT times            →    500 × excess
-  3  SITOUT_BALANCE  : sit-out spread across players > 2                         →     50 × spread
-  4  OPPONENT_REPEAT : same pair faced each other > MAX_OPPONENT_REPEAT times    →     10 × excess
+Five validation layers (applied in priority order):
+  1  HARD             : slot conflict, skill mismatch, girls rule, no_same_group  → 10 000 each
+  2  PARTNER_REPEAT   : same pair partnered > max_partner_repeat times            →    500 × excess
+  3  SITOUT_BALANCE   : sit-out spread across players > 2                         →     50 × spread
+  4  OPPONENT_REPEAT  : same pair faced each other > max_opponent_repeat times    →     10 × excess
+  5  REQUIRED_PAIRING : required partner pair missing or in wrong round           →  5 000 each
 
 Constraints are built dynamically at runtime from user inputs — nothing is hardcoded.
 """
@@ -27,6 +28,7 @@ logger = logging.getLogger(__name__)
 MAX_AGENT_ITERATIONS   = 6
 
 PENALTY_HARD             = 10_000
+PENALTY_REQUIRED_PAIRING =  5_000
 PENALTY_PARTNER_REPEAT   =    500
 PENALTY_SITOUT_IMBALANCE =     50
 PENALTY_OPPONENT_REPEAT  =     10
@@ -73,11 +75,14 @@ def _compute_repeat_thresholds(
 
 @dataclass
 class ConstraintSet:
-    skill_levels:        Dict[str, str] = field(default_factory=dict)
-    girl_names:          Set[str]       = field(default_factory=set)
-    no_same_group:       Set[str]       = field(default_factory=set)
-    max_partner_repeat:  int            = 2
-    max_opponent_repeat: int            = 2
+    skill_levels:        Dict[str, str]  = field(default_factory=dict)
+    girl_names:          Set[str]        = field(default_factory=set)
+    no_same_group:       Set[str]        = field(default_factory=set)
+    max_partner_repeat:  int             = 2
+    max_opponent_repeat: int             = 2
+    # Each entry: {"players": ["A", "B"], "round": int|None}
+    # round=None means "any round"
+    required_partners:   List[Dict]      = field(default_factory=list)
 
     @classmethod
     def build(
@@ -87,6 +92,7 @@ class ConstraintSet:
         no_same_group:       Optional[List[str]] = None,
         max_partner_repeat:  int = 2,
         max_opponent_repeat: int = 2,
+        required_partners:   Optional[List[Dict]] = None,
     ) -> "ConstraintSet":
         return cls(
             skill_levels        = skill_levels,
@@ -94,6 +100,7 @@ class ConstraintSet:
             no_same_group       = set(no_same_group or []),
             max_partner_repeat  = max_partner_repeat,
             max_opponent_repeat = max_opponent_repeat,
+            required_partners   = required_partners or [],
         )
 
 
@@ -325,6 +332,43 @@ def _validate_and_score(
                 "penalty": pen,
             })
 
+    # ── Layer 5: Required partner pairings ───────────────────────────────────
+    for req in constraints.required_partners:
+        req_pair  = frozenset(req.get("players", []))
+        req_round = req.get("round")   # None = any round
+        names     = sorted(req_pair)
+        label     = f"{names[0]} & {names[1]}"
+
+        if req_round is not None:
+            # Must partner in a specific round
+            found = any(
+                frozenset(entry.get("team_a", [])) == req_pair or
+                frozenset(entry.get("team_b", [])) == req_pair
+                for entry in schedule
+                if entry.get("round") == req_round
+            )
+            if not found:
+                total_penalty += PENALTY_REQUIRED_PAIRING
+                violations.append({
+                    "priority": 5, "layer": "REQUIRED_PAIRING",
+                    "location": f"Round {req_round}",
+                    "team": label,
+                    "detail": f"{label} must be partners in round {req_round} but are not",
+                    "penalty": PENALTY_REQUIRED_PAIRING,
+                })
+        else:
+            # Must partner at least once anywhere in the schedule
+            found = partner_counts.get(req_pair, 0) >= 1
+            if not found:
+                total_penalty += PENALTY_REQUIRED_PAIRING
+                violations.append({
+                    "priority": 5, "layer": "REQUIRED_PAIRING",
+                    "location": "whole schedule",
+                    "team": label,
+                    "detail": f"{label} must partner at least once but never do",
+                    "penalty": PENALTY_REQUIRED_PAIRING,
+                })
+
     return violations, total_penalty
 
 
@@ -406,11 +450,13 @@ class GamePlannerAgent:
 
         # Step 1: Extract free-text constraints via LLM
         _cot("\n[Step 1] Extracting constraints from special instructions...")
-        extracted     = self._extract_constraints(special_instructions)
-        no_same_group = set(extracted.get("no_same_group", []))
-        rule_summary  = extracted.get("rule_summary", "")
-        _cot(f"  → no_same_group : {sorted(no_same_group) or '(none)'}")
-        _cot(f"  → rule_summary  : {rule_summary or '(none)'}")
+        extracted         = self._extract_constraints(special_instructions)
+        no_same_group     = set(extracted.get("no_same_group", []))
+        required_partners = extracted.get("required_partners", [])
+        rule_summary      = extracted.get("rule_summary", "")
+        _cot(f"  → no_same_group     : {sorted(no_same_group) or '(none)'}")
+        _cot(f"  → required_partners : {required_partners or '(none)'}")
+        _cot(f"  → rule_summary      : {rule_summary or '(none)'}")
 
         # Step 2: Compute tournament-specific repeat thresholds, then build constraint set
         _max_partner, _max_opponent, _partner_avg, _opponent_avg = _compute_repeat_thresholds(
@@ -426,6 +472,7 @@ class GamePlannerAgent:
             no_same_group       = list(no_same_group),
             max_partner_repeat  = _max_partner,
             max_opponent_repeat = _max_opponent,
+            required_partners   = required_partners,
         )
 
         # Step 3 (refine only): score previous schedule, identify clean rounds
@@ -559,6 +606,17 @@ class GamePlannerAgent:
                 f"  ALLOWED:   one girl + one non-girl on any team.\n"
                 f"  ALLOWED:   two non-girls on any team.\n"
             )
+        if constraints.required_partners:
+            lines = []
+            for req in constraints.required_partners:
+                p = req.get("players", [])
+                r = req.get("round")
+                if len(p) == 2:
+                    if r is not None:
+                        lines.append(f"  • {p[0]} and {p[1]} MUST be partners in round {r}.")
+                    else:
+                        lines.append(f"  • {p[0]} and {p[1]} MUST be partners at least once.")
+            constraint_block += "\nREQUIRED PAIRINGS — these partner pairs are mandatory:\n" + "\n".join(lines) + "\n"
         rule_block = (
             f"\nRULE SUMMARY (from special instructions):\n"
             + "\n".join(f"  {l}" for l in rule_summary.splitlines()) + "\n"
@@ -583,9 +641,10 @@ PLAYERS ({len(players)} total):
 STRICT PRIORITIES (satisfy in order):
   1. BALANCED MATCHUP   — FORBIDDEN: [beginner+beginner] vs [intermediate+intermediate].
   2. HARD CONSTRAINTS   — every constraint listed above must be satisfied.
-  3. PARTNER VARIETY    — same two players should partner at most {constraints.max_partner_repeat} times.
-  4. SIT-OUT BALANCE    — distribute sit-outs as evenly as possible.
-  5. OPPONENT VARIETY   — same two players should face each other at most {constraints.max_opponent_repeat} times.
+  3. REQUIRED PAIRINGS  — all mandatory partner pairs must appear in the schedule.
+  4. PARTNER VARIETY    — same two players should partner at most {constraints.max_partner_repeat} times.
+  5. SIT-OUT BALANCE    — distribute sit-outs as evenly as possible.
+  6. OPPONENT VARIETY   — same two players should face each other at most {constraints.max_opponent_repeat} times.
 
 TOURNAMENT SETTINGS:
   - Rounds              : {num_rounds}
@@ -651,6 +710,15 @@ FORMAT RULES:
                 f"\nHARD: Girls are {sorted(constraints.girl_names)}. "
                 f"A team of 2 girls must NEVER face an all-boys team."
             )
+        if constraints.required_partners:
+            for req in constraints.required_partners:
+                p = req.get("players", [])
+                r = req.get("round")
+                if len(p) == 2:
+                    if r is not None:
+                        constraint_block += f"\nREQUIRED: {p[0]} and {p[1]} MUST be partners in round {r}."
+                    else:
+                        constraint_block += f"\nREQUIRED: {p[0]} and {p[1]} MUST be partners at least once."
         if rule_summary:
             constraint_block += f"\n{rule_summary}"
 
@@ -744,19 +812,24 @@ Exactly {num_rounds * num_courts} entries. Same format: round, court, team_a, te
         if not special_instructions or not special_instructions.strip():
             return {}
         prompt = (
-            "Analyse the organiser's tournament instructions below and extract two things.\n\n"
+            "Analyse the organiser's tournament instructions below and extract three things.\n\n"
             "1. no_same_group: list of player names who must NEVER be on the same doubles team.\n"
             "   These names come only from the instructions — do NOT invent names.\n\n"
-            "2. rule_summary: a concise Allowed/Forbidden block (2-4 lines) that re-expresses\n"
+            "2. required_partners: list of required partner pairings. Each entry is:\n"
+            '   {"players": ["Name1", "Name2"], "round": <round number or null>}\n'
+            "   Use null for round when no specific round is mentioned (just 'must partner').\n"
+            "   Only include entries explicitly stated in the instructions.\n\n"
+            "3. rule_summary: a concise Allowed/Forbidden block (2-4 lines) that re-expresses\n"
             "   the constraint in the same style as this example:\n"
             "     FORBIDDEN: a team where both players are girls\n"
             "     ALLOWED:   a team with one girl and one non-girl\n"
-            "     ALLOWED:   a team with two non-girls\n"
             "   Base the rule_summary entirely on the instructions — do NOT add rules that\n"
             "   are not stated.\n\n"
             "Return ONLY valid JSON matching this schema exactly:\n"
-            '  {"no_same_group": ["Name1", ...], "rule_summary": "FORBIDDEN: ...\\nALLOWED: ..."}\n'
-            "If no pairing constraint exists, return {}.\n\n"
+            '  {"no_same_group": ["Name1", ...], '
+            '"required_partners": [{"players": ["A","B"], "round": 3}], '
+            '"rule_summary": "..."}\n'
+            "Omit any key whose list is empty. If nothing to extract, return {}.\n\n"
             f"Instructions: {special_instructions.strip()}"
         )
         try:
