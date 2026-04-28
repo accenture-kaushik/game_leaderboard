@@ -212,8 +212,92 @@
       "game_id": "r6_c2"
     }
   ],
-  "scores": {},
+  "scores": {
+    "r1_c1": {
+      "score_a": 11,
+      "score_b": 3,
+      "submitted": true
+    },
+    "r1_c2": {
+      "score_a": 11,
+      "score_b": 6,
+      "submitted": true
+    },
+    "r2_c1": {
+      "score_a": 11,
+      "score_b": 9,
+      "submitted": true
+    },
+    "r2_c2": {
+      "score_a": 11,
+      "score_b": 0,
+      "submitted": true
+    },
+    "r3_c1": {
+      "score_a": 8,
+      "score_b": 11,
+      "submitted": true
+    },
+    "r3_c2": {
+      "score_a": 11,
+      "score_b": 1,
+      "submitted": true
+    },
+    "r4_c1": {
+      "score_a": 11,
+      "score_b": 5,
+      "submitted": true
+    },
+    "r4_c2": {
+      "score_a": 7,
+      "score_b": 11,
+      "submitted": true
+    },
+    "r5_c1": {
+      "score_a": 5,
+      "score_b": 11,
+      "submitted": true
+    },
+    "r5_c2": {
+      "score_a": 9,
+      "score_b": 11,
+      "submitted": true
+    },
+    "r6_c2": {
+      "score_a": 11,
+      "score_b": 7,
+      "submitted": true
+    },
+    "r6_c1": {
+      "score_a": 6,
+      "score_b": 11,
+      "submitted": true
+    }
+  },
   "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. D",
   "session_active": true,
-  "critics_choice": null
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "Animesh",
+        "reason": "Animesh showcased exceptional consistency and skill, leading the tournament with an impressive 59 points scored. His dominant play and high net score were truly outstanding."
+      },
+      {
+        "rank": 2,
+        "name": "Neha",
+        "reason": "Neha demonstrated incredible resilience and scoring prowess, accumulating 51 points through powerful rallies. Her consistent effort and strong offensive plays were commendable."
+      },
+      {
+        "rank": 3,
+        "name": "Kaushik",
+        "reason": "Kaushik delivered a series of thrilling performances, scoring 52 points with remarkable consistency. His ability to maintain tight scorelines and execute standout rallies was impressive."
+      }
+    ],
+    "quips": [
+      "Wait {name}, how did you get up here?",
+      "If there were bonus points for style, {name} would have won twice.",
+      "{name} came, {name} saw, {name} politely dominated."
+    ]
+  }
 }
