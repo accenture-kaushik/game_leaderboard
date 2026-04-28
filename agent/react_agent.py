@@ -361,13 +361,14 @@ def _validate_and_score(
     # ── Layer 5: Required partner pairings ───────────────────────────────────
     for req in constraints.required_partners:
         req_pair  = frozenset(req.get("players", []))
-        req_round = req.get("round")        # None = any round
+        req_round = req.get("round")        # exact round pin (None = no pin)
+        by_round  = req.get("by_round")     # must occur at or before this round
         min_count = req.get("min_count", 1)
         names     = sorted(req_pair)
         label     = f"{names[0]} & {names[1]}"
 
         if req_round is not None:
-            # Must partner in a specific round (min_count ignored for round-pinned reqs)
+            # Exact round — must partner in that specific round
             found = any(
                 frozenset(entry.get("team_a", [])) == req_pair or
                 frozenset(entry.get("team_b", [])) == req_pair
@@ -382,6 +383,29 @@ def _validate_and_score(
                     "team": label,
                     "detail": f"{label} must be partners in round {req_round} but are not",
                     "penalty": PENALTY_REQUIRED_PAIRING,
+                })
+        elif by_round is not None:
+            # Must partner at least min_count times within rounds 1..by_round
+            early_count = sum(
+                1 for entry in schedule
+                if entry.get("round", 0) <= by_round and (
+                    frozenset(entry.get("team_a", [])) == req_pair or
+                    frozenset(entry.get("team_b", [])) == req_pair
+                )
+            )
+            if early_count < min_count:
+                shortfall = min_count - early_count
+                pen       = PENALTY_REQUIRED_PAIRING * shortfall
+                total_penalty += pen
+                violations.append({
+                    "priority": 5, "layer": "REQUIRED_PAIRING",
+                    "location": f"Rounds 1–{by_round}",
+                    "team": label,
+                    "detail": (
+                        f"{label} must partner ≥{min_count}× by round {by_round} "
+                        f"but only do so {early_count}× (short by {shortfall})"
+                    ),
+                    "penalty": pen,
                 })
         else:
             # Must partner at least min_count times anywhere in the schedule
@@ -404,25 +428,50 @@ def _validate_and_score(
     # ── Layer 5b: Required opponent pairings ─────────────────────────────────
     for req in constraints.required_opponents:
         req_pair  = frozenset(req.get("players", []))
+        by_round  = req.get("by_round")     # must occur at or before this round
         min_count = req.get("min_count", 1)
         names     = sorted(req_pair)
         label     = f"{names[0]} vs {names[1]}"
 
-        actual = opponent_counts.get(req_pair, 0)
-        if actual < min_count:
-            shortfall = min_count - actual
-            pen       = PENALTY_REQUIRED_PAIRING * shortfall
-            total_penalty += pen
-            violations.append({
-                "priority": 5, "layer": "REQUIRED_PAIRING",
-                "location": "whole schedule",
-                "team": label,
-                "detail": (
-                    f"{label} must face each other ≥{min_count}× "
-                    f"but only do so {actual}× (short by {shortfall})"
-                ),
-                "penalty": pen,
-            })
+        if by_round is not None:
+            # Must face each other at least min_count times within rounds 1..by_round
+            early_count = sum(
+                1 for entry in schedule
+                if entry.get("round", 0) <= by_round
+                for pa in entry.get("team_a", [])
+                for pb in entry.get("team_b", [])
+                if frozenset({pa, pb}) == req_pair
+            )
+            if early_count < min_count:
+                shortfall = min_count - early_count
+                pen       = PENALTY_REQUIRED_PAIRING * shortfall
+                total_penalty += pen
+                violations.append({
+                    "priority": 5, "layer": "REQUIRED_PAIRING",
+                    "location": f"Rounds 1–{by_round}",
+                    "team": label,
+                    "detail": (
+                        f"{label} must face each other ≥{min_count}× by round {by_round} "
+                        f"but only do so {early_count}× (short by {shortfall})"
+                    ),
+                    "penalty": pen,
+                })
+        else:
+            actual = opponent_counts.get(req_pair, 0)
+            if actual < min_count:
+                shortfall = min_count - actual
+                pen       = PENALTY_REQUIRED_PAIRING * shortfall
+                total_penalty += pen
+                violations.append({
+                    "priority": 5, "layer": "REQUIRED_PAIRING",
+                    "location": "whole schedule",
+                    "team": label,
+                    "detail": (
+                        f"{label} must face each other ≥{min_count}× "
+                        f"but only do so {actual}× (short by {shortfall})"
+                    ),
+                    "penalty": pen,
+                })
 
     return violations, total_penalty
 
@@ -690,12 +739,17 @@ class GamePlannerAgent:
         if constraints.required_partners:
             lines = []
             for req in constraints.required_partners:
-                p = req.get("players", [])
-                r = req.get("round")
-                n = req.get("min_count", 1)
+                p  = req.get("players", [])
+                r  = req.get("round")
+                br = req.get("by_round")
+                n  = req.get("min_count", 1)
                 if len(p) == 2:
                     if r is not None:
-                        lines.append(f"  • {p[0]} and {p[1]} MUST be partners in round {r}.")
+                        lines.append(f"  • {p[0]} and {p[1]} MUST be partners in exactly round {r}.")
+                    elif br is not None and n > 1:
+                        lines.append(f"  • {p[0]} and {p[1]} MUST be partners ≥{n} times, first time by round {br}.")
+                    elif br is not None:
+                        lines.append(f"  • {p[0]} and {p[1]} MUST be partners at least once within rounds 1–{br}.")
                     elif n > 1:
                         lines.append(f"  • {p[0]} and {p[1]} MUST be partners at least {n} times.")
                     else:
@@ -704,11 +758,15 @@ class GamePlannerAgent:
         if constraints.required_opponents:
             lines = []
             for req in constraints.required_opponents:
-                p = req.get("players", [])
-                n = req.get("min_count", 1)
+                p  = req.get("players", [])
+                br = req.get("by_round")
+                n  = req.get("min_count", 1)
                 if len(p) == 2:
                     times = f"at least {n} time{'s' if n > 1 else ''}"
-                    lines.append(f"  • {p[0]} and {p[1]} MUST face each other as opponents {times}.")
+                    if br is not None:
+                        lines.append(f"  • {p[0]} and {p[1]} MUST face each other {times} within rounds 1–{br}.")
+                    else:
+                        lines.append(f"  • {p[0]} and {p[1]} MUST face each other as opponents {times}.")
             constraint_block += "\nREQUIRED OPPONENTS — these matchups are mandatory:\n" + "\n".join(lines) + "\n"
         rule_block = (
             f"\nRULE SUMMARY (from special instructions):\n"
@@ -856,23 +914,32 @@ FORMAT RULES:
             )
         if constraints.required_partners:
             for req in constraints.required_partners:
-                p = req.get("players", [])
-                r = req.get("round")
-                n = req.get("min_count", 1)
+                p  = req.get("players", [])
+                r  = req.get("round")
+                br = req.get("by_round")
+                n  = req.get("min_count", 1)
                 if len(p) == 2:
                     if r is not None:
-                        constraint_block += f"\nREQUIRED: {p[0]} and {p[1]} MUST be partners in round {r}."
+                        constraint_block += f"\nREQUIRED: {p[0]} and {p[1]} MUST be partners in exactly round {r}."
+                    elif br is not None and n > 1:
+                        constraint_block += f"\nREQUIRED: {p[0]} and {p[1]} MUST be partners ≥{n} times, first by round {br}."
+                    elif br is not None:
+                        constraint_block += f"\nREQUIRED: {p[0]} and {p[1]} MUST be partners at least once within rounds 1–{br}."
                     elif n > 1:
                         constraint_block += f"\nREQUIRED: {p[0]} and {p[1]} MUST be partners at least {n} times."
                     else:
                         constraint_block += f"\nREQUIRED: {p[0]} and {p[1]} MUST be partners at least once."
         if constraints.required_opponents:
             for req in constraints.required_opponents:
-                p = req.get("players", [])
-                n = req.get("min_count", 1)
+                p  = req.get("players", [])
+                br = req.get("by_round")
+                n  = req.get("min_count", 1)
                 if len(p) == 2:
                     times = f"at least {n} time{'s' if n > 1 else ''}"
-                    constraint_block += f"\nREQUIRED: {p[0]} and {p[1]} MUST face each other as opponents {times}."
+                    if br is not None:
+                        constraint_block += f"\nREQUIRED: {p[0]} and {p[1]} MUST face each other {times} within rounds 1–{br}."
+                    else:
+                        constraint_block += f"\nREQUIRED: {p[0]} and {p[1]} MUST face each other as opponents {times}."
         if rule_summary:
             constraint_block += f"\n{rule_summary}"
 
@@ -993,22 +1060,30 @@ Only include a court in a round when that court is active.
             "1. no_same_group: list of player names who must NEVER be on the same doubles team.\n"
             "   These names come only from the instructions — do NOT invent names.\n\n"
             "2. required_partners: list of required partner pairings. Each entry is:\n"
-            '   {"players": ["Name1", "Name2"], "round": <round number or null>, "min_count": <integer>}\n'
-            "   - round: the specific round they must partner in (null if no round specified).\n"
-            "   - min_count: minimum number of times they must be partners across the whole schedule.\n"
-            "     e.g. 'at least 2 games together' → min_count=2. Default is 1 if not mentioned.\n"
-            "   Only include entries explicitly stated in the instructions.\n\n"
-            "3. required_opponents: list of required opponent pairings (must face each other). Each entry is:\n"
-            '   {"players": ["Name1", "Name2"], "min_count": <integer>}\n'
-            "   - min_count: minimum number of times they must face each other as opponents.\n"
-            "     e.g. '1 game where A plays against B' → min_count=1.\n"
-            "   Only include entries explicitly stated in the instructions.\n\n"
+            '   {"players": ["Name1","Name2"], "round": <int|null>, "by_round": <int|null>, "min_count": <int>}\n'
+            "   - round    : exact round they must partner in (null if not specified).\n"
+            "   - by_round : latest round by which they must partner (for 'early', 'first N rounds',\n"
+            "                'up in the order', 'within round N'). null if not specified.\n"
+            "   - min_count: minimum times they must partner. Default 1.\n"
+            "   Examples:\n"
+            "     'partner in round 3'              → round=3, by_round=null\n"
+            "     'partner in the first 3 rounds'   → round=null, by_round=3\n"
+            "     'at least 2 games, first one early'→ min_count=2, by_round=3 (or similar)\n"
+            "   Only include entries explicitly stated.\n\n"
+            "3. required_opponents: list of required opponent pairings. Each entry is:\n"
+            '   {"players": ["Name1","Name2"], "by_round": <int|null>, "min_count": <int>}\n'
+            "   - by_round : latest round by which they must face each other (null if no ordering).\n"
+            "   - min_count: minimum times they must face each other. Default 1.\n"
+            "   Examples:\n"
+            "     '1 game where A plays against B'          → min_count=1, by_round=null\n"
+            "     'A vs B early, within the first 2 rounds' → min_count=1, by_round=2\n"
+            "   Only include entries explicitly stated.\n\n"
             "4. rule_summary: a concise Allowed/Forbidden block (2-4 lines) re-expressing any\n"
             "   remaining constraints not captured above.\n\n"
             "Return ONLY valid JSON matching this schema:\n"
             '  {"no_same_group": ["Name1", ...],\n'
-            '   "required_partners":  [{"players": ["A","B"], "round": null, "min_count": 2}],\n'
-            '   "required_opponents": [{"players": ["A","B"], "min_count": 1}],\n'
+            '   "required_partners":  [{"players":["A","B"], "round":null, "by_round":3, "min_count":2}],\n'
+            '   "required_opponents": [{"players":["A","B"], "by_round":2, "min_count":1}],\n'
             '   "rule_summary": "..."}\n'
             "Omit any key whose list is empty. If nothing to extract, return {}.\n\n"
             f"Instructions: {special_instructions.strip()}"
