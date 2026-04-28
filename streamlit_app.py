@@ -486,7 +486,7 @@ def _init_ui():
         "verified_phone": "",
         "show_admin_pw": False,
         "show_admin_panel": False,
-        "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy.",
+        "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
         "phone_add_counter": 0,
         "show_pub_pw": False,
         "show_rst_pw": False,
@@ -771,7 +771,9 @@ def show_setup() -> None:
                     st.session_state[f"pname_girl_{_i}"] = _nm
                     st.session_state[f"skill_girl_{_i}"] = "intermediate"
                 st.session_state.special_instructions = (
-                    "Avoid a team with 2 girls if the opponent team has only boys."
+                    "Avoid a team with 2 girls if the opponent team has only boys. "
+                    "Make unique partner pairs as much as possible. "
+                    "Reduce players facing the same opponent team as much as possible."
                 )
                 st.rerun()
 
@@ -1051,6 +1053,7 @@ def show_setup() -> None:
                                         num_rounds=num_games, num_courts=num_courts,
                                         special_instructions=st.session_state.get("special_instructions", ""),
                                         previous_schedule=_saved_sched if _is_refine else None,
+                                        girl_names=resolved_girl_names,
                                     )
                                     method = "AI agent — refine" if _is_refine else "AI agent — fresh"
                                 else:

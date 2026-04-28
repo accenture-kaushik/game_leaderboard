@@ -1,29 +1,107 @@
 """
 Agentic Game Planner — Gemini Flash.
-The LLM generates the full schedule as JSON. Python validates priority rules
-and feeds specific violations back to the LLM, which iterates until clean.
 
-Priority 1: Every team must have one beginner + one intermediate.
-Priority 2: Special instructions (e.g. no all-girl teams) are strictly enforced.
-Fairness (sit-out rotation) is a soft goal — consecutive games are acceptable.
+Four validation layers (applied in priority order):
+  1  HARD            : slot conflict, skill mismatch, girls rule, no_same_group  → 10 000 each
+  2  PARTNER_REPEAT  : same pair partnered > MAX_PARTNER_REPEAT times            →    500 × excess
+  3  SITOUT_BALANCE  : sit-out spread across players > 2                         →     50 × spread
+  4  OPPONENT_REPEAT : same pair faced each other > MAX_OPPONENT_REPEAT times    →     10 × excess
+
+Constraints are built dynamically at runtime from user inputs — nothing is hardcoded.
 """
 
 import json
 import logging
+import math
 import os
 import re
+from collections import Counter, defaultdict
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set, Tuple
 
 import google.generativeai as genai
 
 logger = logging.getLogger(__name__)
 
-MAX_AGENT_ITERATIONS = 6
+MAX_AGENT_ITERATIONS   = 6
 
+PENALTY_HARD             = 10_000
+PENALTY_PARTNER_REPEAT   =    500
+PENALTY_SITOUT_IMBALANCE =     50
+PENALTY_OPPONENT_REPEAT  =     10
+
+
+# ---------------------------------------------------------------------------
+# Tournament math: compute minimum inevitable repeat thresholds
+# ---------------------------------------------------------------------------
+
+def _compute_repeat_thresholds(
+    n_players:  int,
+    num_rounds: int,
+    num_courts: int,
+) -> Tuple[int, int, float, float]:
+    """
+    Given the tournament size, calculate the minimum partner/opponent repeats
+    that are mathematically unavoidable so the validator does not flag them.
+
+    Returns (max_partner_repeat, max_opponent_repeat, partner_avg, opponent_avg).
+
+    Derivation:
+      total_games        = num_rounds × num_courts
+      unique_pairs       = n × (n-1) / 2
+      partner_avg        = (total_games × 2) / unique_pairs   [2 pairs per game]
+      opponent_avg       = (total_games × 4) / unique_pairs   [4 cross-pairs per game]
+      thresholds         = ceil(average)  — the minimum max that keeps penalties fair
+    """
+    total_games  = num_rounds * num_courts
+    unique_pairs = n_players * (n_players - 1) / 2
+    if unique_pairs == 0:
+        return 1, 1, 0.0, 0.0
+
+    partner_avg        = (total_games * 2) / unique_pairs
+    opponent_avg       = (total_games * 4) / unique_pairs
+    max_partner_repeat = max(1, math.ceil(partner_avg))
+    max_opponent_repeat= max(1, math.ceil(opponent_avg))
+
+    return max_partner_repeat, max_opponent_repeat, partner_avg, opponent_avg
+
+
+# ---------------------------------------------------------------------------
+# Runtime constraint bag  (assembled fresh each tournament from user inputs)
+# ---------------------------------------------------------------------------
+
+@dataclass
+class ConstraintSet:
+    skill_levels:        Dict[str, str] = field(default_factory=dict)
+    girl_names:          Set[str]       = field(default_factory=set)
+    no_same_group:       Set[str]       = field(default_factory=set)
+    max_partner_repeat:  int            = 2
+    max_opponent_repeat: int            = 2
+
+    @classmethod
+    def build(
+        cls,
+        skill_levels:        Dict[str, str],
+        girl_names:          Optional[List[str]] = None,
+        no_same_group:       Optional[List[str]] = None,
+        max_partner_repeat:  int = 2,
+        max_opponent_repeat: int = 2,
+    ) -> "ConstraintSet":
+        return cls(
+            skill_levels        = skill_levels,
+            girl_names          = set(girl_names    or []),
+            no_same_group       = set(no_same_group or []),
+            max_partner_repeat  = max_partner_repeat,
+            max_opponent_repeat = max_opponent_repeat,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
 
 def _cot(msg: str) -> None:
-    """Print a chain-of-thought trace line to the console."""
     print(msg, flush=True)
 
 
@@ -35,10 +113,6 @@ Output ONLY a JSON array — start with [ and end with ]. No markdown, no explan
 """
 
 
-# ---------------------------------------------------------------------------
-# Config helpers
-# ---------------------------------------------------------------------------
-
 def _load_gemini_config() -> dict:
     try:
         import streamlit as st
@@ -46,7 +120,6 @@ def _load_gemini_config() -> dict:
             return dict(st.secrets["gemini"])
     except Exception:
         pass
-
     config_path = Path(__file__).parent.parent / "config.yaml"
     if config_path.exists():
         try:
@@ -67,11 +140,217 @@ def _load_api_key() -> str:
 
 
 # ---------------------------------------------------------------------------
+# Scoring & validation
+# ---------------------------------------------------------------------------
+
+def _validate_and_score(
+    schedule:    List[Dict],
+    players:     List[str],
+    constraints: ConstraintSet,
+) -> Tuple[List[Dict], int]:
+    """
+    Validate schedule against all four constraint layers.
+    Returns (violations, total_penalty).
+    Each violation: {priority, layer, location, team, detail, penalty}
+    """
+    violations: List[Dict] = []
+    total_penalty = 0
+    player_set = set(players)
+
+    # ── Pre-compute pair counts across the whole schedule ────────────────────
+    partner_counts:  Counter = Counter()
+    opponent_counts: Counter = Counter()
+    sitout_counts:   Counter = Counter()
+
+    for entry in schedule:
+        ta = entry.get("team_a", [])
+        tb = entry.get("team_b", [])
+        if len(ta) == 2:
+            partner_counts[frozenset(ta)] += 1
+        if len(tb) == 2:
+            partner_counts[frozenset(tb)] += 1
+        if len(ta) == 2 and len(tb) == 2:
+            for pa in ta:
+                for pb in tb:
+                    opponent_counts[frozenset({pa, pb})] += 1
+        for p in entry.get("sitting_out", []):
+            sitout_counts[p] += 1
+
+    # ── Group by round for slot-conflict detection ───────────────────────────
+    rounds: Dict[int, List[Dict]] = defaultdict(list)
+    for entry in schedule:
+        rounds[entry.get("round", 0)].append(entry)
+
+    # ── Layer 1: Hard constraints ────────────────────────────────────────────
+    for rnd, games in rounds.items():
+
+        # Slot conflict: same player active on two courts in the same round
+        active: List[str] = []
+        for g in games:
+            active.extend(g.get("team_a", []) + g.get("team_b", []))
+        for p, cnt in Counter(active).items():
+            if cnt > 1:
+                total_penalty += PENALTY_HARD
+                violations.append({
+                    "priority": 1, "layer": "HARD",
+                    "location": f"Round {rnd}", "team": "slot_conflict",
+                    "detail": f"{p} plays on {cnt} courts simultaneously",
+                    "penalty": PENALTY_HARD,
+                })
+
+        for entry in games:
+            loc    = f"Round {entry.get('round','?')}, Court {entry.get('court','?')}"
+            team_a = entry.get("team_a", [])
+            team_b = entry.get("team_b", [])
+
+            # Team size & unknown player names
+            for team_key, team in (("team_a", team_a), ("team_b", team_b)):
+                if len(team) != 2:
+                    total_penalty += PENALTY_HARD
+                    violations.append({
+                        "priority": 1, "layer": "HARD",
+                        "location": loc, "team": team_key,
+                        "detail": f"team has {len(team)} player(s), expected 2",
+                        "penalty": PENALTY_HARD,
+                    })
+                    continue
+                for p in team:
+                    if p not in player_set:
+                        total_penalty += PENALTY_HARD
+                        violations.append({
+                            "priority": 1, "layer": "HARD",
+                            "location": loc, "team": team_key,
+                            "detail": f"unknown player name '{p}'",
+                            "penalty": PENALTY_HARD,
+                        })
+
+            if len(team_a) != 2 or len(team_b) != 2:
+                continue
+
+            # Skill mismatch: pure beginner team vs pure intermediate team
+            skills_a = {constraints.skill_levels.get(p, "") for p in team_a}
+            skills_b = {constraints.skill_levels.get(p, "") for p in team_b}
+            if (skills_a == {"beginner"} and skills_b == {"intermediate"}) or \
+               (skills_a == {"intermediate"} and skills_b == {"beginner"}):
+                total_penalty += PENALTY_HARD
+                violations.append({
+                    "priority": 1, "layer": "HARD",
+                    "location": loc, "team": "both",
+                    "detail": (
+                        f"pure skill mismatch — "
+                        f"{team_a} ({'/'.join(skills_a)}) vs "
+                        f"{team_b} ({'/'.join(skills_b)})"
+                    ),
+                    "penalty": PENALTY_HARD,
+                })
+
+            # Girls rule: 2 girls must not face an all-boys team
+            if constraints.girl_names:
+                for team_key, team, other in (
+                    ("team_a", team_a, team_b),
+                    ("team_b", team_b, team_a),
+                ):
+                    girls_here  = [p for p in team  if p in constraints.girl_names]
+                    girls_there = [p for p in other if p in constraints.girl_names]
+                    if len(girls_here) == 2 and len(girls_there) == 0:
+                        total_penalty += PENALTY_HARD
+                        violations.append({
+                            "priority": 1, "layer": "HARD",
+                            "location": loc, "team": team_key,
+                            "detail": (
+                                f"2 girls ({', '.join(girls_here)}) facing "
+                                f"all-boys team ({', '.join(other)})"
+                            ),
+                            "penalty": PENALTY_HARD,
+                        })
+
+            # no_same_group: named players must never be teammates
+            if constraints.no_same_group:
+                for team_key, team in (("team_a", team_a), ("team_b", team_b)):
+                    p1, p2 = team
+                    if p1 in constraints.no_same_group and p2 in constraints.no_same_group:
+                        total_penalty += PENALTY_HARD
+                        violations.append({
+                            "priority": 1, "layer": "HARD",
+                            "location": loc, "team": team_key,
+                            "detail": f"{p1} and {p2} must NOT be teammates",
+                            "penalty": PENALTY_HARD,
+                        })
+
+    # ── Layer 2: Partner repeats ─────────────────────────────────────────────
+    for pair, count in partner_counts.items():
+        if count > constraints.max_partner_repeat:
+            excess = count - constraints.max_partner_repeat
+            names  = sorted(pair)
+            pen    = PENALTY_PARTNER_REPEAT * excess
+            total_penalty += pen
+            violations.append({
+                "priority": 2, "layer": "PARTNER_REPEAT",
+                "location": "whole schedule",
+                "team": f"{names[0]} & {names[1]}",
+                "detail": f"partnered {count}× (max {constraints.max_partner_repeat})",
+                "penalty": pen,
+            })
+
+    # ── Layer 3: Sit-out imbalance ───────────────────────────────────────────
+    if sitout_counts:
+        max_so = max(sitout_counts.values())
+        min_so = min(sitout_counts.get(p, 0) for p in players)
+        spread = max_so - min_so
+        if spread > 2:
+            pen = PENALTY_SITOUT_IMBALANCE * spread
+            total_penalty += pen
+            violations.append({
+                "priority": 3, "layer": "SITOUT_BALANCE",
+                "location": "whole schedule", "team": "sit-outs",
+                "detail": (
+                    f"spread={spread} (max {max_so}, min {min_so}) — "
+                    f"counts: {dict(sorted(sitout_counts.items()))}"
+                ),
+                "penalty": pen,
+            })
+
+    # ── Layer 4: Opponent repeats ────────────────────────────────────────────
+    for pair, count in opponent_counts.items():
+        if count > constraints.max_opponent_repeat:
+            excess = count - constraints.max_opponent_repeat
+            names  = sorted(pair)
+            pen    = PENALTY_OPPONENT_REPEAT * excess
+            total_penalty += pen
+            violations.append({
+                "priority": 4, "layer": "OPPONENT_REPEAT",
+                "location": "whole schedule",
+                "team": f"{names[0]} vs {names[1]}",
+                "detail": f"faced each other {count}× (max {constraints.max_opponent_repeat})",
+                "penalty": pen,
+            })
+
+    return violations, total_penalty
+
+
+def _identify_clean_rounds(
+    schedule:    List[Dict],
+    players:     List[str],
+    constraints: ConstraintSet,
+) -> Set[int]:
+    """Return round numbers that have zero hard-layer violations."""
+    violations, _ = _validate_and_score(schedule, players, constraints)
+    dirty: Set[int] = set()
+    for v in violations:
+        if v["layer"] == "HARD":
+            m = re.match(r"Round\s+(\d+)", v["location"])
+            if m:
+                dirty.add(int(m.group(1)))
+    all_rounds = {entry.get("round") for entry in schedule}
+    return all_rounds - dirty
+
+
+# ---------------------------------------------------------------------------
 # Agent
 # ---------------------------------------------------------------------------
 
 class GamePlannerAgent:
-    """Iterative agentic scheduler: LLM generates, Python validates, repeat."""
+    """Iterative agentic scheduler: LLM generates, Python validates+scores, repeat."""
 
     def __init__(self) -> None:
         api_key = _load_api_key()
@@ -79,7 +358,6 @@ class GamePlannerAgent:
             raise ValueError(
                 "Gemini API key not found. Set gemini.api_key in config.yaml."
             )
-
         gcfg = _load_gemini_config()
         genai.configure(api_key=api_key)
 
@@ -88,7 +366,6 @@ class GamePlannerAgent:
             top_p=float(gcfg.get("top_p", 0.95)),
             response_mime_type="application/json",
         )
-
         self.model = genai.GenerativeModel(
             model_name=gcfg.get("model_name", "gemini-2.0-flash"),
             system_instruction=SYSTEM_PROMPT,
@@ -107,64 +384,98 @@ class GamePlannerAgent:
 
     def generate_schedule(
         self,
-        players: List[str],
-        skill_levels: Dict[str, str],
-        num_rounds: int = 12,
-        num_courts: int = 2,
+        players:              List[str],
+        skill_levels:         Dict[str, str],
+        num_rounds:           int = 12,
+        num_courts:           int = 2,
         special_instructions: str = "",
-        previous_schedule: Optional[List[Dict]] = None,
+        previous_schedule:    Optional[List[Dict]] = None,
+        girl_names:           Optional[List[str]] = None,
     ) -> List[Dict]:
         is_refine = bool(previous_schedule)
-        mode = "REFINE" if is_refine else "FRESH"
+        mode      = "REFINE" if is_refine else "FRESH"
         _cot(f"=== AGENT START ({mode}) ===")
         _cot(f"Players     : {players}")
         _cot(f"Skill levels: {skill_levels}")
+        _cot(f"Girl names  : {girl_names or '(none)'}")
         _cot(f"Rounds      : {num_rounds}  Courts: {num_courts}")
         if special_instructions.strip():
-            _cot(f"Special instructions: {special_instructions.strip()}")
+            _cot(f"Special     : {special_instructions.strip()}")
         if is_refine:
-            _cot(f"Previous schedule   : {len(previous_schedule)} games (will be used as context)")
+            _cot(f"Previous    : {len(previous_schedule)} games")
 
-        _cot("\n[Step 1] Extracting structured constraints from special instructions...")
-        constraints = self._extract_constraints(special_instructions)
-        no_same_group = set(constraints.get("no_same_group", []))
-        rule_summary  = constraints.get("rule_summary", "")
-        _cot(f"  → no_same_group = {sorted(no_same_group) if no_same_group else '(none)'}")
-        _cot(f"  → rule_summary  = {rule_summary if rule_summary else '(none)'}")
+        # Step 1: Extract free-text constraints via LLM
+        _cot("\n[Step 1] Extracting constraints from special instructions...")
+        extracted     = self._extract_constraints(special_instructions)
+        no_same_group = set(extracted.get("no_same_group", []))
+        rule_summary  = extracted.get("rule_summary", "")
+        _cot(f"  → no_same_group : {sorted(no_same_group) or '(none)'}")
+        _cot(f"  → rule_summary  : {rule_summary or '(none)'}")
 
-        chat = self.model.start_chat(history=[])
-        schedule: Optional[List[Dict]] = None
+        # Step 2: Compute tournament-specific repeat thresholds, then build constraint set
+        _max_partner, _max_opponent, _partner_avg, _opponent_avg = _compute_repeat_thresholds(
+            len(players), num_rounds, num_courts
+        )
+        _cot(f"\n[Step 2] Repeat thresholds (computed for {len(players)}p × {num_rounds}r × {num_courts}c):")
+        _cot(f"  → partner avg  {_partner_avg:.2f}  → max allowed {_max_partner}")
+        _cot(f"  → opponent avg {_opponent_avg:.2f}  → max allowed {_max_opponent}")
 
+        constraints = ConstraintSet.build(
+            skill_levels        = skill_levels,
+            girl_names          = girl_names,
+            no_same_group       = list(no_same_group),
+            max_partner_repeat  = _max_partner,
+            max_opponent_repeat = _max_opponent,
+        )
+
+        # Step 3 (refine only): score previous schedule, identify clean rounds
+        clean_rounds:    Set[int]   = set()
+        prev_violations: List[Dict] = []
+        if is_refine:
+            _cot("\n[Step 3] Scoring previous schedule and locking clean rounds...")
+            prev_violations, prev_penalty = _validate_and_score(
+                previous_schedule, players, constraints
+            )
+            clean_rounds = _identify_clean_rounds(previous_schedule, players, constraints)
+            _cot(f"  → Previous penalty : {prev_penalty:,}")
+            _cot(f"  → Clean rounds     : {sorted(clean_rounds)}")
+            _cot(f"  → Violations       : {len(prev_violations)}")
+
+        # Step 4: Build opening prompt
         if is_refine:
             prompt = self._build_refine_prompt(
                 players, skill_levels, num_rounds, num_courts,
-                special_instructions, no_same_group, rule_summary,
-                previous_schedule,
+                special_instructions, constraints, rule_summary,
+                previous_schedule, prev_violations, clean_rounds,
             )
         else:
             prompt = self._build_initial_prompt(
                 players, skill_levels, num_rounds, num_courts,
-                special_instructions, no_same_group, rule_summary,
+                special_instructions, constraints, rule_summary,
             )
 
+        # Step 5: Feedback loop
+        chat: genai.ChatSession = self.model.start_chat(history=[])
+        schedule:       Optional[List[Dict]] = None
+        best_schedule:  Optional[List[Dict]] = None
+        best_penalty    = float("inf")
+
         for iteration in range(1, MAX_AGENT_ITERATIONS + 1):
-            _cot(f"\n[Iteration {iteration}/{MAX_AGENT_ITERATIONS}] Sending prompt to LLM...")
+            _cot(f"\n[Iteration {iteration}/{MAX_AGENT_ITERATIONS}]")
             _cot("--- PROMPT ---")
             _cot(prompt)
             _cot("--- END PROMPT ---")
 
             try:
                 response = chat.send_message(prompt)
-                text = response.text.strip()
-
-                _cot("--- LLM RESPONSE (raw) ---")
+                text     = response.text.strip()
+                _cot("--- LLM RESPONSE ---")
                 _cot(text[:2000] + (" ...[truncated]" if len(text) > 2000 else ""))
                 _cot("--- END RESPONSE ---")
 
                 parsed = self._parse_schedule_json(text)
-
                 if parsed is None:
-                    _cot("  ✗ Could not parse JSON from response. Asking LLM to retry.")
+                    _cot("  ✗ No valid JSON array found. Asking LLM to retry.")
                     prompt = (
                         "Your response did not contain a valid JSON array. "
                         "Output ONLY the JSON array — start with [ and end with ]. "
@@ -172,30 +483,41 @@ class GamePlannerAgent:
                     )
                     continue
 
-                _cot(f"  ✓ Parsed {len(parsed)} game entries from response.")
-                schedule = self._add_metadata(parsed, players)
-                violations = self._validate(schedule, players, skill_levels, no_same_group)
+                _cot(f"  ✓ Parsed {len(parsed)} entries.")
+                schedule              = self._add_metadata(parsed, players)
+                violations, penalty   = _validate_and_score(schedule, players, constraints)
 
-                if not violations:
-                    _cot(f"\n  ✓ VALID SCHEDULE — no violations. Done in {iteration} iteration(s).")
+                _cot(f"  → Penalty : {penalty:,}")
+                for v in violations:
+                    _cot(f"    [{v['layer']}] {v['location']} | {v['team']}: {v['detail']} (−{v['penalty']})")
+
+                # Track best result so we can return it if we exhaust iterations
+                if penalty < best_penalty:
+                    best_penalty  = penalty
+                    best_schedule = schedule
+
+                if penalty == 0:
+                    _cot(f"\n  ✓ PERFECT — zero penalty. Done in {iteration} iteration(s).")
                     _cot("=== AGENT END ===\n")
                     return schedule
 
-                _cot(f"\n  ✗ Found {len(violations)} violation(s):")
-                for v in violations:
-                    tag = f"[P{v['priority']}]"
-                    _cot(f"    {tag} {v['location']}, {v['team']}: {v['detail']}")
+                # Accept if only soft violations remain and we're near the end
+                hard_count = sum(1 for v in violations if v["layer"] == "HARD")
+                if hard_count == 0 and iteration >= MAX_AGENT_ITERATIONS - 1:
+                    _cot(f"  → No hard violations (soft only, penalty={penalty:,}). Accepting.")
+                    _cot("=== AGENT END ===\n")
+                    return schedule
 
-                prompt = self._build_feedback_prompt(violations)
+                prompt = self._build_feedback_prompt(violations, penalty)
 
             except Exception as exc:
                 _cot(f"  ✗ Agent error: {exc}")
                 logger.warning("Agent error at iteration %d: %s", iteration, exc)
                 break
 
-        _cot(f"\n  ⚠ Max iterations reached. Returning best schedule (may have violations).")
+        _cot(f"\n  ⚠ Max iterations reached. Returning best schedule (penalty={best_penalty:,}).")
         _cot("=== AGENT END ===\n")
-        return schedule or []
+        return best_schedule or schedule or []
 
     # =========================================================================
     # Prompt builders
@@ -203,60 +525,73 @@ class GamePlannerAgent:
 
     def _build_initial_prompt(
         self,
-        players: List[str],
-        skill_levels: Dict[str, str],
-        num_rounds: int,
-        num_courts: int,
+        players:              List[str],
+        skill_levels:         Dict[str, str],
+        num_rounds:           int,
+        num_courts:           int,
         special_instructions: str,
-        no_same_group: set,
-        rule_summary: str = "",
+        constraints:          ConstraintSet,
+        rule_summary:         str = "",
     ) -> str:
-        sitouts = max(0, len(players) - num_courts * 4)
-
+        sitouts      = max(0, len(players) - num_courts * 4)
+        total_games  = num_rounds * num_courts
+        unique_pairs = len(players) * (len(players) - 1) // 2
+        _, _, partner_avg, opponent_avg = _compute_repeat_thresholds(
+            len(players), num_rounds, num_courts
+        )
         player_lines = "\n".join(
             f"  - {p} ({skill_levels.get(p, 'unknown')})" for p in players
         )
-
         special_block = (
             f"\nSPECIAL INSTRUCTIONS FROM ORGANISER:\n{special_instructions.strip()}\n"
             if special_instructions.strip() else ""
         )
+        constraint_block = ""
+        if constraints.no_same_group:
+            constraint_block += (
+                f"\nHARD CONSTRAINT — these players must NEVER be teammates: "
+                f"{', '.join(sorted(constraints.no_same_group))}\n"
+            )
+        if constraints.girl_names:
+            constraint_block += (
+                f"\nGIRLS CONSTRAINT — girls are: {', '.join(sorted(constraints.girl_names))}\n"
+                f"  FORBIDDEN: a team of 2 girls facing an all-boys team.\n"
+                f"  ALLOWED:   one girl + one non-girl on any team.\n"
+                f"  ALLOWED:   two non-girls on any team.\n"
+            )
+        rule_block = (
+            f"\nRULE SUMMARY (from special instructions):\n"
+            + "\n".join(f"  {l}" for l in rule_summary.splitlines()) + "\n"
+            if rule_summary else ""
+        )
 
-        constraint_block = (
-            f"\nEXTRACTED HARD CONSTRAINT: These players must NEVER be on the same team: "
-            f"{', '.join(sorted(no_same_group))}\n"
-            if no_same_group else ""
+        math_block = (
+            f"\nMATHEMATICAL LIMITS (pre-calculated for this tournament):\n"
+            f"  {len(players)} players · {total_games} games · {unique_pairs} unique pairs\n"
+            f"  Each pair will partner on average {partner_avg:.1f}× "
+            f"→ repeats above {constraints.max_partner_repeat} are avoidable and should be minimised.\n"
+            f"  Each pair will face each other on average {opponent_avg:.1f}× "
+            f"→ repeats above {constraints.max_opponent_repeat} are avoidable and should be minimised.\n"
+            f"  These averages are unavoidable — distribute pairings as evenly as possible within them.\n"
         )
 
         return f"""Generate a complete {num_rounds}-round doubles tournament schedule.
 
 PLAYERS ({len(players)} total):
 {player_lines}
-{special_block}{constraint_block}
-STRICT PRIORITIES (must all be satisfied):
-  1. BALANCED MATCHUP — a team of 2 beginners must NEVER play against a team of 2 intermediates.
-     A game is only forbidden when ALL beginners face ALL intermediates (pure mismatch).
-     Allowed: [beginner+intermediate] vs [beginner+intermediate]
-     Allowed: [beginner+intermediate] vs [intermediate+intermediate]
-     Allowed: [beginner+beginner] vs [beginner+intermediate]
-     FORBIDDEN: [beginner+beginner] vs [intermediate+intermediate]
-  2. SPECIAL INSTRUCTION CONSTRAINTS — {
-      f"players {sorted(no_same_group)} must NEVER be teammates."
-      if no_same_group else "none."
-  }{
-      f"\n     {chr(10).join('     ' + line for line in rule_summary.splitlines())}"
-      if rule_summary else ""
-  }
-
-FAIRNESS (soft goal — relax if needed to satisfy priorities above):
-  - Try to distribute games evenly across players.
-  - A player playing 2 or 3 consecutive rounds is acceptable.
+{special_block}{constraint_block}{rule_block}{math_block}
+STRICT PRIORITIES (satisfy in order):
+  1. BALANCED MATCHUP   — FORBIDDEN: [beginner+beginner] vs [intermediate+intermediate].
+  2. HARD CONSTRAINTS   — every constraint listed above must be satisfied.
+  3. PARTNER VARIETY    — same two players should partner at most {constraints.max_partner_repeat} times.
+  4. SIT-OUT BALANCE    — distribute sit-outs as evenly as possible.
+  5. OPPONENT VARIETY   — same two players should face each other at most {constraints.max_opponent_repeat} times.
 
 TOURNAMENT SETTINGS:
-  - Rounds: {num_rounds}
-  - Courts per round: {num_courts}
-  - Active players per round: {num_courts * 4}
-  - Sitting out per round: {sitouts}
+  - Rounds              : {num_rounds}
+  - Courts per round    : {num_courts}
+  - Active per round    : {num_courts * 4}
+  - Sitting out/round   : {sitouts}
 
 OUTPUT — return ONLY this JSON array, nothing else:
 [
@@ -270,8 +605,8 @@ OUTPUT — return ONLY this JSON array, nothing else:
   ...
 ]
 
-Rules:
-  - Exactly {num_rounds * num_courts} entries total ({num_rounds} rounds × {num_courts} courts).
+FORMAT RULES:
+  - Exactly {num_rounds * num_courts} entries ({num_rounds} rounds × {num_courts} courts).
   - Both court entries for the same round must have identical sitting_out lists.
   - sitting_out has exactly {sitouts} name(s) per round.
   - team_a and team_b each have exactly 2 players.
@@ -281,165 +616,131 @@ Rules:
 
     def _build_refine_prompt(
         self,
-        players: List[str],
-        skill_levels: Dict[str, str],
-        num_rounds: int,
-        num_courts: int,
+        players:              List[str],
+        skill_levels:         Dict[str, str],
+        num_rounds:           int,
+        num_courts:           int,
         special_instructions: str,
-        no_same_group: set,
-        rule_summary: str,
-        previous_schedule: List[Dict],
+        constraints:          ConstraintSet,
+        rule_summary:         str,
+        previous_schedule:    List[Dict],
+        violations:           List[Dict],
+        clean_rounds:         Set[int],
     ) -> str:
-        sitouts = max(0, len(players) - num_courts * 4)
-
+        sitouts      = max(0, len(players) - num_courts * 4)
         player_lines = "\n".join(
             f"  - {p} ({skill_levels.get(p, 'unknown')})" for p in players
         )
-
-        # Strip to essentials — LLM only needs team assignments, not metadata
         stripped = [
             {
-                "round": g.get("round"),
-                "court": g.get("court"),
-                "team_a": g.get("team_a", []),
-                "team_b": g.get("team_b", []),
+                "round":       g.get("round"),
+                "court":       g.get("court"),
+                "team_a":      g.get("team_a", []),
+                "team_b":      g.get("team_b", []),
                 "sitting_out": g.get("sitting_out", []),
             }
             for g in previous_schedule
         ]
+        constraint_block = ""
+        if constraints.no_same_group:
+            constraint_block += (
+                f"\nHARD: Players {sorted(constraints.no_same_group)} must NEVER be teammates."
+            )
+        if constraints.girl_names:
+            constraint_block += (
+                f"\nHARD: Girls are {sorted(constraints.girl_names)}. "
+                f"A team of 2 girls must NEVER face an all-boys team."
+            )
+        if rule_summary:
+            constraint_block += f"\n{rule_summary}"
 
-        constraint_block = (
-            f"\nHARD CONSTRAINT: Players {sorted(no_same_group)} must NEVER be teammates."
-            if no_same_group else ""
+        locked_block = (
+            f"\nLOCKED ROUNDS — these are clean, do NOT change them: "
+            f"{', '.join(str(r) for r in sorted(clean_rounds))}\n"
+            if clean_rounds else ""
         )
-        rule_block = (
-            f"\n{rule_summary}"
-            if rule_summary else ""
-        )
 
-        return f"""You previously generated this doubles schedule. Now refine it.
+        violation_block = ""
+        if violations:
+            hard = [v for v in violations if v["layer"] == "HARD"]
+            soft = [v for v in violations if v["layer"] != "HARD"]
+            lines = []
+            if hard:
+                lines.append(
+                    f"HARD VIOLATIONS — must fix "
+                    f"({sum(v['penalty'] for v in hard):,} penalty pts):"
+                )
+                for v in hard:
+                    lines.append(f"  • [{v['location']}] {v['team']}: {v['detail']}")
+            if soft:
+                lines.append(
+                    f"\nSOFT VIOLATIONS — improve if possible "
+                    f"({sum(v['penalty'] for v in soft):,} penalty pts):"
+                )
+                for v in soft:
+                    lines.append(f"  • {v['team']}: {v['detail']} (−{v['penalty']} pts)")
+            violation_block = "\nCURRENT ISSUES:\n" + "\n".join(lines)
 
-PREVIOUS SCHEDULE (your last output):
+        return f"""You previously generated this doubles schedule. Refine it.
+
+PREVIOUS SCHEDULE:
 {json.dumps(stripped, indent=2)}
 
 PLAYERS ({len(players)} total):
 {player_lines}
 
-UPDATED SPECIAL INSTRUCTIONS (full, cumulative — ALL must be respected):
+INSTRUCTIONS (ALL must be respected):
 {special_instructions.strip()}
-{constraint_block}{rule_block}
+{constraint_block}
+{locked_block}{violation_block}
 
-STRICT PRIORITIES (unchanged):
-  1. BALANCED MATCHUP — FORBIDDEN: [beginner+beginner] vs [intermediate+intermediate]
-  2. SPECIAL INSTRUCTION CONSTRAINTS — satisfy everything in the instructions above.
-
-WHAT TO DO:
-  - Keep rounds that already satisfy ALL constraints as-is.
-  - Fix only the rounds/teams that violate any constraint.
-  - Do NOT change sitting_out rotation unless forced by a constraint.
+PRIORITIES:
+  1. Fix all HARD violations — these make the schedule invalid.
+  2. Improve soft violations — partner/opponent variety, sit-out balance.
+  3. Do NOT change locked rounds — they are already clean.
 
 TOURNAMENT SETTINGS:
-  - Rounds: {num_rounds}  Courts: {num_courts}
-  - Active per round: {num_courts * 4}  Sitting out: {sitouts}
+  Rounds: {num_rounds}  Courts: {num_courts}
+  Active per round: {num_courts * 4}  Sitting out: {sitouts}
 
-OUTPUT — return ONLY the complete refined JSON array, nothing else.
-Same format as the previous schedule: round, court, team_a, team_b, sitting_out.
-Exactly {num_rounds * num_courts} entries total.
+OUTPUT — return ONLY the complete refined JSON array.
+Exactly {num_rounds * num_courts} entries. Same format: round, court, team_a, team_b, sitting_out.
 """
 
-    def _build_feedback_prompt(self, violations: List[Dict]) -> str:
-        p2 = [v for v in violations if v["priority"] == 2]
-        p1 = [v for v in violations if v["priority"] == 1]
-
+    def _build_feedback_prompt(
+        self,
+        violations:    List[Dict],
+        total_penalty: int,
+    ) -> str:
+        hard = [v for v in violations if v["layer"] == "HARD"]
+        soft = [v for v in violations if v["layer"] != "HARD"]
         lines = [
-            f"Your schedule has {len(violations)} violation(s) that MUST be fixed.",
-            "Regenerate the COMPLETE schedule correcting every violation listed below.\n",
+            f"Your schedule has a total penalty of {total_penalty:,} points. "
+            "Regenerate the COMPLETE schedule correcting every issue below.\n",
         ]
-
-        if p2:
-            lines.append("PRIORITY 2 — SPECIAL INSTRUCTION VIOLATIONS (most critical):")
-            for v in p2:
-                lines.append(f"  • {v['location']}, {v['team']}: {v['detail']}")
-
-        if p1:
-            lines.append("\nPRIORITY 1 — BALANCED MATCHUP VIOLATIONS:")
-            for v in p1:
-                lines.append(f"  • {v['location']}, {v['team']}: {v['detail']}")
-
+        if hard:
+            lines.append(
+                f"HARD VIOLATIONS — must fix "
+                f"({sum(v['penalty'] for v in hard):,} pts):"
+            )
+            for v in hard:
+                lines.append(f"  • [{v['location']}] {v['team']}: {v['detail']}")
+        if soft:
+            lines.append(
+                f"\nSOFT VIOLATIONS — improve "
+                f"({sum(v['penalty'] for v in soft):,} pts):"
+            )
+            for v in soft:
+                lines.append(f"  • {v['team']}: {v['detail']} (−{v['penalty']} pts)")
         lines.append("\nOutput ONLY the corrected JSON array.")
         return "\n".join(lines)
-
-    # =========================================================================
-    # Validation
-    # =========================================================================
-
-    def _validate(
-        self,
-        schedule: List[Dict],
-        players: List[str],
-        skill_levels: Dict[str, str],
-        no_same_group: set,
-    ) -> List[Dict]:
-        player_set = set(players)
-        violations: List[Dict] = []
-
-        for entry in schedule:
-            rnd = entry.get("round", "?")
-            court = entry.get("court", "?")
-            loc = f"Round {rnd}, Court {court}"
-
-            team_a = entry.get("team_a", [])
-            team_b = entry.get("team_b", [])
-
-            # Validate team sizes and player names
-            for team_key, team in (("team_a", team_a), ("team_b", team_b)):
-                if len(team) != 2:
-                    violations.append({
-                        "priority": 1, "location": loc, "team": team_key,
-                        "detail": f"team has {len(team)} player(s), expected 2",
-                    })
-                    continue
-                for p in team:
-                    if p not in player_set:
-                        violations.append({
-                            "priority": 1, "location": loc, "team": team_key,
-                            "detail": f"unknown player name '{p}'",
-                        })
-
-            # Priority 1: forbidden matchup — 2 beginners vs 2 intermediates
-            if len(team_a) == 2 and len(team_b) == 2:
-                skills_a = {skill_levels.get(p, "") for p in team_a}
-                skills_b = {skill_levels.get(p, "") for p in team_b}
-                if (skills_a == {"beginner"} and skills_b == {"intermediate"}) or \
-                   (skills_a == {"intermediate"} and skills_b == {"beginner"}):
-                    violations.append({
-                        "priority": 1, "location": loc, "team": "both",
-                        "detail": (
-                            f"pure mismatch — "
-                            f"team_a {team_a} ({'/'.join(skills_a)}) vs "
-                            f"team_b {team_b} ({'/'.join(skills_b)}): "
-                            "2 beginners must not face 2 intermediates"
-                        ),
-                    })
-
-            # Priority 2: special instruction constraint (per-team)
-            for team_key, team in (("team_a", team_a), ("team_b", team_b)):
-                if len(team) == 2 and no_same_group:
-                    p1, p2 = team
-                    if p1 in no_same_group and p2 in no_same_group:
-                        violations.append({
-                            "priority": 2, "location": loc, "team": team_key,
-                            "detail": f"{p1} and {p2} must NOT be teammates (special instruction)",
-                        })
-
-        return violations
 
     # =========================================================================
     # Helpers
     # =========================================================================
 
     def _extract_constraints(self, special_instructions: str) -> Dict:
-        """Use LLM to extract structured constraints AND a formatted Allowed/Forbidden summary."""
+        """Use LLM to extract structured constraints from free-text instructions."""
         if not special_instructions or not special_instructions.strip():
             return {}
         prompt = (
@@ -448,12 +749,11 @@ Exactly {num_rounds * num_courts} entries total.
             "   These names come only from the instructions — do NOT invent names.\n\n"
             "2. rule_summary: a concise Allowed/Forbidden block (2-4 lines) that re-expresses\n"
             "   the constraint in the same style as this example:\n"
-            "     FORBIDDEN: a team where both players are girls "
-            "(both from [Girl1, Girl2, Girl3, Girl4])\n"
+            "     FORBIDDEN: a team where both players are girls\n"
             "     ALLOWED:   a team with one girl and one non-girl\n"
             "     ALLOWED:   a team with two non-girls\n"
             "   Base the rule_summary entirely on the instructions — do NOT add rules that\n"
-            "   are not stated. Gender or group identity comes ONLY from the instructions text.\n\n"
+            "   are not stated.\n\n"
             "Return ONLY valid JSON matching this schema exactly:\n"
             '  {"no_same_group": ["Name1", ...], "rule_summary": "FORBIDDEN: ...\\nALLOWED: ..."}\n'
             "If no pairing constraint exists, return {}.\n\n"
@@ -461,9 +761,9 @@ Exactly {num_rounds * num_courts} entries total.
         )
         try:
             response = self.model.generate_content(prompt)
-            text = response.text.strip()
-            text = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
-            match = re.search(r"\{.*\}", text, re.DOTALL)
+            text     = response.text.strip()
+            text     = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
+            match    = re.search(r"\{.*\}", text, re.DOTALL)
             if match:
                 return json.loads(match.group())
         except Exception as exc:
@@ -471,14 +771,11 @@ Exactly {num_rounds * num_courts} entries total.
         return {}
 
     def _parse_schedule_json(self, text: str) -> Optional[List[Dict]]:
-        """Extract a JSON array from the LLM response, stripping any markdown fences."""
         text = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
-        idx = text.find("[")
+        idx  = text.find("[")
         if idx == -1:
             return None
         try:
-            # raw_decode stops at the end of the first valid JSON value,
-            # ignoring any trailing text or explanation the model appends
             obj, _ = json.JSONDecoder().raw_decode(text, idx)
             if isinstance(obj, list):
                 return obj
@@ -487,12 +784,11 @@ Exactly {num_rounds * num_courts} entries total.
         return None
 
     def _add_metadata(self, schedule: List[Dict], players: List[str]) -> List[Dict]:
-        """Add time_slot and game_id fields if missing."""
         for entry in schedule:
-            rnd = entry.get("round", 1)
+            rnd   = entry.get("round", 1)
             court = entry.get("court", 1)
             entry.setdefault("time_slot", f"{(rnd - 1) * 10}–{rnd * 10} min")
-            entry.setdefault("game_id", f"r{rnd}_c{court}")
+            entry.setdefault("game_id",   f"r{rnd}_c{court}")
             if "sitting_out" not in entry:
                 active = set(entry.get("team_a", []) + entry.get("team_b", []))
                 entry["sitting_out"] = [p for p in players if p not in active]
