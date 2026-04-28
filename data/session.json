@@ -262,6 +262,11 @@
       "score_a": 9,
       "score_b": 11,
       "submitted": true
+    },
+    "r6_c2": {
+      "score_a": 11,
+      "score_b": 7,
+      "submitted": true
     }
   },
   "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. D",
