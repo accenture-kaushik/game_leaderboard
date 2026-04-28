@@ -83,6 +83,8 @@ class ConstraintSet:
     # Each entry: {"players": ["A", "B"], "round": int|None}
     # round=None means "any round"
     required_partners:   List[Dict]      = field(default_factory=list)
+    # {court_number: first_round_it_is_active}  e.g. {1: 1, 2: 4}
+    court_start_rounds:  Dict[int, int]  = field(default_factory=dict)
 
     @classmethod
     def build(
@@ -93,6 +95,7 @@ class ConstraintSet:
         max_partner_repeat:  int = 2,
         max_opponent_repeat: int = 2,
         required_partners:   Optional[List[Dict]] = None,
+        court_start_rounds:  Optional[Dict[int, int]] = None,
     ) -> "ConstraintSet":
         return cls(
             skill_levels        = skill_levels,
@@ -101,6 +104,7 @@ class ConstraintSet:
             max_partner_repeat  = max_partner_repeat,
             max_opponent_repeat = max_opponent_repeat,
             required_partners   = required_partners or [],
+            court_start_rounds  = court_start_rounds or {},
         )
 
 
@@ -190,6 +194,24 @@ def _validate_and_score(
 
     # ── Layer 1: Hard constraints ────────────────────────────────────────────
     for rnd, games in rounds.items():
+
+        # Court availability: game on a court before it opens
+        if constraints.court_start_rounds:
+            for g in games:
+                court     = g.get("court", 1)
+                avail_rnd = constraints.court_start_rounds.get(court, 1)
+                if rnd < avail_rnd:
+                    total_penalty += PENALTY_HARD
+                    violations.append({
+                        "priority": 1, "layer": "HARD",
+                        "location": f"Round {rnd}, Court {court}",
+                        "team": "court_availability",
+                        "detail": (
+                            f"Court {court} not available until round {avail_rnd} "
+                            f"but game scheduled in round {rnd}"
+                        ),
+                        "penalty": PENALTY_HARD,
+                    })
 
         # Slot conflict: same player active on two courts in the same round
         active: List[str] = []
@@ -435,6 +457,9 @@ class GamePlannerAgent:
         special_instructions: str = "",
         previous_schedule:    Optional[List[Dict]] = None,
         girl_names:           Optional[List[str]] = None,
+        court_start_rounds:   Optional[Dict[int, int]] = None,
+        court_start_times:    Optional[Dict[int, str]] = None,
+        mins_per_game:        int = 10,
     ) -> List[Dict]:
         is_refine = bool(previous_schedule)
         mode      = "REFINE" if is_refine else "FRESH"
@@ -443,10 +468,20 @@ class GamePlannerAgent:
         _cot(f"Skill levels: {skill_levels}")
         _cot(f"Girl names  : {girl_names or '(none)'}")
         _cot(f"Rounds      : {num_rounds}  Courts: {num_courts}")
+        _cot(f"Mins/game   : {mins_per_game}")
+        if court_start_rounds:
+            for _c, _r in sorted(court_start_rounds.items()):
+                _t = (court_start_times or {}).get(_c, "?")
+                _cot(f"  Court {_c}: available from round {_r} ({_t})")
         if special_instructions.strip():
             _cot(f"Special     : {special_instructions.strip()}")
         if is_refine:
             _cot(f"Previous    : {len(previous_schedule)} games")
+
+        # Store timing metadata on self so _add_metadata can use it
+        self._court_start_times  = court_start_times  or {}
+        self._court_start_rounds = court_start_rounds or {}
+        self._mins_per_game      = mins_per_game
 
         # Step 1: Extract free-text constraints via LLM
         _cot("\n[Step 1] Extracting constraints from special instructions...")
@@ -473,6 +508,7 @@ class GamePlannerAgent:
             max_partner_repeat  = _max_partner,
             max_opponent_repeat = _max_opponent,
             required_partners   = required_partners,
+            court_start_rounds  = court_start_rounds,
         )
 
         # Step 3 (refine only): score previous schedule, identify clean rounds
@@ -494,11 +530,17 @@ class GamePlannerAgent:
                 players, skill_levels, num_rounds, num_courts,
                 special_instructions, constraints, rule_summary,
                 previous_schedule, prev_violations, clean_rounds,
+                court_start_rounds=court_start_rounds,
+                court_start_times=court_start_times,
+                mins_per_game=mins_per_game,
             )
         else:
             prompt = self._build_initial_prompt(
                 players, skill_levels, num_rounds, num_courts,
                 special_instructions, constraints, rule_summary,
+                court_start_rounds=court_start_rounds,
+                court_start_times=court_start_times,
+                mins_per_game=mins_per_game,
             )
 
         # Step 5: Feedback loop
@@ -579,6 +621,9 @@ class GamePlannerAgent:
         special_instructions: str,
         constraints:          ConstraintSet,
         rule_summary:         str = "",
+        court_start_rounds:   Optional[Dict[int, int]] = None,
+        court_start_times:    Optional[Dict[int, str]] = None,
+        mins_per_game:        int = 10,
     ) -> str:
         sitouts      = max(0, len(players) - num_courts * 4)
         total_games  = num_rounds * num_courts
@@ -633,24 +678,73 @@ class GamePlannerAgent:
             f"  These averages are unavoidable — distribute pairings as evenly as possible within them.\n"
         )
 
+        # Court availability block — only shown when courts have staggered starts
+        court_avail_block = ""
+        staggered = court_start_rounds and any(r > 1 for r in court_start_rounds.values())
+        if staggered:
+            lines = []
+            for c in sorted(court_start_rounds.keys()):
+                r   = court_start_rounds[c]
+                t   = (court_start_times or {}).get(c, "?")
+                if r == 1:
+                    lines.append(f"  Court {c}: active from round 1 onwards ({t})")
+                else:
+                    lines.append(
+                        f"  Court {c}: NOT active in rounds 1–{r - 1}; "
+                        f"active from round {r} onwards ({t})"
+                    )
+            # Describe sit-out counts per phase
+            early_sitout = len(players) - 4          # only 1 court active
+            late_sitout  = max(0, len(players) - num_courts * 4)
+            first_stagger = min(r for r in court_start_rounds.values() if r > 1)
+            lines.append(
+                f"\n  Rounds 1–{first_stagger - 1}: only 1 court active → "
+                f"{early_sitout} players sit out each round."
+            )
+            lines.append(
+                f"  Round {first_stagger} onwards: all {num_courts} courts active → "
+                f"{late_sitout} player(s) sit out each round."
+            )
+            court_avail_block = "\nCOURT AVAILABILITY (staggered start):\n" + "\n".join(lines) + "\n"
+
+        # Dynamic format rule — entry count varies when courts are staggered
+        if staggered:
+            total_entries = sum(
+                num_rounds - (court_start_rounds.get(c, 1) - 1)
+                for c in range(1, num_courts + 1)
+            )
+            format_entry_rule = (
+                f"  - Total entries = {total_entries} "
+                f"(courts start at different rounds — see COURT AVAILABILITY)."
+            )
+            format_sitout_rule = (
+                f"  - sitting_out varies by round: "
+                f"{early_sitout} names before round {first_stagger}, "
+                f"{late_sitout} name(s) from round {first_stagger} onwards."
+            )
+        else:
+            total_entries      = num_rounds * num_courts
+            format_entry_rule  = f"  - Exactly {total_entries} entries ({num_rounds} rounds × {num_courts} courts)."
+            format_sitout_rule = f"  - sitting_out has exactly {sitouts} name(s) per round."
+
         return f"""Generate a complete {num_rounds}-round doubles tournament schedule.
 
 PLAYERS ({len(players)} total):
 {player_lines}
-{special_block}{constraint_block}{rule_block}{math_block}
+{special_block}{constraint_block}{court_avail_block}{rule_block}{math_block}
 STRICT PRIORITIES (satisfy in order):
   1. BALANCED MATCHUP   — FORBIDDEN: [beginner+beginner] vs [intermediate+intermediate].
   2. HARD CONSTRAINTS   — every constraint listed above must be satisfied.
   3. REQUIRED PAIRINGS  — all mandatory partner pairs must appear in the schedule.
   4. PARTNER VARIETY    — same two players should partner at most {constraints.max_partner_repeat} times.
-  5. SIT-OUT BALANCE    — distribute sit-outs as evenly as possible.
+  5. SIT-OUT BALANCE    — distribute sit-outs as evenly as possible across all players.
   6. OPPONENT VARIETY   — same two players should face each other at most {constraints.max_opponent_repeat} times.
 
 TOURNAMENT SETTINGS:
   - Rounds              : {num_rounds}
-  - Courts per round    : {num_courts}
-  - Active per round    : {num_courts * 4}
-  - Sitting out/round   : {sitouts}
+  - Minutes per game    : {mins_per_game}
+  - Courts per round    : up to {num_courts} (see COURT AVAILABILITY)
+  - Sitting out/round   : varies (see above)
 
 OUTPUT — return ONLY this JSON array, nothing else:
 [
@@ -665,9 +759,9 @@ OUTPUT — return ONLY this JSON array, nothing else:
 ]
 
 FORMAT RULES:
-  - Exactly {num_rounds * num_courts} entries ({num_rounds} rounds × {num_courts} courts).
-  - Both court entries for the same round must have identical sitting_out lists.
-  - sitting_out has exactly {sitouts} name(s) per round.
+{format_entry_rule}
+  - Only include a court entry for rounds where that court is active.
+{format_sitout_rule}
   - team_a and team_b each have exactly 2 players.
   - Use exact player name spelling from the list above.
   - No player appears more than once in the same round.
@@ -685,8 +779,10 @@ FORMAT RULES:
         previous_schedule:    List[Dict],
         violations:           List[Dict],
         clean_rounds:         Set[int],
+        court_start_rounds:   Optional[Dict[int, int]] = None,
+        court_start_times:    Optional[Dict[int, str]] = None,
+        mins_per_game:        int = 10,
     ) -> str:
-        sitouts      = max(0, len(players) - num_courts * 4)
         player_lines = "\n".join(
             f"  - {p} ({skill_levels.get(p, 'unknown')})" for p in players
         )
@@ -722,6 +818,23 @@ FORMAT RULES:
         if rule_summary:
             constraint_block += f"\n{rule_summary}"
 
+        # Court availability block for refine mode
+        court_avail_block = ""
+        staggered = court_start_rounds and any(r > 1 for r in court_start_rounds.values())
+        if staggered:
+            lines = []
+            for c in sorted(court_start_rounds.keys()):
+                r = court_start_rounds[c]
+                t = (court_start_times or {}).get(c, "?")
+                if r == 1:
+                    lines.append(f"  Court {c}: active from round 1 ({t})")
+                else:
+                    lines.append(
+                        f"  Court {c}: NOT active in rounds 1–{r - 1}; "
+                        f"active from round {r} ({t})"
+                    )
+            court_avail_block = "\nCOURT AVAILABILITY:\n" + "\n".join(lines) + "\n"
+
         locked_block = (
             f"\nLOCKED ROUNDS — these are clean, do NOT change them: "
             f"{', '.join(str(r) for r in sorted(clean_rounds))}\n"
@@ -749,6 +862,11 @@ FORMAT RULES:
                     lines.append(f"  • {v['team']}: {v['detail']} (−{v['penalty']} pts)")
             violation_block = "\nCURRENT ISSUES:\n" + "\n".join(lines)
 
+        total_entries = sum(
+            num_rounds - (court_start_rounds.get(c, 1) - 1)
+            for c in range(1, num_courts + 1)
+        ) if staggered else num_rounds * num_courts
+
         return f"""You previously generated this doubles schedule. Refine it.
 
 PREVIOUS SCHEDULE:
@@ -760,7 +878,7 @@ PLAYERS ({len(players)} total):
 INSTRUCTIONS (ALL must be respected):
 {special_instructions.strip()}
 {constraint_block}
-{locked_block}{violation_block}
+{court_avail_block}{locked_block}{violation_block}
 
 PRIORITIES:
   1. Fix all HARD violations — these make the schedule invalid.
@@ -768,11 +886,12 @@ PRIORITIES:
   3. Do NOT change locked rounds — they are already clean.
 
 TOURNAMENT SETTINGS:
-  Rounds: {num_rounds}  Courts: {num_courts}
-  Active per round: {num_courts * 4}  Sitting out: {sitouts}
+  Rounds: {num_rounds}  Courts: up to {num_courts}  Minutes/game: {mins_per_game}
+  Sitting out: varies by round (see COURT AVAILABILITY above)
 
 OUTPUT — return ONLY the complete refined JSON array.
-Exactly {num_rounds * num_courts} entries. Same format: round, court, team_a, team_b, sitting_out.
+{total_entries} entries total. Same format: round, court, team_a, team_b, sitting_out.
+Only include a court in a round when that court is active.
 """
 
     def _build_feedback_prompt(
@@ -860,8 +979,23 @@ Exactly {num_rounds * num_courts} entries. Same format: round, court, team_a, te
         for entry in schedule:
             rnd   = entry.get("round", 1)
             court = entry.get("court", 1)
-            entry.setdefault("time_slot", f"{(rnd - 1) * 10}–{rnd * 10} min")
-            entry.setdefault("game_id",   f"r{rnd}_c{court}")
+
+            if self._court_start_times and court in self._court_start_times:
+                start_str   = self._court_start_times[court]
+                sh, sm      = map(int, start_str.split(":"))
+                court_abs   = sh * 60 + sm
+                round_off   = self._court_start_rounds.get(court, 1) - 1
+                g_start     = court_abs + (rnd - 1 - round_off) * self._mins_per_game
+                g_end       = g_start + self._mins_per_game
+                entry.setdefault(
+                    "time_slot",
+                    f"{g_start // 60:02d}:{g_start % 60:02d}–"
+                    f"{g_end   // 60:02d}:{g_end   % 60:02d}",
+                )
+            else:
+                entry.setdefault("time_slot", f"{(rnd - 1) * 10}–{rnd * 10} min")
+
+            entry.setdefault("game_id", f"r{rnd}_c{court}")
             if "sitting_out" not in entry:
                 active = set(entry.get("team_a", []) + entry.get("team_b", []))
                 entry["sitting_out"] = [p for p in players if p not in active]

@@ -10,6 +10,7 @@ Gemini API key is read from config.yaml (gemini.api_key).
 
 import base64
 import copy
+import datetime
 import json
 import logging
 import os
@@ -504,12 +505,16 @@ def _init_ui():
     # Restore court hours from persisted state on every fresh browser load.
     # This must run in _init_ui (not just show_setup) so the slider values are
     # correct regardless of which page the user lands on first.
-    if not st.session_state.get("_court_hours_init"):
+    if not st.session_state.get("_court_times_init"):
         _s = _get()
-        if _s.get("session_active") and _s.get("court_hours"):
-            for _c, _hrs in _s["court_hours"].items():
-                st.session_state[f"court_hours_{_c}"] = float(_hrs)
-        st.session_state._court_hours_init = True
+        if _s.get("session_active") and _s.get("court_times"):
+            for _c, _ct in _s["court_times"].items():
+                _ci = int(_c)
+                _sh, _sm = map(int, _ct.get("start", "07:00").split(":"))
+                _eh, _em = map(int, _ct.get("end",   "08:30").split(":"))
+                st.session_state[f"court_start_{_ci}"] = datetime.time(_sh, _sm)
+                st.session_state[f"court_end_{_ci}"]   = datetime.time(_eh, _em)
+        st.session_state._court_times_init = True
 
 
 _init_ui()
@@ -649,8 +654,12 @@ def show_setup() -> None:
     if _s.get("session_active") and not st.session_state.get("_setup_restored"):
         st.session_state.num_courts     = _s.get("num_courts",     st.session_state.get("num_courts", 2))
         st.session_state.games_per_hour = _s.get("games_per_hour", st.session_state.get("games_per_hour", 5))
-        for _c, _hrs in _s.get("court_hours", {}).items():
-            st.session_state[f"court_hours_{_c}"] = float(_hrs)
+        for _c, _ct in _s.get("court_times", {}).items():
+            _ci = int(_c)
+            _sh, _sm = map(int, _ct.get("start", "07:00").split(":"))
+            _eh, _em = map(int, _ct.get("end",   "08:30").split(":"))
+            st.session_state[f"court_start_{_ci}"] = datetime.time(_sh, _sm)
+            st.session_state[f"court_end_{_ci}"]   = datetime.time(_eh, _em)
         if _s.get("players"):
             _all_p      = list(_s["players"])
             _saved_gset = set(_s.get("girl_names", []))
@@ -701,10 +710,6 @@ def show_setup() -> None:
             value=st.session_state.get("num_courts", 2), step=1,
         )
         if num_courts != st.session_state.get("num_courts", 2):
-            for _c in range(1, st.session_state.get("num_courts", 2) + 1):
-                _hk = f"court_hours_{_c}"
-                if _hk in st.session_state:
-                    st.session_state[f"_bk_{_hk}"] = st.session_state[_hk]
             st.session_state.num_courts = num_courts
             st.rerun()
 
@@ -716,36 +721,34 @@ def show_setup() -> None:
         )
         if games_per_hour != st.session_state.get("games_per_hour", 5):
             st.session_state.games_per_hour = games_per_hour
-        mins_per_game = round(60 / games_per_hour, 1)
+        mins_per_game = max(1, round(60 / games_per_hour))
         st.caption(f"~{mins_per_game} min per game")
 
-        # Per-court hours-booked sliders
-        st.markdown('<div class="section-label">Hours booked per court</div>', unsafe_allow_html=True)
+        # Per-court start/end time pickers
+        st.markdown('<div class="section-label">Court booking times</div>', unsafe_allow_html=True)
         num_games_per_court: Dict[int, int] = {}
         for c in range(1, num_courts + 1):
-            hrs_key = f"court_hours_{c}"
-            if hrs_key not in st.session_state:
-                bk_key = f"_bk_{hrs_key}"
-                if bk_key in st.session_state:
-                    st.session_state[hrs_key] = st.session_state[bk_key]
-                else:
-                    _saved_ch = _get().get("court_hours", {})
-                    _v = _saved_ch.get(c) or _saved_ch.get(str(c))
-                    st.session_state[hrs_key] = float(_v) if _v is not None else 2.0
-            court_hrs = st.slider(
-                f"Court {c}",
-                min_value=0.5, max_value=6.0, step=0.5,
-                key=hrs_key,
-            )
-            num_games_per_court[c] = max(1, round(games_per_hour * court_hrs))
-            st.caption(f"→ {num_games_per_court[c]} games")
+            _default_start = st.session_state.get(f"court_start_{c}", datetime.time(7, 0))
+            _default_end   = st.session_state.get(f"court_end_{c}",   datetime.time(8, 30))
+            st.caption(f"Court {c}")
+            col_s, col_e = st.columns(2)
+            with col_s:
+                st.time_input("Start", value=_default_start, key=f"court_start_{c}", step=300)
+            with col_e:
+                st.time_input("End",   value=_default_end,   key=f"court_end_{c}",   step=300)
+            _st = st.session_state[f"court_start_{c}"]
+            _et = st.session_state[f"court_end_{c}"]
+            _dur = max(0, (_et.hour * 60 + _et.minute) - (_st.hour * 60 + _st.minute))
+            num_games_per_court[c] = max(1, _dur // mins_per_game)
+            st.caption(f"→ {_dur} min · {num_games_per_court[c]} games")
 
         # Session summary info box
         n           = st.session_state.get("num_boys", 6) + st.session_state.get("num_girls", 4)
         st.session_state.num_players = n
         total_games = sum(num_games_per_court.values())
         detail      = "  \n".join(
-            f"Court {c}: {g} games ({st.session_state.get(f'court_hours_{c}', 2.0):.1f}h)"
+            f"Court {c}: {st.session_state.get(f'court_start_{c}', datetime.time(7,0)).strftime('%H:%M')}–"
+            f"{st.session_state.get(f'court_end_{c}', datetime.time(8,30)).strftime('%H:%M')} ({g} games)"
             for c, g in num_games_per_court.items()
         )
         avg_games   = round(total_games * 4 / max(n, 1), 1)  # 4 players active per game
@@ -785,10 +788,6 @@ def show_setup() -> None:
             key="num_boys_input",
         )
         if num_boys != st.session_state.get("num_boys", 6):
-            for _c in range(1, st.session_state.get("num_courts", 2) + 1):
-                _hk = f"court_hours_{_c}"
-                if _hk in st.session_state:
-                    st.session_state[f"_bk_{_hk}"] = st.session_state[_hk]
             cur = st.session_state.get("boy_names", [])
             if num_boys > len(cur):
                 cur = cur + [""] * (num_boys - len(cur))
@@ -835,10 +834,6 @@ def show_setup() -> None:
             key="num_girls_input",
         )
         if num_girls != st.session_state.get("num_girls", 4):
-            for _c in range(1, st.session_state.get("num_courts", 2) + 1):
-                _hk = f"court_hours_{_c}"
-                if _hk in st.session_state:
-                    st.session_state[f"_bk_{_hk}"] = st.session_state[_hk]
             cur = st.session_state.get("girl_names", [])
             if num_girls > len(cur):
                 cur = cur + [""] * (num_girls - len(cur))
@@ -961,12 +956,30 @@ def show_setup() -> None:
         # Read values set in Players tab
         num_courts     = st.session_state.get("num_courts", 2)
         games_per_hour = st.session_state.get("games_per_hour", 5)
-        # Rebuild per-court game counts from stored hour sliders
-        _ngpc: Dict[int, int] = {}
+        _mins_per_game = max(1, round(60 / games_per_hour))
+
+        # Rebuild per-court game counts and stagger offsets from start/end times
+        _ngpc:               Dict[int, int] = {}
+        _court_start_mins_d: Dict[int, int] = {}
+        _court_start_times:  Dict[int, str] = {}
+        _court_end_times:    Dict[int, str] = {}
         for _c in range(1, num_courts + 1):
-            _hrs = float(st.session_state.get(f"court_hours_{_c}", 2.0))
-            _ngpc[_c] = max(1, round(games_per_hour * _hrs))
-        num_games = max(_ngpc.values())  # generate enough rounds for the busiest court
+            _st_t = st.session_state.get(f"court_start_{_c}", datetime.time(7, 0))
+            _et_t = st.session_state.get(f"court_end_{_c}",   datetime.time(8, 30))
+            _sm   = _st_t.hour * 60 + _st_t.minute
+            _em   = _et_t.hour * 60 + _et_t.minute
+            _dur  = max(0, _em - _sm)
+            _ngpc[_c]               = max(1, _dur // _mins_per_game)
+            _court_start_mins_d[_c] = _sm
+            _court_start_times[_c]  = f"{_st_t.hour:02d}:{_st_t.minute:02d}"
+            _court_end_times[_c]    = f"{_et_t.hour:02d}:{_et_t.minute:02d}"
+
+        _earliest_start = min(_court_start_mins_d.values())
+        _court_start_rounds: Dict[int, int] = {
+            _c: (_court_start_mins_d[_c] - _earliest_start) // _mins_per_game + 1
+            for _c in range(1, num_courts + 1)
+        }
+        num_games = max(_ngpc.values())  # total rounds = busiest court
 
         has_key = bool(_gemini_key())
         use_agent = st.checkbox(
@@ -1054,6 +1067,9 @@ def show_setup() -> None:
                                         special_instructions=st.session_state.get("special_instructions", ""),
                                         previous_schedule=_saved_sched if _is_refine else None,
                                         girl_names=resolved_girl_names,
+                                        court_start_rounds=_court_start_rounds,
+                                        court_start_times=_court_start_times,
+                                        mins_per_game=_mins_per_game,
                                     )
                                     method = "AI agent — refine" if _is_refine else "AI agent — fresh"
                                 else:
@@ -1075,7 +1091,11 @@ def show_setup() -> None:
                             court_seen: Dict[int, int] = {c: 0 for c in range(1, num_courts + 1)}
                             schedule = []
                             for g in raw_schedule:
-                                c = g["court"]
+                                c   = g["court"]
+                                rnd = g.get("round", 1)
+                                # Skip games scheduled before this court becomes available
+                                if rnd < _court_start_rounds.get(c, 1):
+                                    continue
                                 limit = _ngpc.get(c, num_games)
                                 if court_seen[c] < limit:
                                     schedule.append(g)
@@ -1087,8 +1107,11 @@ def show_setup() -> None:
                                 "skill_levels":   skill_levels,
                                 "num_courts":     num_courts,
                                 "games_per_hour": games_per_hour,
-                                "court_hours": {
-                                    c: float(st.session_state.get(f"court_hours_{c}", 2.0))
+                                "court_times": {
+                                    c: {
+                                        "start": _court_start_times.get(c, "07:00"),
+                                        "end":   _court_end_times.get(c, "08:30"),
+                                    }
                                     for c in range(1, num_courts + 1)
                                 },
                                 "schedule": schedule,
@@ -1130,7 +1153,7 @@ def show_setup() -> None:
                         st.session_state.show_reset_pw = False
                         # Clear all per-game widget state (scores, winner selections)
                         for k in list(st.session_state.keys()):
-                            if k.startswith(("sa_", "sb_", "winner_", "win_a_", "win_b_", "court_hours_")):
+                            if k.startswith(("sa_", "sb_", "winner_", "win_a_", "win_b_", "court_start_", "court_end_")):
                                 del st.session_state[k]
                         # Reset setup widgets to defaults
                         st.session_state.num_boys      = 6
