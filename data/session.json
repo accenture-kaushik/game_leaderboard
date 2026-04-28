@@ -276,5 +276,28 @@
   },
   "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. D",
   "session_active": true,
-  "critics_choice": null
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "Animesh",
+        "reason": "Animesh showcased exceptional consistency and skill, leading the tournament with an impressive 59 points scored. His dominant play and high net score were truly outstanding."
+      },
+      {
+        "rank": 2,
+        "name": "Neha",
+        "reason": "Neha demonstrated incredible resilience and scoring prowess, accumulating 51 points through powerful rallies. Her consistent effort and strong offensive plays were commendable."
+      },
+      {
+        "rank": 3,
+        "name": "Kaushik",
+        "reason": "Kaushik delivered a series of thrilling performances, scoring 52 points with remarkable consistency. His ability to maintain tight scorelines and execute standout rallies was impressive."
+      }
+    ],
+    "quips": [
+      "Wait {name}, how did you get up here?",
+      "If there were bonus points for style, {name} would have won twice.",
+      "{name} came, {name} saw, {name} politely dominated."
+    ]
+  }
 }
