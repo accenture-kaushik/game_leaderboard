@@ -733,9 +733,9 @@ def show_setup() -> None:
             st.caption(f"Court {c}")
             col_s, col_e = st.columns(2)
             with col_s:
-                st.time_input("Start", value=_default_start, key=f"court_start_{c}", step=300)
+                st.time_input("Start", value=_default_start, key=f"court_start_{c}", step=1800)
             with col_e:
-                st.time_input("End",   value=_default_end,   key=f"court_end_{c}",   step=300)
+                st.time_input("End",   value=_default_end,   key=f"court_end_{c}",   step=1800)
             _st = st.session_state[f"court_start_{c}"]
             _et = st.session_state[f"court_end_{c}"]
             _dur = max(0, (_et.hour * 60 + _et.minute) - (_st.hour * 60 + _st.minute))
