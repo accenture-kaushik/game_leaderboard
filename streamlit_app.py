@@ -1578,9 +1578,15 @@ def show_court(court: int) -> None:
         submitted = sd.get("submitted", False)
 
         # ── Pre-initialise session state for scores & winner ──────────────
-        if f"sa_{gid}" not in st.session_state:
+        # Apply any Win-button override BEFORE the widget renders (can't write
+        # to a widget key after it has already been rendered in the same run).
+        if f"sa_override_{gid}" in st.session_state:
+            st.session_state[f"sa_{gid}"] = st.session_state.pop(f"sa_override_{gid}")
+        elif f"sa_{gid}" not in st.session_state:
             st.session_state[f"sa_{gid}"] = int(sd["score_a"]) if submitted and sd.get("score_a") is not None else 0
-        if f"sb_{gid}" not in st.session_state:
+        if f"sb_override_{gid}" in st.session_state:
+            st.session_state[f"sb_{gid}"] = st.session_state.pop(f"sb_override_{gid}")
+        elif f"sb_{gid}" not in st.session_state:
             st.session_state[f"sb_{gid}"] = int(sd["score_b"]) if submitted and sd.get("score_b") is not None else 0
         if f"winner_{gid}" not in st.session_state:
             if submitted:
@@ -1617,7 +1623,7 @@ def show_court(court: int) -> None:
                     use_container_width=True,
                 ):
                     st.session_state[f"winner_{gid}"] = "Team A"
-                    st.session_state[f"sa_{gid}"] = max(11, st.session_state.get(f"sa_{gid}", 0))
+                    st.session_state[f"sa_override_{gid}"] = max(11, st.session_state.get(f"sa_{gid}", 0))
                     st.rerun()
 
             st.markdown("<div style='margin-top:0.5rem'></div>", unsafe_allow_html=True)
@@ -1644,7 +1650,7 @@ def show_court(court: int) -> None:
                     use_container_width=True,
                 ):
                     st.session_state[f"winner_{gid}"] = "Team B"
-                    st.session_state[f"sb_{gid}"] = max(11, st.session_state.get(f"sb_{gid}", 0))
+                    st.session_state[f"sb_override_{gid}"] = max(11, st.session_state.get(f"sb_{gid}", 0))
                     st.rerun()
 
             btn = "✏️ Update Score" if submitted else "✅ Submit Score"
