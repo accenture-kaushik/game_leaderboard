@@ -1924,15 +1924,7 @@ def show_all_time_leaderboard() -> None:
     def _rank_key(p: dict):
         return (_avg_pts(p), p.get("net_points", 0))
 
-    girls_pool = sorted([p for p in active if p["name"] in girl_names_all], key=_rank_key, reverse=True)
-    boys_pool  = sorted([p for p in active if p["name"] not in girl_names_all], key=_rank_key, reverse=True)
-
-    if len(girls_pool) >= 2 and len(boys_pool) >= 2:
-        selected = boys_pool[:2] + girls_pool[:1]
-    else:
-        selected = sorted(active, key=_rank_key, reverse=True)[:3]
-
-    podium_players = sorted(selected, key=_rank_key, reverse=True)
+    podium_players = sorted(active, key=_rank_key, reverse=True)[:3]
 
     # ── Render podium ─────────────────────────────────────────────────────────
     st.markdown(
@@ -2069,22 +2061,12 @@ def show_leaderboard() -> None:
         return (_avg_pts(p), p.get("net_points", 0))
 
     active_for_podium = [p for p in lb if p.get("games_played", 0) > 0]
-    all_names  = [p["name"] for p in active_for_podium]
     _saved_girls = set(state.get("girl_names", []))
-    girl_names   = _saved_girls if _saved_girls else _identify_girls(all_names, state.get("special_instructions", ""))
+    girl_names   = _saved_girls if _saved_girls else _identify_girls(
+        [p["name"] for p in active_for_podium], state.get("special_instructions", "")
+    )
 
-    girls_pool = sorted([p for p in active_for_podium if p["name"] in girl_names],
-                        key=_rank_key, reverse=True)
-    boys_pool  = sorted([p for p in active_for_podium if p["name"] not in girl_names],
-                        key=_rank_key, reverse=True)
-
-    # 2 boys + 1 girl only when ≥2 girls are in the tournament
-    if len(girls_pool) >= 2 and len(boys_pool) >= 2:
-        selected = boys_pool[:2] + girls_pool[:1]
-    else:
-        selected = sorted(active_for_podium, key=_rank_key, reverse=True)[:3]
-
-    podium_players = sorted(selected, key=_rank_key, reverse=True)
+    podium_players = sorted(active_for_podium, key=_rank_key, reverse=True)[:3]
 
     _medal_border = ["#F9A825", "#9E9E9E", "#EF5350"]
     _BOY_BG  = "#0A1628"   # dark navy
