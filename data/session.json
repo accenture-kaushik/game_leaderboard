@@ -337,9 +337,9 @@
       "submitted": false
     },
     "r5_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 11,
+      "score_b": 0,
+      "submitted": true
     },
     "r5_c2": {
       "score_a": null,
