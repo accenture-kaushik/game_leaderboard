@@ -1059,44 +1059,62 @@ Only include a court in a round when that court is active.
             "Analyse the organiser's tournament instructions below and extract four things.\n\n"
             "1. no_same_group: list of player names who must NEVER be on the same doubles team.\n"
             "   These names come only from the instructions — do NOT invent names.\n\n"
-            "2. required_partners: list of required partner pairings. Each entry is:\n"
-            '   {"players": ["Name1","Name2"], "round": <int|null>, "by_round": <int|null>, "min_count": <int>}\n'
-            "   - round    : exact round they must partner in (null if not specified).\n"
-            "   - by_round : latest round by which they must partner (for 'early', 'first N rounds',\n"
-            "                'up in the order', 'within round N'). null if not specified.\n"
-            "   - min_count: minimum times they must partner. Default 1.\n"
-            "   Examples:\n"
-            "     'partner in round 3'              → round=3, by_round=null\n"
-            "     'partner in the first 3 rounds'   → round=null, by_round=3\n"
-            "     'at least 2 games, first one early'→ min_count=2, by_round=3 (or similar)\n"
+            "2. required_partners: players who MUST be on the same team (partners) in some games.\n"
+            "   This includes phrases like:\n"
+            "     'Keep N games for/with/between A and B'  — they must partner at least N times\n"
+            "     'A and B should play together N times'   — partner min_count=N\n"
+            "     'at least N games for A and B'           — partner min_count=N\n"
+            "     'A and B must partner in round 3'        — exact round=3\n"
+            "     'within the first 4 rounds'              — by_round=4\n"
+            "     'early / up in the order'                — by_round ≈ first 3–4 rounds\n"
+            "   Each entry: "
+            '{"players":["Name1","Name2"],"round":<int|null>,"by_round":<int|null>,"min_count":<int>}\n'
+            "   Examples from realistic instructions:\n"
+            "     'Keep 2 games at least for Boy 6 and Girl 4'\n"
+            "       → {\"players\":[\"Boy 6\",\"Girl 4\"],\"round\":null,\"by_round\":null,\"min_count\":2}\n"
+            "     'Keep 2 games at least for Boy 6 and Girl 4. This game should be within rounds 1 to 4'\n"
+            "       → {\"players\":[\"Boy 6\",\"Girl 4\"],\"round\":null,\"by_round\":4,\"min_count\":2}\n"
+            "     'Boy 6 and Girl 4 must partner in round 3'\n"
+            "       → {\"players\":[\"Boy 6\",\"Girl 4\"],\"round\":3,\"by_round\":null,\"min_count\":1}\n"
             "   Only include entries explicitly stated.\n\n"
-            "3. required_opponents: list of required opponent pairings. Each entry is:\n"
-            '   {"players": ["Name1","Name2"], "by_round": <int|null>, "min_count": <int>}\n'
-            "   - by_round : latest round by which they must face each other (null if no ordering).\n"
-            "   - min_count: minimum times they must face each other. Default 1.\n"
+            "3. required_opponents: players who MUST face each other on opposing teams.\n"
+            "   This includes phrases like:\n"
+            "     'Keep 1 game where A plays against B'    — min_count=1\n"
+            "     'A must face B at least once'            — min_count=1\n"
+            "     'A vs B within the first 2 rounds'       — min_count=1, by_round=2\n"
+            "     'schedule A against B early'             — min_count=1, by_round ≈ 3\n"
+            "   Each entry: "
+            '{"players":["Name1","Name2"],"by_round":<int|null>,"min_count":<int>}\n'
             "   Examples:\n"
-            "     '1 game where A plays against B'          → min_count=1, by_round=null\n"
-            "     'A vs B early, within the first 2 rounds' → min_count=1, by_round=2\n"
+            "     'Keep 1 game where Boy 6 plays against Girl 4'\n"
+            "       → {\"players\":[\"Boy 6\",\"Girl 4\"],\"by_round\":null,\"min_count\":1}\n"
+            "     'Schedule Boy 6 vs Girl 4 within the first 3 rounds'\n"
+            "       → {\"players\":[\"Boy 6\",\"Girl 4\"],\"by_round\":3,\"min_count\":1}\n"
             "   Only include entries explicitly stated.\n\n"
             "4. rule_summary: a concise Allowed/Forbidden block (2-4 lines) re-expressing any\n"
-            "   remaining constraints not captured above.\n\n"
+            "   remaining constraints NOT already captured in required_partners or required_opponents.\n"
+            "   Do NOT repeat partner/opponent constraints here — they are already captured above.\n\n"
             "Return ONLY valid JSON matching this schema:\n"
             '  {"no_same_group": ["Name1", ...],\n'
-            '   "required_partners":  [{"players":["A","B"], "round":null, "by_round":3, "min_count":2}],\n'
-            '   "required_opponents": [{"players":["A","B"], "by_round":2, "min_count":1}],\n'
-            '   "rule_summary": "..."}\n'
+            '   "required_partners":  [{"players":["A","B"], "round":null, "by_round":4, "min_count":2}],\n'
+            '   "required_opponents": [{"players":["A","B"], "by_round":null, "min_count":1}],\n'
+            '   "rule_summary": "FORBIDDEN: ..."}\n'
             "Omit any key whose list is empty. If nothing to extract, return {}.\n\n"
             f"Instructions: {special_instructions.strip()}"
         )
         try:
             response = self.model.generate_content(prompt)
             text     = response.text.strip()
-            text     = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
-            match    = re.search(r"\{.*\}", text, re.DOTALL)
+            _cot(f"  [extraction raw] {text[:500]}")
+            text  = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
+            match = re.search(r"\{.*\}", text, re.DOTALL)
             if match:
-                return json.loads(match.group())
+                result = json.loads(match.group())
+                _cot(f"  [extraction parsed] {result}")
+                return result
         except Exception as exc:
             logger.warning("Could not extract constraints: %s", exc)
+            _cot(f"  [extraction error] {exc}")
         return {}
 
     def _parse_schedule_json(self, text: str) -> Optional[List[Dict]]:
