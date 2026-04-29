@@ -884,6 +884,30 @@ def show_setup() -> None:
         if special_instructions != st.session_state.get("special_instructions", ""):
             st.session_state.special_instructions = special_instructions
 
+        with st.expander("📋 Instruction templates"):
+            st.markdown(
+                """
+**Partner (same team)**
+```
+Keep [N] games at least for [Player A] and [Player B].
+Keep [N] games at least for [Player A] and [Player B] within rounds 1 to [X].
+[Player A] and [Player B] must partner in exactly round [X].
+```
+**Opponent (opposite teams)**
+```
+Keep [N] game where [Player A] plays against [Player B].
+Schedule [Player A] vs [Player B] within the first [X] rounds.
+```
+**Never teammates**
+```
+[Player A] and [Player B] must never be on the same team.
+```
+Replace `[Player A]`, `[Player B]`, `[N]`, `[X]` with actual names and numbers.
+Multiple constraints can be added as separate sentences.
+                """,
+                unsafe_allow_html=False,
+            )
+
         # ── Discreet lock toggle (below player list) ──────────────────────────
         st.markdown(
             """
