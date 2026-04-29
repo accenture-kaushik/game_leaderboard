@@ -891,7 +891,8 @@ def show_setup() -> None:
 ```
 Keep [N] games at least for [Player A] and [Player B].
 Keep [N] games at least for [Player A] and [Player B] within rounds 1 to [X].
-[Player A] and [Player B] must partner in exactly round [X].
+[Player A] and [Player B] must partner in round [X] or more.
+[Player A] and [Player B] must partner in round [X] or less.
 ```
 **Opponent (opposite teams)**
 ```
