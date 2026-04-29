@@ -1,8 +1,372 @@
 {
-  "players": [],
-  "skill_levels": {},
-  "schedule": [],
-  "scores": {},
-  "session_active": false,
-  "critics_choice": null
+  "players": [
+    "Boy1",
+    "Boy2",
+    "Boy3",
+    "Boy4",
+    "Boy5",
+    "Boy6",
+    "Girl1",
+    "Girl2",
+    "Girl3",
+    "Girl4"
+  ],
+  "girl_names": [
+    "Girl1",
+    "Girl2",
+    "Girl3",
+    "Girl4"
+  ],
+  "skill_levels": {
+    "Boy1": "intermediate",
+    "Boy2": "intermediate",
+    "Boy3": "intermediate",
+    "Boy4": "intermediate",
+    "Boy5": "intermediate",
+    "Boy6": "intermediate",
+    "Girl1": "intermediate",
+    "Girl2": "intermediate",
+    "Girl3": "intermediate",
+    "Girl4": "intermediate"
+  },
+  "num_courts": 2,
+  "games_per_hour": 5,
+  "court_times": {
+    "1": {
+      "start": "07:00",
+      "end": "08:30"
+    },
+    "2": {
+      "start": "07:00",
+      "end": "08:30"
+    }
+  },
+  "schedule": [
+    {
+      "round": 1,
+      "court": 1,
+      "team_a": [
+        "Boy1",
+        "Girl4"
+      ],
+      "team_b": [
+        "Boy2",
+        "Girl1"
+      ],
+      "sitting_out": [
+        "Boy6",
+        "Girl3"
+      ],
+      "time_slot": "07:00\u201307:12",
+      "game_id": "r1_c1"
+    },
+    {
+      "round": 1,
+      "court": 2,
+      "team_a": [
+        "Boy3",
+        "Boy5"
+      ],
+      "team_b": [
+        "Boy4",
+        "Girl2"
+      ],
+      "sitting_out": [
+        "Boy6",
+        "Girl3"
+      ],
+      "time_slot": "07:00\u201307:12",
+      "game_id": "r1_c2"
+    },
+    {
+      "round": 2,
+      "court": 1,
+      "team_a": [
+        "Boy1",
+        "Girl4"
+      ],
+      "team_b": [
+        "Boy3",
+        "Girl3"
+      ],
+      "sitting_out": [
+        "Boy5",
+        "Girl2"
+      ],
+      "time_slot": "07:12\u201307:24",
+      "game_id": "r2_c1"
+    },
+    {
+      "round": 2,
+      "court": 2,
+      "team_a": [
+        "Boy2",
+        "Boy4"
+      ],
+      "team_b": [
+        "Boy6",
+        "Girl1"
+      ],
+      "sitting_out": [
+        "Boy5",
+        "Girl2"
+      ],
+      "time_slot": "07:12\u201307:24",
+      "game_id": "r2_c2"
+    },
+    {
+      "round": 3,
+      "court": 1,
+      "team_a": [
+        "Boy2",
+        "Boy5"
+      ],
+      "team_b": [
+        "Boy3",
+        "Girl2"
+      ],
+      "sitting_out": [
+        "Boy1",
+        "Girl4"
+      ],
+      "time_slot": "07:24\u201307:36",
+      "game_id": "r3_c1"
+    },
+    {
+      "round": 3,
+      "court": 2,
+      "team_a": [
+        "Boy4",
+        "Girl1"
+      ],
+      "team_b": [
+        "Boy6",
+        "Girl3"
+      ],
+      "sitting_out": [
+        "Boy1",
+        "Girl4"
+      ],
+      "time_slot": "07:24\u201307:36",
+      "game_id": "r3_c2"
+    },
+    {
+      "round": 4,
+      "court": 1,
+      "team_a": [
+        "Boy1",
+        "Boy3"
+      ],
+      "team_b": [
+        "Boy2",
+        "Girl2"
+      ],
+      "sitting_out": [
+        "Boy5",
+        "Girl1"
+      ],
+      "time_slot": "07:36\u201307:48",
+      "game_id": "r4_c1"
+    },
+    {
+      "round": 4,
+      "court": 2,
+      "team_a": [
+        "Boy4",
+        "Girl3"
+      ],
+      "team_b": [
+        "Boy6",
+        "Girl4"
+      ],
+      "sitting_out": [
+        "Boy5",
+        "Girl1"
+      ],
+      "time_slot": "07:36\u201307:48",
+      "game_id": "r4_c2"
+    },
+    {
+      "round": 5,
+      "court": 1,
+      "team_a": [
+        "Boy1",
+        "Boy6"
+      ],
+      "team_b": [
+        "Boy2",
+        "Girl3"
+      ],
+      "sitting_out": [
+        "Boy3",
+        "Girl4"
+      ],
+      "time_slot": "07:48\u201308:00",
+      "game_id": "r5_c1"
+    },
+    {
+      "round": 5,
+      "court": 2,
+      "team_a": [
+        "Boy4",
+        "Girl1"
+      ],
+      "team_b": [
+        "Boy5",
+        "Girl2"
+      ],
+      "sitting_out": [
+        "Boy3",
+        "Girl4"
+      ],
+      "time_slot": "07:48\u201308:00",
+      "game_id": "r5_c2"
+    },
+    {
+      "round": 6,
+      "court": 1,
+      "team_a": [
+        "Boy1",
+        "Girl1"
+      ],
+      "team_b": [
+        "Boy3",
+        "Boy4"
+      ],
+      "sitting_out": [
+        "Boy2",
+        "Girl2"
+      ],
+      "time_slot": "08:00\u201308:12",
+      "game_id": "r6_c1"
+    },
+    {
+      "round": 6,
+      "court": 2,
+      "team_a": [
+        "Boy5",
+        "Girl3"
+      ],
+      "team_b": [
+        "Boy6",
+        "Girl4"
+      ],
+      "sitting_out": [
+        "Boy2",
+        "Girl2"
+      ],
+      "time_slot": "08:00\u201308:12",
+      "game_id": "r6_c2"
+    },
+    {
+      "round": 7,
+      "court": 1,
+      "team_a": [
+        "Boy1",
+        "Girl2"
+      ],
+      "team_b": [
+        "Boy3",
+        "Boy6"
+      ],
+      "sitting_out": [
+        "Boy4",
+        "Girl1"
+      ],
+      "time_slot": "08:12\u201308:24",
+      "game_id": "r7_c1"
+    },
+    {
+      "round": 7,
+      "court": 2,
+      "team_a": [
+        "Boy5",
+        "Girl4"
+      ],
+      "team_b": [
+        "Boy2",
+        "Girl3"
+      ],
+      "sitting_out": [
+        "Boy4",
+        "Girl1"
+      ],
+      "time_slot": "08:12\u201308:24",
+      "game_id": "r7_c2"
+    }
+  ],
+  "scores": {
+    "r1_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r1_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r3_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r3_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r4_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r4_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r5_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r5_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r6_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r6_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r7_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r7_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    }
+  },
+  "special_instructions": "Avoid a team with 2 girls if the opponent team has only boys. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.\n\nBoy 1 and Girl 4]must partner in 2 or more rounds.\nKeep 2 games at least for [Boy 1] and [Girl 4] within rounds 1 to 4. \n",
+  "session_active": true
 }
