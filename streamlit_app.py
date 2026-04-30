@@ -1204,8 +1204,67 @@ Multiple constraints can be added as separate sentences.
 
         # ── Schedule preview — always read fresh state so submitted scores show ──
         state = _get()
-        if not state.get("schedule"):
-            st.info("No schedule yet — click **Generate Schedule** above.")
+
+        # ── Upload schedule — always visible ─────────────────────────────────
+        _has_schedule = bool(state.get("schedule"))
+        with st.expander("📤 Upload Schedule (Excel)", expanded=not _has_schedule):
+            st.caption(
+                "Upload an Excel file to set the tournament schedule. "
+                + ("Download the current schedule above to use as a template, edit offline, then re-upload."
+                   if _has_schedule else
+                   "Use the Excel template format: Round, Court, Team A Player 1, Team A Player 2, "
+                   "Team B Player 1, Team B Player 2, Sitting Out.")
+            )
+            uploaded_xl = st.file_uploader(
+                "Choose Excel file",
+                type=["xlsx"],
+                key="schedule_upload",
+                label_visibility="collapsed",
+            )
+            if uploaded_xl is not None:
+                parsed_sched, parsed_scores, parse_err = _parse_uploaded_xlsx(uploaded_xl.read())
+                if parse_err:
+                    st.error(parse_err)
+                else:
+                    submitted_count = sum(
+                        1 for v in parsed_scores.values() if v.get("submitted")
+                    )
+                    st.success(
+                        f"✓ {len(parsed_sched)} games parsed · "
+                        f"{submitted_count} with scores · "
+                        f"{len(parsed_sched) - submitted_count} pending"
+                    )
+                    _render_table(parsed_sched, parsed_scores, show_court=True)
+                    st.caption("Enter admin password to apply this schedule")
+                    up_pw_col, up_go_col = st.columns([5, 2])
+                    with up_pw_col:
+                        up_pw = st.text_input(
+                            "up_pw", type="password", placeholder="Password…",
+                            label_visibility="collapsed", key="upload_pw_field",
+                        )
+                    with up_go_col:
+                        if st.button(
+                            "✅ Apply", key="btn_upload_apply",
+                            type="primary", use_container_width=True,
+                        ):
+                            if up_pw == _admin_password():
+                                new_state = copy.deepcopy(_get())
+                                new_state["schedule"]        = parsed_sched
+                                new_state["scores"]          = parsed_scores
+                                new_state["critics_choice"]  = None
+                                new_state["session_active"]  = True
+                                new_state["num_courts"]      = max(
+                                    (g["court"] for g in parsed_sched), default=2
+                                )
+                                with st.spinner("Saving schedule…"):
+                                    _put(new_state)
+                                st.success("Schedule applied. Refresh the court pages.")
+                                st.rerun()
+                            else:
+                                st.error("Incorrect password.")
+
+        if not _has_schedule:
+            st.info("No schedule yet — generate one above or upload an Excel file.")
         else:
             schedule = state["schedule"]
             scores   = state.get("scores", {})
@@ -1239,59 +1298,6 @@ Multiple constraints can be added as separate sentences.
                     mime="text/csv",
                     use_container_width=True,
                 )
-
-            # ── Upload revised schedule ───────────────────────────────────────
-            with st.expander("📤 Upload Revised Schedule (Excel)", expanded=False):
-                st.caption(
-                    "Download the Excel above, edit player names / courts / scores offline, "
-                    "then upload it here to replace the current schedule."
-                )
-                uploaded_xl = st.file_uploader(
-                    "Choose Excel file",
-                    type=["xlsx"],
-                    key="schedule_upload",
-                    label_visibility="collapsed",
-                )
-                if uploaded_xl is not None:
-                    parsed_sched, parsed_scores, parse_err = _parse_uploaded_xlsx(uploaded_xl.read())
-                    if parse_err:
-                        st.error(parse_err)
-                    else:
-                        submitted_count = sum(
-                            1 for v in parsed_scores.values() if v.get("submitted")
-                        )
-                        st.success(
-                            f"✓ {len(parsed_sched)} games parsed · "
-                            f"{submitted_count} with scores · "
-                            f"{len(parsed_sched) - submitted_count} pending"
-                        )
-                        _render_table(parsed_sched, parsed_scores, show_court=True)
-                        st.caption("Enter admin password to apply this schedule")
-                        up_pw_col, up_go_col = st.columns([5, 2])
-                        with up_pw_col:
-                            up_pw = st.text_input(
-                                "up_pw", type="password", placeholder="Password…",
-                                label_visibility="collapsed", key="upload_pw_field",
-                            )
-                        with up_go_col:
-                            if st.button(
-                                "✅ Apply", key="btn_upload_apply",
-                                type="primary", use_container_width=True,
-                            ):
-                                if up_pw == _admin_password():
-                                    new_state = copy.deepcopy(_get())
-                                    new_state["schedule"]       = parsed_sched
-                                    new_state["scores"]         = parsed_scores
-                                    new_state["critics_choice"] = None
-                                    new_state["num_courts"]     = max(
-                                        (g["court"] for g in parsed_sched), default=2
-                                    )
-                                    with st.spinner("Saving revised schedule…"):
-                                        _put(new_state)
-                                    st.success("Schedule updated. Refresh the court pages.")
-                                    st.rerun()
-                                else:
-                                    st.error("Incorrect password.")
 
             num_courts_now = state.get("num_courts", 2)
             sched_tab_labels = [f"🏟 Court {c}" for c in range(1, num_courts_now + 1)] + ["📄 All"]

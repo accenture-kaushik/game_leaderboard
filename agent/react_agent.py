@@ -311,9 +311,26 @@ def _validate_and_score(
                         })
 
     # ── Layer 2: Partner repeats ─────────────────────────────────────────────
+    # Build a lookup: pair → required min_count (so required pairs aren't
+    # penalised for doing exactly what they were told to do)
+    _required_partner_min: Dict[frozenset, int] = {}
+    for req in constraints.required_partners:
+        fp = frozenset(req.get("players", []))
+        if fp:
+            _required_partner_min[fp] = max(
+                _required_partner_min.get(fp, 0),
+                req.get("min_count", 1),
+            )
+
     for pair, count in partner_counts.items():
-        if count > constraints.max_partner_repeat:
-            excess = count - constraints.max_partner_repeat
+        # Raise the threshold for explicitly required pairs so their mandated
+        # repetitions are never flagged as violations
+        effective_max = max(
+            constraints.max_partner_repeat,
+            _required_partner_min.get(pair, 0),
+        )
+        if count > effective_max:
+            excess = count - effective_max
             names  = sorted(pair)
             pen    = PENALTY_PARTNER_REPEAT * excess
             total_penalty += pen
@@ -321,7 +338,7 @@ def _validate_and_score(
                 "priority": 2, "layer": "PARTNER_REPEAT",
                 "location": "whole schedule",
                 "team": f"{names[0]} & {names[1]}",
-                "detail": f"partnered {count}× (max {constraints.max_partner_repeat})",
+                "detail": f"partnered {count}× (max {effective_max})",
                 "penalty": pen,
             })
 
