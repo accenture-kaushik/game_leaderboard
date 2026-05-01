@@ -366,6 +366,29 @@
     }
   },
   "session_active": true,
-  "critics_choice": null,
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "Piyusha",
+        "reason": "Piyusha displayed immense bravery, consistently scoring impressive points against strong opponents. Her 35 points gained showcase remarkable courage and a relentless fighting spirit throughout the tournament."
+      },
+      {
+        "rank": 2,
+        "name": "Animesh",
+        "reason": "Animesh showed exceptional offensive consistency, racking up 57 points with powerful play. His strong performance and high point tally highlight his consistent impact and standout rallies."
+      },
+      {
+        "rank": 3,
+        "name": "Prashant",
+        "reason": "Prashant demonstrated remarkable resilience and consistent scoring, accumulating 52 points. His ability to maintain a positive net score reflects his strong performance in closely contested matches."
+      }
+    ],
+    "quips": [
+      "{name} came, saw, and pickled everyone.",
+      "Everyone else played. {name} just won.",
+      "{name} came, saw, pickled."
+    ]
+  },
   "num_courts": 2
 }
