@@ -370,24 +370,24 @@
     "picks": [
       {
         "rank": 1,
-        "name": "Piyusha",
-        "reason": "Piyusha displayed immense bravery, consistently scoring impressive points against strong opponents. Her 35 points gained showcase remarkable courage and a relentless fighting spirit throughout the tournament."
+        "name": "Ayush",
+        "reason": "Ayush demonstrated exceptional offensive prowess, leading all players in points scored. His consistent high-level play and strategic brilliance were a joy to watch."
       },
       {
         "rank": 2,
         "name": "Animesh",
-        "reason": "Animesh showed exceptional offensive consistency, racking up 57 points with powerful play. His strong performance and high point tally highlight his consistent impact and standout rallies."
+        "reason": "Animesh showcased remarkable consistency and skill throughout the tournament, securing many impressive wins. His ability to score high points consistently highlighted his strong performance."
       },
       {
         "rank": 3,
-        "name": "Prashant",
-        "reason": "Prashant demonstrated remarkable resilience and consistent scoring, accumulating 52 points. His ability to maintain a positive net score reflects his strong performance in closely contested matches."
+        "name": "Piyusha",
+        "reason": "Piyusha displayed immense courage and a relentless fighting spirit, scoring an impressive 35 points. She consistently challenged opponents, delivering standout rallies and memorable moments."
       }
     ],
     "quips": [
-      "{name} came, saw, and pickled everyone.",
-      "Everyone else played. {name} just won.",
-      "{name} came, saw, pickled."
+      "The ball was scared of {name}. You could tell.",
+      "You owe the team 7 beers for that finish, {name}.",
+      "{name} arrived for the snacks, stayed for the podium."
     ]
   },
   "num_courts": 2
