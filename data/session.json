@@ -303,7 +303,13 @@
       "game_id": "r10_c2"
     }
   ],
-  "scores": {},
+  "scores": {
+    "r1_c2": {
+      "score_a": 11,
+      "score_b": 6,
+      "submitted": true
+    }
+  },
   "session_active": true,
   "critics_choice": null,
   "num_courts": 2
