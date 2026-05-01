@@ -348,6 +348,11 @@
       "score_a": 11,
       "score_b": 0,
       "submitted": true
+    },
+    "r5_c2": {
+      "score_a": 13,
+      "score_b": 11,
+      "submitted": true
     }
   },
   "session_active": true,
