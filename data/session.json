@@ -138,14 +138,14 @@
       "court": 1,
       "team_a": [
         "Aakar",
-        "Shivani"
+        "Sandeep"
       ],
       "team_b": [
-        "Neha",
-        "Piyusha"
+        "Piyusha",
+        "Prashant"
       ],
       "sitting_out": [
-        "Sandeep"
+        "Kaushik"
       ],
       "time_slot": "30\u201340 min",
       "game_id": "r4_c1"
@@ -154,11 +154,11 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Kaushik",
-        "Prashant"
+        "Aditya",
+        "Neha"
       ],
       "team_b": [
-        "Aditya",
+        "Shivani",
         "Shreya"
       ],
       "sitting_out": [],
@@ -266,14 +266,14 @@
       "court": 1,
       "team_a": [
         "Aakar",
-        "Sandeep"
+        "Shivani"
       ],
       "team_b": [
-        "Piyusha",
-        "Prashant"
+        "Neha",
+        "Piyusha"
       ],
       "sitting_out": [
-        "Kaushik"
+        "Sandeep"
       ],
       "time_slot": "70\u201380 min",
       "game_id": "r8_c1"
@@ -282,11 +282,11 @@
       "round": 8,
       "court": 2,
       "team_a": [
-        "Aditya",
-        "Neha"
+        "Kaushik",
+        "Prashant"
       ],
       "team_b": [
-        "Shivani",
+        "Aditya",
         "Shreya"
       ],
       "sitting_out": [],
