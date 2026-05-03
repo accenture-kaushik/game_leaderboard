@@ -362,5 +362,28 @@
   },
   "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
   "session_active": true,
-  "critics_choice": null
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "Aditya",
+        "reason": "Aditya showcased exceptional scoring prowess, accumulating the highest points in the tournament. His consistent performance led to an impressive number of victories."
+      },
+      {
+        "rank": 2,
+        "name": "Neha",
+        "reason": "Neha demonstrated remarkable consistency and skill, achieving a positive net score and high points scored. Her strong rallies and strategic play were a highlight."
+      },
+      {
+        "rank": 3,
+        "name": "Piyusha",
+        "reason": "Piyusha displayed incredible bravery and fighting spirit throughout her matches. She consistently scored valuable points, showcasing her determination against all opponents."
+      }
+    ],
+    "quips": [
+      "We're checking {name}'s shoes for illegal motors.",
+      "Not all heroes wear capes \u2014 {name} carry paddles.",
+      "Every shot of {name} landed like it had a destination in mind."
+    ]
+  }
 }
