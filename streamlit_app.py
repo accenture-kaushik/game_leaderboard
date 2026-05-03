@@ -2237,24 +2237,36 @@ def show_leaderboard() -> None:
     st.divider()
 
     # ── Table ────────────────────────────────────────────────────────────────
+    _sorted_lb = sorted(
+        lb,
+        key=lambda x: (
+            -(x["games_won"] * 2) / max(x.get("games_played", 1), 1),
+            -x["net_points"],
+        ),
+    )
     rows = [
         {
-            "#":      p["rank"],
-            "Player": p["name"],
-            "Pts":    p["games_won"] * 2,
-            "W":      p["games_won"],
-            "L":      p["games_lost"],
-            "For":    p["points_gained"],
-            "Agst":   p["points_conceded"],
-            "Net":    p["net_points"],
+            "#":         rank,
+            "Player":    p["name"],
+            "Pts/Game":  round((p["games_won"] * 2) / p["games_played"], 2)
+                         if p.get("games_played", 0) > 0 else 0.0,
+            "Pts":       p["games_won"] * 2,
+            "W":         p["games_won"],
+            "L":         p["games_lost"],
+            "For":       p["points_gained"],
+            "Agst":      p["points_conceded"],
+            "Net":       p["net_points"],
         }
-        for p in lb
+        for rank, p in enumerate(_sorted_lb, start=1)
     ]
     st.dataframe(
         pd.DataFrame(rows),
         use_container_width=True,
         hide_index=True,
-        column_config={"Net": st.column_config.NumberColumn("Net", format="%+d")},
+        column_config={
+            "Pts/Game": st.column_config.NumberColumn("Pts/Game", format="%.2f"),
+            "Net":      st.column_config.NumberColumn("Net", format="%+d"),
+        },
     )
 
     # ── Publish / Reset ───────────────────────────────────────────────────────
