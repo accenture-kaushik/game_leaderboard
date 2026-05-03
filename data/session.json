@@ -378,6 +378,11 @@
       "score_a": 4,
       "score_b": 11,
       "submitted": true
+    },
+    "r3_c1": {
+      "score_a": 11,
+      "score_b": 4,
+      "submitted": true
     }
   },
   "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
