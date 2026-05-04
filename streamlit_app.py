@@ -1731,6 +1731,78 @@ def show_court(court: int) -> None:
                 else:
                     st.success(f"🤝 Draw!  {sa} – {sb}")
 
+            # ── Edit Partners ─────────────────────────────────────────────────
+            st.markdown("<div style='margin-top:0.5rem'></div>", unsafe_allow_html=True)
+            if not st.session_state.get(f"edit_mode_{gid}"):
+                if st.button("✏️ Edit Partners", key=f"btn_edit_{gid}",
+                             use_container_width=True):
+                    st.session_state[f"edit_mode_{gid}"] = True
+                    st.rerun()
+            else:
+                st.markdown("**Reassign players**")
+                if submitted:
+                    st.warning("This game has a submitted score. "
+                               "Saving new partners will clear it.")
+
+                # pool = everyone associated with this game entry
+                _pool = list(dict.fromkeys(
+                    game["team_a"] + game["team_b"] + game.get("sitting_out", [])
+                ))
+
+                def _idx(player, fallback):
+                    try:
+                        return _pool.index(player)
+                    except ValueError:
+                        return fallback
+
+                ec1, ec2 = st.columns(2)
+                with ec1:
+                    ea1 = st.selectbox("Team A · P1", _pool,
+                                       index=_idx(game["team_a"][0] if game["team_a"] else "", 0),
+                                       key=f"ea1_{gid}")
+                    ea2 = st.selectbox("Team A · P2", _pool,
+                                       index=_idx(game["team_a"][1] if len(game["team_a"]) > 1 else "", min(1, len(_pool)-1)),
+                                       key=f"ea2_{gid}")
+                with ec2:
+                    eb1 = st.selectbox("Team B · P1", _pool,
+                                       index=_idx(game["team_b"][0] if game["team_b"] else "", min(2, len(_pool)-1)),
+                                       key=f"eb1_{gid}")
+                    eb2 = st.selectbox("Team B · P2", _pool,
+                                       index=_idx(game["team_b"][1] if len(game["team_b"]) > 1 else "", min(3, len(_pool)-1)),
+                                       key=f"eb2_{gid}")
+
+                _selected = {ea1, ea2, eb1, eb2}
+                _new_sitting = [p for p in _pool if p not in _selected]
+                if _new_sitting:
+                    st.caption(f"Sitting out: {', '.join(_new_sitting)}")
+
+                sv_col, cx_col = st.columns(2)
+                with sv_col:
+                    if st.button("💾 Save", key=f"save_edit_{gid}",
+                                 type="primary", use_container_width=True):
+                        if len(_selected) < 4:
+                            st.error("All four player slots must be unique.")
+                        else:
+                            new_state = copy.deepcopy(_get())
+                            for _i, _g in enumerate(new_state["schedule"]):
+                                if _g["game_id"] == gid:
+                                    new_state["schedule"][_i]["team_a"]      = [ea1, ea2]
+                                    new_state["schedule"][_i]["team_b"]      = [eb1, eb2]
+                                    new_state["schedule"][_i]["sitting_out"] = _new_sitting
+                                    break
+                            if submitted:
+                                new_state["scores"].pop(gid, None)
+                            with st.spinner("Saving…"):
+                                _put(new_state)
+                            st.session_state.pop(f"edit_mode_{gid}", None)
+                            st.toast("Partners updated!")
+                            st.rerun()
+                with cx_col:
+                    if st.button("Cancel", key=f"cancel_edit_{gid}",
+                                 use_container_width=True):
+                        st.session_state.pop(f"edit_mode_{gid}", None)
+                        st.rerun()
+
 
 
 
