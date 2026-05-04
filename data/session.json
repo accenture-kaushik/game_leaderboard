@@ -232,13 +232,7 @@
       "game_id": "r6_c2"
     }
   ],
-  "scores": {
-    "r1_c1": {
-      "score_a": 0,
-      "score_b": 0,
-      "submitted": true
-    }
-  },
+  "scores": {},
   "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.  Kaushik must not be scheduled after 8 AM",
   "session_active": true,
   "critics_choice": null
