@@ -889,10 +889,9 @@ def show_setup() -> None:
                 """
 **Partner (same team)**
 ```
-Keep [N] games at least for [Player A] and [Player B].
-Keep [N] games at least for [Player A] and [Player B] within rounds 1 to [X].
-[Player A] and [Player B] must partner in round [X] or more.
-[Player A] and [Player B] must partner in round [X] or less.
+[Player A] and [Player B] must partner at least [N] games.
+Schedule [Player A] and [Player B] matches within rounds 1 to [X].
+
 ```
 **Opponent (opposite teams)**
 ```
@@ -903,7 +902,15 @@ Schedule [Player A] vs [Player B] within the first [X] rounds.
 ```
 [Player A] and [Player B] must never be on the same team.
 ```
-Replace `[Player A]`, `[Player B]`, `[N]`, `[X]` with actual names and numbers.
+**Player availability — latest**
+```
+[Player A] must not be scheduled after [HH:MM].
+```
+**Player availability — earliest**
+```
+[Player A] must not be scheduled before [HH:MM].
+```
+Replace `[Player A]`, `[Player B]`, `[N]`, `[X]`, `[HH:MM]` with actual names, numbers, and times (e.g. 09:30).
 Multiple constraints can be added as separate sentences.
                 """,
                 unsafe_allow_html=False,
