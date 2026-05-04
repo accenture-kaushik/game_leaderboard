@@ -647,9 +647,15 @@ class GamePlannerAgent:
 
         # Step 5: Feedback loop
         chat: genai.ChatSession = self.model.start_chat(history=[])
-        schedule:       Optional[List[Dict]] = None
-        best_schedule:  Optional[List[Dict]] = None
-        best_penalty    = float("inf")
+        schedule:              Optional[List[Dict]] = None
+        last_violations:       List[Dict]           = []
+        best_schedule:         Optional[List[Dict]] = None   # lowest total penalty (fallback)
+        best_violations:       List[Dict]           = []
+        best_penalty           = float("inf")
+        best_clean_schedule:   Optional[List[Dict]] = None   # zero hard, lowest soft penalty
+        best_clean_violations: List[Dict]           = []
+        best_clean_penalty     = float("inf")
+        best_clean_iter        = 0
 
         for iteration in range(1, MAX_AGENT_ITERATIONS + 1):
             _cot(f"\n[Iteration {iteration}/{MAX_AGENT_ITERATIONS}]")
@@ -675,29 +681,35 @@ class GamePlannerAgent:
                     continue
 
                 _cot(f"  ✓ Parsed {len(parsed)} entries.")
-                schedule              = self._add_metadata(parsed, players)
-                violations, penalty   = _validate_and_score(schedule, players, constraints)
+                schedule                  = self._add_metadata(parsed, players)
+                violations, penalty       = _validate_and_score(schedule, players, constraints)
+                last_violations           = violations
 
-                _cot(f"  → Penalty : {penalty:,}")
+                hard_count   = sum(1 for v in violations if v["layer"] == "HARD")
+                soft_penalty = sum(v["penalty"] for v in violations if v["layer"] != "HARD")
+
+                _cot(f"  → Penalty : {penalty:,}  (hard={hard_count}, soft={soft_penalty:,})")
                 for v in violations:
                     _cot(f"    [{v['layer']}] {v['location']} | {v['team']}: {v['detail']} (−{v['penalty']})")
 
-                # Track best result so we can return it if we exhaust iterations
+                # Track absolute best (any penalty) as fallback
                 if penalty < best_penalty:
-                    best_penalty  = penalty
-                    best_schedule = schedule
+                    best_penalty     = penalty
+                    best_schedule    = schedule
+                    best_violations  = violations
+
+                # Track best clean (zero hard violations, lowest soft penalty)
+                if hard_count == 0 and soft_penalty < best_clean_penalty:
+                    best_clean_penalty     = soft_penalty
+                    best_clean_schedule    = schedule
+                    best_clean_violations  = violations
+                    best_clean_iter        = iteration
+                    _cot(f"  ★ New best clean schedule (iter {iteration}, soft penalty={soft_penalty:,})")
 
                 if penalty == 0:
                     _cot(f"\n  ✓ PERFECT — zero penalty. Done in {iteration} iteration(s).")
                     _cot("=== AGENT END ===\n")
-                    return schedule
-
-                # Accept if only soft violations remain and we're near the end
-                hard_count = sum(1 for v in violations if v["layer"] == "HARD")
-                if hard_count == 0 and iteration >= MAX_AGENT_ITERATIONS - 1:
-                    _cot(f"  → No hard violations (soft only, penalty={penalty:,}). Accepting.")
-                    _cot("=== AGENT END ===\n")
-                    return schedule
+                    return schedule, violations
 
                 prompt = self._build_feedback_prompt(violations, penalty)
 
@@ -706,9 +718,16 @@ class GamePlannerAgent:
                 logger.warning("Agent error at iteration %d: %s", iteration, exc)
                 break
 
-        _cot(f"\n  ⚠ Max iterations reached. Returning best schedule (penalty={best_penalty:,}).")
-        _cot("=== AGENT END ===\n")
-        return best_schedule or schedule or []
+        if best_clean_schedule is not None:
+            _cot(f"\n  ✓ All iterations done. Returning best clean schedule"
+                 f" from iteration {best_clean_iter}"
+                 f" (0 hard, soft penalty={best_clean_penalty:,}).")
+            _cot("=== AGENT END ===\n")
+            return best_clean_schedule, best_clean_violations
+        else:
+            _cot(f"\n  ⚠ No clean schedule found. Returning best overall (penalty={best_penalty:,}).")
+            _cot("=== AGENT END ===\n")
+            return (best_schedule or schedule or []), (best_violations or last_violations)
 
     # =========================================================================
     # Prompt builders

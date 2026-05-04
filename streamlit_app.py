@@ -1084,9 +1084,10 @@ Multiple constraints can be added as separate sentences.
                         st.caption("⏱ Hang On there! Might take around 5 mins to generate.")
                         with st.spinner("Generating schedule… 🤖"):
                             try:
+                                _agent_violations = None
                                 if use_agent and has_key:
                                     from agent.react_agent import GamePlannerAgent
-                                    raw_schedule = GamePlannerAgent().generate_schedule(
+                                    _agent_result = GamePlannerAgent().generate_schedule(
                                         players, skill_levels,
                                         num_rounds=num_games, num_courts=num_courts,
                                         special_instructions=st.session_state.get("special_instructions", ""),
@@ -1096,6 +1097,7 @@ Multiple constraints can be added as separate sentences.
                                         court_start_times=_court_start_times,
                                         mins_per_game=_mins_per_game,
                                     )
+                                    raw_schedule, _agent_violations = _agent_result
                                     method = "AI agent — refine" if _is_refine else "AI agent — fresh"
                                 else:
                                     from services.schedule_service import ScheduleService
@@ -1111,6 +1113,7 @@ Multiple constraints can be added as separate sentences.
                                     players, skill_levels,
                                     num_rounds=num_games, num_courts=num_courts,
                                 )
+                                _agent_violations = None
                                 method = "algorithm (fallback)"
 
                             court_seen: Dict[int, int] = {c: 0 for c in range(1, num_courts + 1)}
@@ -1150,6 +1153,25 @@ Multiple constraints can be added as separate sentences.
 
                         label = "refined" if _is_refine else "generated"
                         st.success(f"✅ {len(schedule)} games {label} via {method}")
+                        if _agent_violations is not None:
+                            _hard = [v for v in _agent_violations if v["layer"] == "HARD"]
+                            _soft = [v for v in _agent_violations if v["layer"] != "HARD"]
+                            if not _hard and not _soft:
+                                st.info("🏆 Best schedule: 0 hard violations · 0 soft violations")
+                            elif not _hard:
+                                _soft_detail = "  \n".join(
+                                    f"- {v['team']}: {v['detail']} (−{v['penalty']})"
+                                    for v in _soft
+                                )
+                                st.warning(
+                                    f"Best of {6} iterations: **0 hard violations · "
+                                    f"{len(_soft)} soft violation(s)**  \n{_soft_detail}"
+                                )
+                            else:
+                                st.error(
+                                    f"Best of {6} iterations: **{len(_hard)} hard violation(s) · "
+                                    f"{len(_soft)} soft violation(s)** — no clean schedule found."
+                                )
                         st.session_state._active_setup_tab = 1
                         st.rerun()
                     else:
