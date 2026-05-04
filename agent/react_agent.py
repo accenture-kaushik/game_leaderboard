@@ -87,6 +87,10 @@ class ConstraintSet:
     required_opponents:  List[Dict]      = field(default_factory=list)
     # {court_number: first_round_it_is_active}  e.g. {1: 1, 2: 4}
     court_start_rounds:  Dict[int, int]  = field(default_factory=dict)
+    # {"Player A": "09:30"} — player must not play in any game starting at/after this time
+    player_latest:       Dict[str, str]  = field(default_factory=dict)
+    # {"Player A": "08:00"} — player must not play in any game starting before this time
+    player_earliest:     Dict[str, str]  = field(default_factory=dict)
 
     @classmethod
     def build(
@@ -99,6 +103,8 @@ class ConstraintSet:
         required_partners:   Optional[List[Dict]] = None,
         required_opponents:  Optional[List[Dict]] = None,
         court_start_rounds:  Optional[Dict[int, int]] = None,
+        player_latest:       Optional[Dict[str, str]] = None,
+        player_earliest:     Optional[Dict[str, str]] = None,
     ) -> "ConstraintSet":
         return cls(
             skill_levels        = skill_levels,
@@ -109,6 +115,8 @@ class ConstraintSet:
             required_partners   = required_partners or [],
             required_opponents  = required_opponents or [],
             court_start_rounds  = court_start_rounds or {},
+            player_latest       = player_latest  or {},
+            player_earliest     = player_earliest or {},
         )
 
 
@@ -309,6 +317,44 @@ def _validate_and_score(
                             "detail": f"{p1} and {p2} must NOT be teammates",
                             "penalty": PENALTY_HARD,
                         })
+
+            # Player time availability
+            if constraints.player_latest or constraints.player_earliest:
+                ts = entry.get("time_slot", "")
+                if ts and "–" in ts:
+                    start_str = ts.split("–")[0].strip()
+                    try:
+                        sh, sm   = map(int, start_str.split(":"))
+                        start_mins = sh * 60 + sm
+                        for p in team_a + team_b:
+                            if p in constraints.player_latest:
+                                lh, lm = map(int, constraints.player_latest[p].split(":"))
+                                if start_mins >= lh * 60 + lm:
+                                    total_penalty += PENALTY_HARD
+                                    violations.append({
+                                        "priority": 1, "layer": "HARD",
+                                        "location": loc, "team": "time_availability",
+                                        "detail": (
+                                            f"{p} scheduled at {start_str} but must not"
+                                            f" play at/after {constraints.player_latest[p]}"
+                                        ),
+                                        "penalty": PENALTY_HARD,
+                                    })
+                            if p in constraints.player_earliest:
+                                eh, em = map(int, constraints.player_earliest[p].split(":"))
+                                if start_mins < eh * 60 + em:
+                                    total_penalty += PENALTY_HARD
+                                    violations.append({
+                                        "priority": 1, "layer": "HARD",
+                                        "location": loc, "team": "time_availability",
+                                        "detail": (
+                                            f"{p} scheduled at {start_str} but must not"
+                                            f" play before {constraints.player_earliest[p]}"
+                                        ),
+                                        "penalty": PENALTY_HARD,
+                                    })
+                    except ValueError:
+                        pass
 
     # ── Layer 2: Partner repeats ─────────────────────────────────────────────
     # Build a lookup: pair → required min_count (so required pairs aren't
@@ -588,10 +634,14 @@ class GamePlannerAgent:
         no_same_group      = set(extracted.get("no_same_group", []))
         required_partners  = extracted.get("required_partners", [])
         required_opponents = extracted.get("required_opponents", [])
+        player_latest      = extracted.get("player_latest", {})
+        player_earliest    = extracted.get("player_earliest", {})
         rule_summary       = extracted.get("rule_summary", "")
         _cot(f"  → no_same_group      : {sorted(no_same_group) or '(none)'}")
         _cot(f"  → required_partners  : {required_partners or '(none)'}")
         _cot(f"  → required_opponents : {required_opponents or '(none)'}")
+        _cot(f"  → player_latest      : {player_latest or '(none)'}")
+        _cot(f"  → player_earliest    : {player_earliest or '(none)'}")
         _cot(f"  → rule_summary       : {rule_summary or '(none)'}")
 
         # Step 2: Compute tournament-specific repeat thresholds, then build constraint set
@@ -611,6 +661,8 @@ class GamePlannerAgent:
             required_partners   = required_partners,
             required_opponents  = required_opponents,
             court_start_rounds  = court_start_rounds,
+            player_latest       = player_latest,
+            player_earliest     = player_earliest,
         )
 
         # Step 3 (refine only): score previous schedule, identify clean rounds
@@ -804,6 +856,18 @@ class GamePlannerAgent:
                     else:
                         lines.append(f"  • {p[0]} and {p[1]} MUST face each other as opponents {times}.")
             constraint_block += "\nREQUIRED OPPONENTS — these matchups are mandatory:\n" + "\n".join(lines) + "\n"
+        if constraints.player_latest:
+            lines = [
+                f"  • {p} must NOT be in any game starting at or after {t}."
+                for p, t in sorted(constraints.player_latest.items())
+            ]
+            constraint_block += "\nPLAYER AVAILABILITY (latest) — HARD CONSTRAINT:\n" + "\n".join(lines) + "\n"
+        if constraints.player_earliest:
+            lines = [
+                f"  • {p} must NOT be in any game starting before {t}."
+                for p, t in sorted(constraints.player_earliest.items())
+            ]
+            constraint_block += "\nPLAYER AVAILABILITY (earliest) — HARD CONSTRAINT:\n" + "\n".join(lines) + "\n"
         rule_block = (
             f"\nRULE SUMMARY (from special instructions):\n"
             + "\n".join(f"  {l}" for l in rule_summary.splitlines()) + "\n"
