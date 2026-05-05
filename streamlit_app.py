@@ -307,6 +307,8 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+    /* ── iOS Safari: prevent auto-zoom on input focus ───── */
+    input, textarea, select { font-size: 16px !important; }
     /* ── Layout ─────────────────────────────────────────── */
     .main .block-container {
         padding: 1rem 0.75rem 5rem 0.75rem;
@@ -705,19 +707,21 @@ def show_setup() -> None:
     # ── Players tab ──────────────────────────────────────────────────────────
     with tab_p:
         # Number of courts
-        num_courts = st.number_input(
-            "Number of courts", min_value=1, max_value=4,
-            value=st.session_state.get("num_courts", 2), step=1,
+        _nc_raw = st.text_input(
+            "Number of courts",
+            value=str(st.session_state.get("num_courts", 2)),
+            key="num_courts_text",
         )
+        num_courts = int(_nc_raw) if _nc_raw.strip().isdigit() and 1 <= int(_nc_raw.strip()) <= 4 else st.session_state.get("num_courts", 2)
         if num_courts != st.session_state.get("num_courts", 2):
             st.session_state.num_courts = num_courts
             st.rerun()
 
         # Single rate slider
-        games_per_hour = st.slider(
+        games_per_hour = st.selectbox(
             "Games /per court/ per hour",
-            min_value=1, max_value=12, step=1,
-            value=st.session_state.get("games_per_hour", 5),
+            options=list(range(1, 13)),
+            index=st.session_state.get("games_per_hour", 5) - 1,
         )
         if games_per_hour != st.session_state.get("games_per_hour", 5):
             st.session_state.games_per_hour = games_per_hour
@@ -782,11 +786,12 @@ def show_setup() -> None:
 
         # ── Boys ──────────────────────────────────────────────────────────────
         st.markdown('<p class="roster-heading-boys">👦 Boys</p>', unsafe_allow_html=True)
-        num_boys = st.number_input(
-            "Number of boys", min_value=0, max_value=16, step=1,
-            value=st.session_state.get("num_boys", 6),
+        _nb_raw = st.text_input(
+            "Number of boys",
+            value=str(st.session_state.get("num_boys", 6)),
             key="num_boys_input",
         )
+        num_boys = int(_nb_raw) if _nb_raw.strip().isdigit() and 0 <= int(_nb_raw.strip()) <= 16 else st.session_state.get("num_boys", 6)
         if num_boys != st.session_state.get("num_boys", 6):
             cur = st.session_state.get("boy_names", [])
             if num_boys > len(cur):
@@ -828,11 +833,12 @@ def show_setup() -> None:
 
         # ── Girls ─────────────────────────────────────────────────────────────
         st.markdown('<p class="roster-heading-girls">👧 Girls</p>', unsafe_allow_html=True)
-        num_girls = st.number_input(
-            "Number of girls", min_value=0, max_value=8, step=1,
-            value=st.session_state.get("num_girls", 4),
+        _ng_raw = st.text_input(
+            "Number of girls",
+            value=str(st.session_state.get("num_girls", 4)),
             key="num_girls_input",
         )
+        num_girls = int(_ng_raw) if _ng_raw.strip().isdigit() and 0 <= int(_ng_raw.strip()) <= 8 else st.session_state.get("num_girls", 4)
         if num_girls != st.session_state.get("num_girls", 4):
             cur = st.session_state.get("girl_names", [])
             if num_girls > len(cur):
@@ -1669,11 +1675,11 @@ def show_court(court: int) -> None:
         if f"sa_override_{gid}" in st.session_state:
             st.session_state[f"sa_{gid}"] = st.session_state.pop(f"sa_override_{gid}")
         elif f"sa_{gid}" not in st.session_state:
-            st.session_state[f"sa_{gid}"] = int(sd["score_a"]) if submitted and sd.get("score_a") is not None else 0
+            st.session_state[f"sa_{gid}"] = str(int(sd["score_a"])) if submitted and sd.get("score_a") is not None else ""
         if f"sb_override_{gid}" in st.session_state:
             st.session_state[f"sb_{gid}"] = st.session_state.pop(f"sb_override_{gid}")
         elif f"sb_{gid}" not in st.session_state:
-            st.session_state[f"sb_{gid}"] = int(sd["score_b"]) if submitted and sd.get("score_b") is not None else 0
+            st.session_state[f"sb_{gid}"] = str(int(sd["score_b"])) if submitted and sd.get("score_b") is not None else ""
         if f"winner_{gid}" not in st.session_state:
             if submitted:
                 _sa, _sb = sd.get("score_a") or 0, sd.get("score_b") or 0
@@ -1697,9 +1703,8 @@ def show_court(court: int) -> None:
             # Team A score + Win button on same row
             col_sa, col_btn_a = st.columns([5, 2])
             with col_sa:
-                score_a = st.number_input(
-                    "Team A score", min_value=0, max_value=30,
-                    key=f"sa_{gid}",
+                score_a_raw = st.text_input(
+                    "Team A score", key=f"sa_{gid}", placeholder="0",
                 )
             with col_btn_a:
                 if st.button(
@@ -1709,7 +1714,8 @@ def show_court(court: int) -> None:
                     use_container_width=True,
                 ):
                     st.session_state[f"winner_{gid}"] = "Team A"
-                    st.session_state[f"sa_override_{gid}"] = max(11, st.session_state.get(f"sa_{gid}", 0))
+                    _cur_a = int(st.session_state.get(f"sa_{gid}", "") or "0")
+                    st.session_state[f"sa_override_{gid}"] = str(max(11, _cur_a))
                     st.rerun()
 
             st.markdown("<div style='margin-top:0.5rem'></div>", unsafe_allow_html=True)
@@ -1724,9 +1730,8 @@ def show_court(court: int) -> None:
             # Team B score + Win button on same row
             col_sb, col_btn_b = st.columns([5, 2])
             with col_sb:
-                score_b = st.number_input(
-                    "Team B score", min_value=0, max_value=30,
-                    key=f"sb_{gid}",
+                score_b_raw = st.text_input(
+                    "Team B score", key=f"sb_{gid}", placeholder="0",
                 )
             with col_btn_b:
                 if st.button(
@@ -1736,19 +1741,26 @@ def show_court(court: int) -> None:
                     use_container_width=True,
                 ):
                     st.session_state[f"winner_{gid}"] = "Team B"
-                    st.session_state[f"sb_override_{gid}"] = max(11, st.session_state.get(f"sb_{gid}", 0))
+                    _cur_b = int(st.session_state.get(f"sb_{gid}", "") or "0")
+                    st.session_state[f"sb_override_{gid}"] = str(max(11, _cur_b))
                     st.rerun()
 
             btn = "✏️ Update Score" if submitted else "✅ Submit Score"
             if st.button(btn, key=f"btn_{gid}", type="primary", use_container_width=True):
-                new_state = copy.deepcopy(_get())
-                new_state["scores"][gid] = {
-                    "score_a": score_a, "score_b": score_b, "submitted": True
-                }
-                with st.spinner("Saving…"):
-                    _put(new_state)
-                st.toast("Score saved!")
-                st.rerun()
+                _sa_str = (score_a_raw or "").strip()
+                _sb_str = (score_b_raw or "").strip()
+                if not _sa_str.isdigit() or not _sb_str.isdigit():
+                    st.error("Enter numeric scores for both teams before submitting.")
+                else:
+                    score_a, score_b = int(_sa_str), int(_sb_str)
+                    new_state = copy.deepcopy(_get())
+                    new_state["scores"][gid] = {
+                        "score_a": score_a, "score_b": score_b, "submitted": True
+                    }
+                    with st.spinner("Saving…"):
+                        _put(new_state)
+                    st.toast("Score saved!")
+                    st.rerun()
 
             # Result banner
             if submitted:
