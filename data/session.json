@@ -6,7 +6,7 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "AK",
+        "Aakar",
         "Prashant"
       ],
       "team_b": [
@@ -14,7 +14,7 @@
         "Kaushik"
       ],
       "sitting_out": [
-        "Aakar"
+        "AK"
       ],
       "time_slot": "0\u201310 min",
       "game_id": "r1_c1"
