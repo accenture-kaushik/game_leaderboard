@@ -208,7 +208,7 @@
     },
     "r2_c1": {
       "score_a": 11,
-      "score_b": 9,
+      "score_b": 8,
       "submitted": true
     },
     "r2_c2": {
@@ -245,9 +245,42 @@
       "score_a": 5,
       "score_b": 11,
       "submitted": true
+    },
+    "r6_c1": {
+      "score_a": 6,
+      "score_b": 11,
+      "submitted": true
+    },
+    "r6_c2": {
+      "score_a": 12,
+      "score_b": 10,
+      "submitted": true
     }
   },
   "session_active": true,
-  "critics_choice": null,
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "Kaushik",
+        "reason": "Kaushik delivered an absolutely flawless performance, dominating every match with exceptional skill. Their perfect record and impressive net score highlight unparalleled consistency and strategic brilliance."
+      },
+      {
+        "rank": 2,
+        "name": "Sandeep",
+        "reason": "Sandeep showcased remarkable offensive power, scoring the highest total points across all players. Their consistent ability to rack up points demonstrates incredible skill and relentless effort."
+      },
+      {
+        "rank": 3,
+        "name": "Piyusha",
+        "reason": "Piyusha displayed immense bravery and resilience, consistently scoring high points against formidable opponents. Their tenacious play and close scorelines are a testament to their fighting spirit."
+      }
+    ],
+    "quips": [
+      "Wait {name}, how did you get up here?",
+      "{name} warmed up and the other team got nervous.",
+      "{name}'s footwork deserves its own highlight reel."
+    ]
+  },
   "num_courts": 2
 }
