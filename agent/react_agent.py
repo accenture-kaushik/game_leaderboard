@@ -663,7 +663,7 @@ class GamePlannerAgent:
         _cot(f"  → player_latest      : {player_latest or '(none)'}")
         _cot(f"  → player_earliest    : {player_earliest or '(none)'}")
         _cot(f"  → max_sitout         : {max_sitout or '(none)'}")
-        _cot(f"  → rule_summary       : {rule_summary or '(none)'")
+        _cot(f"  → rule_summary       : {rule_summary or '(none)'}")
 
         # Step 2: Compute tournament-specific repeat thresholds, then build constraint set
         _max_partner, _max_opponent, _partner_avg, _opponent_avg = _compute_repeat_thresholds(
