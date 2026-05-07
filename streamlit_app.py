@@ -20,6 +20,7 @@ from typing import Dict, List, Optional
 
 import random
 import time as _time
+import uuid as _uuid
 
 import requests
 
@@ -490,6 +491,11 @@ def _init_ui():
         "show_admin_pw": False,
         "show_admin_panel": False,
         "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
+        "cb_never":    [{"_id": "n0", "a": "", "b": ""}],
+        "cb_partner":  [{"_id": "p0", "a": "", "b": "", "n": "", "x": ""}],
+        "cb_opponent": [{"_id": "o0", "a": "", "b": "", "n": "", "x": ""}],
+        "cb_latest":   [{"_id": "l0", "name": "", "time": ""}],
+        "cb_earliest": [{"_id": "e0", "name": "", "time": ""}],
         "phone_add_counter": 0,
         "show_pub_pw": False,
         "show_rst_pw": False,
@@ -642,6 +648,66 @@ def _nav(active: str) -> None:
         </script>""",
         height=0,
     )
+
+
+# ===========================================================================
+# Constraint builder helpers
+# ===========================================================================
+
+def _assemble_constraint_sentences() -> str:
+    """Build a structured instructions string from the constraint builder rows."""
+    lines = []
+
+    for row in st.session_state.get("cb_never", []):
+        rid = row["_id"]
+        a = st.session_state.get(f"cbn_a_{rid}", "").strip()
+        b = st.session_state.get(f"cbn_b_{rid}", "").strip()
+        if a and b:
+            lines.append(f"{a} and {b} must never be on the same team.")
+
+    for row in st.session_state.get("cb_partner", []):
+        rid = row["_id"]
+        a = st.session_state.get(f"cbp_a_{rid}", "").strip()
+        b = st.session_state.get(f"cbp_b_{rid}", "").strip()
+        n_str = st.session_state.get(f"cbp_n_{rid}", "").strip()
+        x_str = st.session_state.get(f"cbp_x_{rid}", "").strip()
+        if a and b and n_str.isdigit() and int(n_str) > 0:
+            s = f"{a} and {b} must partner at least {n_str} times."
+            if x_str.isdigit() and int(x_str) > 0:
+                s = s.rstrip(".") + f" Schedule within rounds 1 to {x_str}."
+            lines.append(s)
+
+    for row in st.session_state.get("cb_opponent", []):
+        rid = row["_id"]
+        a = st.session_state.get(f"cbo_a_{rid}", "").strip()
+        b = st.session_state.get(f"cbo_b_{rid}", "").strip()
+        n_str = st.session_state.get(f"cbo_n_{rid}", "").strip()
+        x_str = st.session_state.get(f"cbo_x_{rid}", "").strip()
+        if a and b and n_str.isdigit() and int(n_str) > 0:
+            s = f"Keep {n_str} game where {a} plays against {b}."
+            if x_str.isdigit() and int(x_str) > 0:
+                s = s.rstrip(".") + f" Schedule within the first {x_str} rounds."
+            lines.append(s)
+
+    for row in st.session_state.get("cb_latest", []):
+        rid = row["_id"]
+        name = st.session_state.get(f"cbl_name_{rid}", "").strip()
+        t = st.session_state.get(f"cbl_time_{rid}", "").strip()
+        if name and t:
+            lines.append(f"{name} must not be scheduled after {t}.")
+
+    for row in st.session_state.get("cb_earliest", []):
+        rid = row["_id"]
+        name = st.session_state.get(f"cbe_name_{rid}", "").strip()
+        t = st.session_state.get(f"cbe_time_{rid}", "").strip()
+        if name and t:
+            lines.append(f"{name} must not be scheduled before {t}.")
+
+    return "\n".join(lines)
+
+
+def _cb_new_id() -> str:
+    return _uuid.uuid4().hex[:8]
 
 
 # ===========================================================================
@@ -890,37 +956,114 @@ def show_setup() -> None:
         if special_instructions != st.session_state.get("special_instructions", ""):
             st.session_state.special_instructions = special_instructions
 
-        with st.expander("📋 Instruction templates"):
-            st.markdown(
-                """
-**Partner (same team)**
-```
-[Player A] and [Player B] must partner at least [N] games.
-Schedule [Player A] and [Player B] matches within rounds 1 to [X].
+        with st.expander("🔧 Constraint builder"):
+            st.caption("Fill in the rows below. Blank rows are ignored. Use the free-text box above for anything not covered here.")
 
-```
-**Opponent (opposite teams)**
-```
-Keep [N] game where [Player A] plays against [Player B].
-Schedule [Player A] vs [Player B] within the first [X] rounds.
-```
-**Never teammates**
-```
-[Player A] and [Player B] must never be on the same team.
-```
-**Player availability — latest**
-```
-[Player A] must not be scheduled after [HH:MM].
-```
-**Player availability — earliest**
-```
-[Player A] must not be scheduled before [HH:MM].
-```
-Replace `[Player A]`, `[Player B]`, `[N]`, `[X]`, `[HH:MM]` with actual names, numbers, and times (e.g. 09:30).
-Multiple constraints can be added as separate sentences.
-                """,
-                unsafe_allow_html=False,
-            )
+            # ── Never teammates ──────────────────────────────────────────────
+            st.markdown("**Never teammates**")
+            st.caption("These two players must never be on the same team.")
+            for row in st.session_state.cb_never:
+                rid = row["_id"]
+                c1, c2, c3 = st.columns([5, 5, 1])
+                with c1:
+                    st.text_input("Player A", key=f"cbn_a_{rid}", placeholder="Player A", label_visibility="collapsed")
+                with c2:
+                    st.text_input("Player B", key=f"cbn_b_{rid}", placeholder="Player B", label_visibility="collapsed")
+                with c3:
+                    if st.button("−", key=f"cbn_rm_{rid}", help="Remove row"):
+                        st.session_state.cb_never = [r for r in st.session_state.cb_never if r["_id"] != rid]
+                        st.rerun()
+            if st.button("+ Add pair", key="cbn_add"):
+                st.session_state.cb_never.append({"_id": _cb_new_id(), "a": "", "b": ""})
+                st.rerun()
+
+            st.divider()
+
+            # ── Must partner ─────────────────────────────────────────────────
+            st.markdown("**Must partner (same team)**")
+            st.caption("N = min number of games together. By round = must happen within first X rounds (optional).")
+            for row in st.session_state.cb_partner:
+                rid = row["_id"]
+                c1, c2, c3, c4, c5 = st.columns([4, 4, 2, 2, 1])
+                with c1:
+                    st.text_input("Player A", key=f"cbp_a_{rid}", placeholder="Player A", label_visibility="collapsed")
+                with c2:
+                    st.text_input("Player B", key=f"cbp_b_{rid}", placeholder="Player B", label_visibility="collapsed")
+                with c3:
+                    st.text_input("N games", key=f"cbp_n_{rid}", placeholder="N", label_visibility="collapsed")
+                with c4:
+                    st.text_input("By round", key=f"cbp_x_{rid}", placeholder="round (opt)", label_visibility="collapsed")
+                with c5:
+                    if st.button("−", key=f"cbp_rm_{rid}", help="Remove row"):
+                        st.session_state.cb_partner = [r for r in st.session_state.cb_partner if r["_id"] != rid]
+                        st.rerun()
+            if st.button("+ Add pair", key="cbp_add"):
+                st.session_state.cb_partner.append({"_id": _cb_new_id(), "a": "", "b": "", "n": "", "x": ""})
+                st.rerun()
+
+            st.divider()
+
+            # ── Must face each other ─────────────────────────────────────────
+            st.markdown("**Must face each other (opposing teams)**")
+            st.caption("N = min number of times they must be on opposing sides.")
+            for row in st.session_state.cb_opponent:
+                rid = row["_id"]
+                c1, c2, c3, c4, c5 = st.columns([4, 4, 2, 2, 1])
+                with c1:
+                    st.text_input("Player A", key=f"cbo_a_{rid}", placeholder="Player A", label_visibility="collapsed")
+                with c2:
+                    st.text_input("Player B", key=f"cbo_b_{rid}", placeholder="Player B", label_visibility="collapsed")
+                with c3:
+                    st.text_input("N games", key=f"cbo_n_{rid}", placeholder="N", label_visibility="collapsed")
+                with c4:
+                    st.text_input("By round", key=f"cbo_x_{rid}", placeholder="round (opt)", label_visibility="collapsed")
+                with c5:
+                    if st.button("−", key=f"cbo_rm_{rid}", help="Remove row"):
+                        st.session_state.cb_opponent = [r for r in st.session_state.cb_opponent if r["_id"] != rid]
+                        st.rerun()
+            if st.button("+ Add pair", key="cbo_add"):
+                st.session_state.cb_opponent.append({"_id": _cb_new_id(), "a": "", "b": "", "n": "", "x": ""})
+                st.rerun()
+
+            st.divider()
+
+            # ── Not available after ──────────────────────────────────────────
+            st.markdown("**Not available after (hard constraint)**")
+            st.caption("Player must not be scheduled in any game starting at or after this time (HH:MM, 24-hour).")
+            for row in st.session_state.cb_latest:
+                rid = row["_id"]
+                c1, c2, c3 = st.columns([6, 4, 1])
+                with c1:
+                    st.text_input("Player name", key=f"cbl_name_{rid}", placeholder="Player name", label_visibility="collapsed")
+                with c2:
+                    st.text_input("Not after", key=f"cbl_time_{rid}", placeholder="HH:MM", label_visibility="collapsed")
+                with c3:
+                    if st.button("−", key=f"cbl_rm_{rid}", help="Remove row"):
+                        st.session_state.cb_latest = [r for r in st.session_state.cb_latest if r["_id"] != rid]
+                        st.rerun()
+            if st.button("+ Add player", key="cbl_add"):
+                st.session_state.cb_latest.append({"_id": _cb_new_id(), "name": "", "time": ""})
+                st.rerun()
+
+            st.divider()
+
+            # ── Not available before ─────────────────────────────────────────
+            st.markdown("**Not available before (hard constraint)**")
+            st.caption("Player must not be scheduled in any game starting before this time (HH:MM, 24-hour).")
+            for row in st.session_state.cb_earliest:
+                rid = row["_id"]
+                c1, c2, c3 = st.columns([6, 4, 1])
+                with c1:
+                    st.text_input("Player name", key=f"cbe_name_{rid}", placeholder="Player name", label_visibility="collapsed")
+                with c2:
+                    st.text_input("Not before", key=f"cbe_time_{rid}", placeholder="HH:MM", label_visibility="collapsed")
+                with c3:
+                    if st.button("−", key=f"cbe_rm_{rid}", help="Remove row"):
+                        st.session_state.cb_earliest = [r for r in st.session_state.cb_earliest if r["_id"] != rid]
+                        st.rerun()
+            if st.button("+ Add player", key="cbe_add"):
+                st.session_state.cb_earliest.append({"_id": _cb_new_id(), "name": "", "time": ""})
+                st.rerun()
 
         # ── Discreet lock toggle (below player list) ──────────────────────────
         st.markdown(
@@ -1098,12 +1241,15 @@ Multiple constraints can be added as separate sentences.
                         with st.spinner("Generating schedule… 🤖"):
                             try:
                                 _agent_violations = None
+                                _builder_text = _assemble_constraint_sentences()
+                                _free_text     = st.session_state.get("special_instructions", "")
+                                _combined_instructions = "\n".join(filter(None, [_builder_text, _free_text]))
                                 if use_agent and has_key:
                                     from agent.react_agent import GamePlannerAgent
                                     _agent_result = GamePlannerAgent().generate_schedule(
                                         players, skill_levels,
                                         num_rounds=num_games, num_courts=num_courts,
-                                        special_instructions=st.session_state.get("special_instructions", ""),
+                                        special_instructions=_combined_instructions,
                                         previous_schedule=_saved_sched if _is_refine else None,
                                         girl_names=resolved_girl_names,
                                         court_start_rounds=_court_start_rounds,
@@ -1160,7 +1306,7 @@ Multiple constraints can be added as separate sentences.
                                     g["game_id"]: {"score_a": None, "score_b": None, "submitted": False}
                                     for g in schedule
                                 },
-                                "special_instructions": st.session_state.get("special_instructions", ""),
+                                "special_instructions": _combined_instructions,
                                 "session_active": True,
                             })
 
