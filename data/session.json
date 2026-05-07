@@ -78,11 +78,11 @@
       "court": 1,
       "team_a": [
         "Neha",
-        "Rishu"
+        "Leenav"
       ],
       "team_b": [
         "Piyusha",
-        "Leenav"
+        "Rishu"
       ],
       "sitting_out": [
         "Kaushik"
@@ -95,10 +95,10 @@
       "court": 2,
       "team_a": [
         "Shreya",
-        "Sandeep"
+        "Prashant"
       ],
       "team_b": [
-        "Prashant",
+        "Sandeep",
         "Aakar"
       ],
       "sitting_out": [
@@ -112,11 +112,11 @@
       "court": 1,
       "team_a": [
         "Neha",
-        "Aakar"
+        "Rishu"
       ],
       "team_b": [
-        "Piyusha",
-        "Prashant"
+        "Shreya",
+        "Sandeep"
       ],
       "sitting_out": [
         "Kaushik"
@@ -128,12 +128,12 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Shreya",
+        "Piyusha",
         "Leenav"
       ],
       "team_b": [
-        "Sandeep",
-        "Rishu"
+        "Prashant",
+        "Aakar"
       ],
       "sitting_out": [
         "Kaushik"
@@ -150,7 +150,7 @@
       ],
       "team_b": [
         "Piyusha",
-        "Rishu"
+        "Aakar"
       ],
       "sitting_out": [
         "Kaushik"
@@ -163,10 +163,10 @@
       "court": 2,
       "team_a": [
         "Shreya",
-        "Prashant"
+        "Rishu"
       ],
       "team_b": [
-        "Aakar",
+        "Prashant",
         "Leenav"
       ],
       "sitting_out": [
@@ -180,11 +180,11 @@
       "court": 1,
       "team_a": [
         "Neha",
-        "Leenav"
+        "Aakar"
       ],
       "team_b": [
-        "Piyusha",
-        "Aakar"
+        "Shreya",
+        "Leenav"
       ],
       "sitting_out": [
         "Kaushik"
@@ -196,7 +196,7 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Shreya",
+        "Piyusha",
         "Rishu"
       ],
       "team_b": [
@@ -218,10 +218,10 @@
       ],
       "team_b": [
         "Piyusha",
-        "Shreya"
+        "Prashant"
       ],
       "sitting_out": [
-        "Aakar"
+        "Sandeep"
       ],
       "time_slot": "08:00\u201308:12",
       "game_id": "r6_c1"
@@ -230,15 +230,15 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Prashant",
-        "Leenav"
+        "Shreya",
+        "Aakar"
       ],
       "team_b": [
-        "Sandeep",
+        "Leenav",
         "Rishu"
       ],
       "sitting_out": [
-        "Aakar"
+        "Sandeep"
       ],
       "time_slot": "08:00\u201308:12",
       "game_id": "r6_c2"
@@ -252,10 +252,10 @@
       ],
       "team_b": [
         "Neha",
-        "Shreya"
+        "Sandeep"
       ],
       "sitting_out": [
-        "Sandeep"
+        "Leenav"
       ],
       "time_slot": "08:12\u201308:24",
       "game_id": "r7_c1"
@@ -264,15 +264,15 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Aakar",
-        "Leenav"
+        "Shreya",
+        "Prashant"
       ],
       "team_b": [
-        "Prashant",
+        "Aakar",
         "Rishu"
       ],
       "sitting_out": [
-        "Sandeep"
+        "Leenav"
       ],
       "time_slot": "08:12\u201308:24",
       "game_id": "r7_c2"
