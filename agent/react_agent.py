@@ -30,7 +30,7 @@ MAX_AGENT_ITERATIONS   = 6
 PENALTY_HARD             = 10_000
 PENALTY_REQUIRED_PAIRING =  5_000
 PENALTY_PARTNER_REPEAT   =    500
-PENALTY_SITOUT_IMBALANCE =     50
+PENALTY_SITOUT_IMBALANCE =    200
 PENALTY_OPPONENT_REPEAT  =     10
 
 
@@ -91,6 +91,8 @@ class ConstraintSet:
     player_latest:       Dict[str, str]  = field(default_factory=dict)
     # {"Player A": "08:00"} — player must not play in any game starting before this time
     player_earliest:     Dict[str, str]  = field(default_factory=dict)
+    # {"Player A": 2} — player must sit out AT MOST N rounds (HARD)
+    max_sitout:          Dict[str, int]  = field(default_factory=dict)
 
     @classmethod
     def build(
@@ -105,6 +107,7 @@ class ConstraintSet:
         court_start_rounds:  Optional[Dict[int, int]] = None,
         player_latest:       Optional[Dict[str, str]] = None,
         player_earliest:     Optional[Dict[str, str]] = None,
+        max_sitout:          Optional[Dict[str, int]]  = None,
     ) -> "ConstraintSet":
         return cls(
             skill_levels        = skill_levels,
@@ -117,6 +120,7 @@ class ConstraintSet:
             court_start_rounds  = court_start_rounds or {},
             player_latest       = player_latest  or {},
             player_earliest     = player_earliest or {},
+            max_sitout          = max_sitout or {},
         )
 
 
@@ -393,7 +397,7 @@ def _validate_and_score(
         max_so = max(sitout_counts.values())
         min_so = min(sitout_counts.get(p, 0) for p in players)
         spread = max_so - min_so
-        if spread > 2:
+        if spread > 1:
             pen = PENALTY_SITOUT_IMBALANCE * spread
             total_penalty += pen
             violations.append({
@@ -405,6 +409,21 @@ def _validate_and_score(
                 ),
                 "penalty": pen,
             })
+
+    # ── Layer 3b: Per-player max sit-out cap (HARD) ──────────────────────────
+    if constraints.max_sitout:
+        for player, cap in constraints.max_sitout.items():
+            actual = sitout_counts.get(player, 0)
+            if actual > cap:
+                total_penalty += PENALTY_HARD
+                violations.append({
+                    "priority": 1, "layer": "HARD",
+                    "location": "whole schedule", "team": "sit-out cap",
+                    "detail": (
+                        f"{player} sat out {actual} time(s) but max allowed is {cap}"
+                    ),
+                    "penalty": PENALTY_HARD,
+                })
 
     # ── Layer 4: Opponent repeats ────────────────────────────────────────────
     for pair, count in opponent_counts.items():
@@ -636,13 +655,15 @@ class GamePlannerAgent:
         required_opponents = extracted.get("required_opponents", [])
         player_latest      = extracted.get("player_latest", {})
         player_earliest    = extracted.get("player_earliest", {})
+        max_sitout         = extracted.get("max_sitout", {})
         rule_summary       = extracted.get("rule_summary", "")
         _cot(f"  → no_same_group      : {sorted(no_same_group) or '(none)'}")
         _cot(f"  → required_partners  : {required_partners or '(none)'}")
         _cot(f"  → required_opponents : {required_opponents or '(none)'}")
         _cot(f"  → player_latest      : {player_latest or '(none)'}")
         _cot(f"  → player_earliest    : {player_earliest or '(none)'}")
-        _cot(f"  → rule_summary       : {rule_summary or '(none)'}")
+        _cot(f"  → max_sitout         : {max_sitout or '(none)'}")
+        _cot(f"  → rule_summary       : {rule_summary or '(none)'")
 
         # Step 2: Compute tournament-specific repeat thresholds, then build constraint set
         _max_partner, _max_opponent, _partner_avg, _opponent_avg = _compute_repeat_thresholds(
@@ -663,6 +684,7 @@ class GamePlannerAgent:
             court_start_rounds  = court_start_rounds,
             player_latest       = player_latest,
             player_earliest     = player_earliest,
+            max_sitout          = max_sitout,
         )
 
         # Step 3 (refine only): score previous schedule, identify clean rounds
@@ -868,12 +890,21 @@ class GamePlannerAgent:
                 for p, t in sorted(constraints.player_earliest.items())
             ]
             constraint_block += "\nPLAYER AVAILABILITY (earliest) — HARD CONSTRAINT:\n" + "\n".join(lines) + "\n"
+        if constraints.max_sitout:
+            lines = [
+                f"  • {p} must sit out AT MOST {n} round(s) across the whole tournament."
+                for p, n in sorted(constraints.max_sitout.items())
+            ]
+            constraint_block += "\nSIT-OUT CAP — HARD CONSTRAINT:\n" + "\n".join(lines) + "\n"
         rule_block = (
             f"\nRULE SUMMARY (from special instructions):\n"
             + "\n".join(f"  {l}" for l in rule_summary.splitlines()) + "\n"
             if rule_summary else ""
         )
 
+        _so_per_round = max(0, len(players) - num_courts * 4)
+        _total_so     = _so_per_round * num_rounds
+        _target_so    = _total_so / len(players) if players else 0
         math_block = (
             f"\nMATHEMATICAL LIMITS (pre-calculated for this tournament):\n"
             f"  {len(players)} players · {total_games} games · {unique_pairs} unique pairs\n"
@@ -881,6 +912,8 @@ class GamePlannerAgent:
             f"→ repeats above {constraints.max_partner_repeat} are avoidable and should be minimised.\n"
             f"  Each pair will face each other on average {opponent_avg:.1f}× "
             f"→ repeats above {constraints.max_opponent_repeat} are avoidable and should be minimised.\n"
+            f"  Sit-out target: ~{_target_so:.1f} rounds per player "
+            f"→ spread must be ≤ 1. Do NOT concentrate sit-outs on any gender.\n"
             f"  These averages are unavoidable — distribute pairings as evenly as possible within them.\n"
         )
 
@@ -943,7 +976,7 @@ STRICT PRIORITIES (satisfy in order):
   2. HARD CONSTRAINTS   — every constraint listed above must be satisfied.
   3. REQUIRED PAIRINGS  — all mandatory partner pairs must appear in the schedule.
   4. PARTNER VARIETY    — same two players should partner at most {constraints.max_partner_repeat} times.
-  5. SIT-OUT BALANCE    — distribute sit-outs as evenly as possible across all players.
+  5. SIT-OUT BALANCE    — distribute sit-outs as evenly as possible (target ~{_target_so:.1f}/player, spread ≤ 1). No gender bias.
   6. OPPONENT VARIETY   — same two players should face each other at most {constraints.max_opponent_repeat} times.
 
 TOURNAMENT SETTINGS:
@@ -1156,7 +1189,7 @@ Only include a court in a round when that court is active.
         if not special_instructions or not special_instructions.strip():
             return {}
         prompt = (
-            "Analyse the organiser's tournament instructions below and extract six things.\n\n"
+            "Analyse the organiser's tournament instructions below and extract seven things.\n\n"
             "1. no_same_group: list of player names who must NEVER be on the same doubles team.\n"
             "   These names come only from the instructions — do NOT invent names.\n\n"
             "2. required_partners: players who MUST be on the same team (partners) in some games.\n"
@@ -1217,13 +1250,24 @@ Only include a court in a round when that court is active.
             "     'Girl 1 is not available before 11:00'\n"
             "       -> {\"Girl 1\": \"11:00\"}\n"
             "   Only include entries explicitly stated.\n\n"
+            "7. max_sitout: players who must sit out AT MOST a given number of rounds total.\n"
+            "   Trigger phrases: 'sit out at most', 'sit out no more than', 'maximum N sit-outs',\n"
+            "                    'should not sit out more than N times', 'sit out N rounds max'\n"
+            "   Format: object mapping player name to max sit-out count (integer >= 0).\n"
+            "   Examples:\n"
+            "     'Boy 3 should sit out at most 2 rounds'\n"
+            "       -> {\"Boy 3\": 2}\n"
+            "     'Girl 1 must not sit out more than 1 time'\n"
+            "       -> {\"Girl 1\": 1}\n"
+            "   Only include entries explicitly stated.\n\n"
             "Return ONLY valid JSON matching this schema:\n"
             '  {"no_same_group": ["Name1", ...],\n'
             '   "required_partners":  [{"players":["A","B"], "round":null, "by_round":4, "min_count":2}],\n'
             '   "required_opponents": [{"players":["A","B"], "by_round":null, "min_count":1}],\n'
             '   "rule_summary": "FORBIDDEN: ...",\n'
             '   "player_latest":   {"PlayerName": "HH:MM"},\n'
-            '   "player_earliest": {"PlayerName": "HH:MM"}}\n'
+            '   "player_earliest": {"PlayerName": "HH:MM"},\n'
+            '   "max_sitout":      {"PlayerName": 2}}\n'
             "Omit any key that is empty or not applicable. If nothing to extract, return {}.\n\n"
             f"Instructions: {special_instructions.strip()}"
         )

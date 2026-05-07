@@ -496,6 +496,7 @@ def _init_ui():
         "cb_opponent": [{"_id": "o0", "a": "", "b": "", "n": "", "x": ""}],
         "cb_latest":   [{"_id": "l0", "name": "", "time": ""}],
         "cb_earliest": [{"_id": "e0", "name": "", "time": ""}],
+        "cb_sitout":   [{"_id": "s0", "name": "", "max": ""}],
         "phone_add_counter": 0,
         "show_pub_pw": False,
         "show_rst_pw": False,
@@ -702,6 +703,13 @@ def _assemble_constraint_sentences() -> str:
         t = st.session_state.get(f"cbe_time_{rid}", "").strip()
         if name and t:
             lines.append(f"{name} must not be scheduled before {t}.")
+
+    for row in st.session_state.get("cb_sitout", []):
+        rid = row["_id"]
+        name = st.session_state.get(f"cbs_name_{rid}", "").strip()
+        n_str = st.session_state.get(f"cbs_max_{rid}", "").strip()
+        if name and n_str.isdigit():
+            lines.append(f"{name} should sit out at most {n_str} rounds.")
 
     return "\n".join(lines)
 
@@ -1063,6 +1071,26 @@ def show_setup() -> None:
                         st.rerun()
             if st.button("+ Add player", key="cbe_add"):
                 st.session_state.cb_earliest.append({"_id": _cb_new_id(), "name": "", "time": ""})
+                st.rerun()
+
+            st.divider()
+
+            # ── Max sit-out rounds per player ────────────────────────────────
+            st.markdown("**Max sit-out rounds per player (hard constraint)**")
+            st.caption("Player must sit out AT MOST this many rounds across the whole tournament.")
+            for row in st.session_state.cb_sitout:
+                rid = row["_id"]
+                c1, c2, c3 = st.columns([6, 4, 1])
+                with c1:
+                    st.text_input("Player name", key=f"cbs_name_{rid}", placeholder="Player name", label_visibility="collapsed")
+                with c2:
+                    st.text_input("Max sit-outs", key=f"cbs_max_{rid}", placeholder="e.g. 2", label_visibility="collapsed")
+                with c3:
+                    if st.button("−", key=f"cbs_rm_{rid}", help="Remove row"):
+                        st.session_state.cb_sitout = [r for r in st.session_state.cb_sitout if r["_id"] != rid]
+                        st.rerun()
+            if st.button("+ Add player", key="cbs_add"):
+                st.session_state.cb_sitout.append({"_id": _cb_new_id(), "name": "", "max": ""})
                 st.rerun()
 
         # ── Discreet lock toggle (below player list) ──────────────────────────
