@@ -43,12 +43,12 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "Aakar",
-        "Sandeep"
+        "Neha",
+        "Leenav"
       ],
       "team_b": [
-        "Leenav",
-        "Shreya"
+        "Aakar",
+        "Piyusha"
       ],
       "sitting_out": [
         "Prashant"
@@ -60,12 +60,12 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Kaushik",
-        "Neha"
+        "Shreya",
+        "Sandeep"
       ],
       "team_b": [
         "Rishu",
-        "Piyusha"
+        "Kaushik"
       ],
       "sitting_out": [
         "Prashant"
@@ -77,12 +77,12 @@
       "round": 2,
       "court": 1,
       "team_a": [
-        "Piyusha",
-        "Neha"
+        "Rishu",
+        "Shreya"
       ],
       "team_b": [
-        "Rishu",
-        "Sandeep"
+        "Piyusha",
+        "Leenav"
       ],
       "sitting_out": [
         "Kaushik"
@@ -94,12 +94,12 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Aakar",
-        "Leenav"
+        "Prashant",
+        "Sandeep"
       ],
       "team_b": [
-        "Shreya",
-        "Prashant"
+        "Neha",
+        "Aakar"
       ],
       "sitting_out": [
         "Kaushik"
@@ -111,12 +111,12 @@
       "round": 3,
       "court": 1,
       "team_a": [
-        "Kaushik",
+        "Prashant",
         "Piyusha"
       ],
       "team_b": [
-        "Leenav",
-        "Rishu"
+        "Sandeep",
+        "Leenav"
       ],
       "sitting_out": [
         "Aakar"
@@ -132,8 +132,8 @@
         "Neha"
       ],
       "team_b": [
-        "Sandeep",
-        "Prashant"
+        "Rishu",
+        "Kaushik"
       ],
       "sitting_out": [
         "Aakar"
@@ -145,12 +145,12 @@
       "round": 4,
       "court": 1,
       "team_a": [
-        "Shreya",
-        "Rishu"
+        "Neha",
+        "Kaushik"
       ],
       "team_b": [
         "Leenav",
-        "Piyusha"
+        "Aakar"
       ],
       "sitting_out": [
         "Sandeep"
@@ -162,12 +162,12 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Kaushik",
-        "Prashant"
+        "Shreya",
+        "Piyusha"
       ],
       "team_b": [
-        "Neha",
-        "Aakar"
+        "Prashant",
+        "Rishu"
       ],
       "sitting_out": [
         "Sandeep"
@@ -179,12 +179,12 @@
       "round": 5,
       "court": 1,
       "team_a": [
-        "Shreya",
-        "Sandeep"
+        "Aakar",
+        "Kaushik"
       ],
       "team_b": [
-        "Leenav",
-        "Prashant"
+        "Neha",
+        "Sandeep"
       ],
       "sitting_out": [
         "Rishu"
@@ -196,12 +196,12 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Piyusha",
-        "Aakar"
+        "Shreya",
+        "Prashant"
       ],
       "team_b": [
-        "Kaushik",
-        "Neha"
+        "Piyusha",
+        "Leenav"
       ],
       "sitting_out": [
         "Rishu"
@@ -213,12 +213,12 @@
       "round": 6,
       "court": 1,
       "team_a": [
-        "Shreya",
-        "Aakar"
+        "Piyusha",
+        "Sandeep"
       ],
       "team_b": [
-        "Rishu",
-        "Kaushik"
+        "Aakar",
+        "Prashant"
       ],
       "sitting_out": [
         "Leenav"
@@ -230,12 +230,12 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Piyusha",
-        "Prashant"
+        "Shreya",
+        "Kaushik"
       ],
       "team_b": [
         "Neha",
-        "Sandeep"
+        "Rishu"
       ],
       "sitting_out": [
         "Leenav"
@@ -247,12 +247,12 @@
       "round": 7,
       "court": 1,
       "team_a": [
-        "Rishu",
-        "Aakar"
+        "Piyusha",
+        "Rishu"
       ],
       "team_b": [
-        "Shreya",
-        "Piyusha"
+        "Prashant",
+        "Leenav"
       ],
       "sitting_out": [
         "Neha"
@@ -264,12 +264,12 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Kaushik",
-        "Sandeep"
+        "Sandeep",
+        "Aakar"
       ],
       "team_b": [
-        "Prashant",
-        "Leenav"
+        "Kaushik",
+        "Shreya"
       ],
       "sitting_out": [
         "Neha"
@@ -350,6 +350,6 @@
       "submitted": false
     }
   },
-  "special_instructions": "Kaushik must not be scheduled after 08:00.\nAvoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
+  "special_instructions": "Kaushik must not be scheduled after 08:00.\nKaushik must not be scheduled after 08:00.\nAvoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
   "session_active": true
 }
