@@ -56,111 +56,111 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "Prashant",
-        "Neha"
+        "Kaushik",
+        "Leenav"
       ],
       "team_b": [
-        "Kaushik",
-        "Piyusha"
+        "Aakar",
+        "Prashant"
       ],
       "sitting_out": [
-        "Lenaav"
+        "Mayank"
       ],
-      "time_slot": "09:00\u201309:15",
+      "time_slot": "0\u201310 min",
       "game_id": "r1_c1"
     },
     {
       "round": 1,
       "court": 2,
       "team_a": [
-        "Ayush",
+        "Animesh",
         "Shivani"
       ],
       "team_b": [
-        "Mayank",
-        "Shreya"
+        "AK",
+        "Piyusha"
       ],
       "sitting_out": [],
-      "time_slot": "09:00\u201309:15",
+      "time_slot": "0\u201310 min",
       "game_id": "r1_c2"
     },
     {
       "round": 1,
       "court": 3,
       "team_a": [
-        "Aakar",
-        "Animesh"
+        "Sandeep",
+        "Shreya"
       ],
       "team_b": [
         "Chetan",
-        "Sandeep"
+        "Neha"
       ],
       "sitting_out": [],
-      "time_slot": "09:00\u201309:15",
+      "time_slot": "0\u201310 min",
       "game_id": "r1_c3"
     },
     {
       "round": 2,
       "court": 1,
       "team_a": [
-        "Aakar",
-        "Neha"
+        "AK",
+        "Aakar"
       ],
       "team_b": [
-        "Lenaav",
-        "Piyusha"
+        "Chetan",
+        "Prashant"
       ],
       "sitting_out": [
-        "Animesh"
+        "Sandeep"
       ],
-      "time_slot": "09:15\u201309:30",
+      "time_slot": "10\u201320 min",
       "game_id": "r2_c1"
     },
     {
       "round": 2,
       "court": 2,
       "team_a": [
-        "Sandeep",
-        "Shivani"
-      ],
-      "team_b": [
-        "Chetan",
+        "Mayank",
         "Shreya"
       ],
+      "team_b": [
+        "Animesh",
+        "Piyusha"
+      ],
       "sitting_out": [],
-      "time_slot": "09:15\u201309:30",
+      "time_slot": "10\u201320 min",
       "game_id": "r2_c2"
     },
     {
       "round": 2,
       "court": 3,
       "team_a": [
-        "Prashant",
-        "Mayank"
+        "Kaushik",
+        "Shivani"
       ],
       "team_b": [
-        "Kaushik",
-        "Ayush"
+        "Leenav",
+        "Neha"
       ],
       "sitting_out": [],
-      "time_slot": "09:15\u201309:30",
+      "time_slot": "10\u201320 min",
       "game_id": "r2_c3"
     },
     {
       "round": 3,
       "court": 1,
       "team_a": [
-        "Animesh",
+        "Kaushik",
         "Neha"
       ],
       "team_b": [
-        "Mayank",
+        "Leenav",
         "Piyusha"
       ],
       "sitting_out": [
-        "Kaushik"
+        "AK"
       ],
-      "time_slot": "09:30\u201309:45",
+      "time_slot": "20\u201330 min",
       "game_id": "r3_c1"
     },
     {
@@ -171,386 +171,266 @@
         "Shivani"
       ],
       "team_b": [
-        "Ayush",
+        "Chetan",
         "Shreya"
       ],
       "sitting_out": [],
-      "time_slot": "09:30\u201309:45",
+      "time_slot": "20\u201330 min",
       "game_id": "r3_c2"
     },
     {
       "round": 3,
       "court": 3,
       "team_a": [
-        "Aakar",
-        "Chetan"
+        "Animesh",
+        "Mayank"
       ],
       "team_b": [
-        "Lenaav",
+        "Aakar",
         "Sandeep"
       ],
       "sitting_out": [],
-      "time_slot": "09:30\u201309:45",
+      "time_slot": "20\u201330 min",
       "game_id": "r3_c3"
     },
     {
       "round": 4,
       "court": 1,
       "team_a": [
-        "Lenaav",
-        "Neha"
+        "Prashant",
+        "Shreya"
       ],
       "team_b": [
-        "Aakar",
-        "Piyusha"
-      ],
-      "sitting_out": [
+        "Neha",
         "Sandeep"
       ],
-      "time_slot": "09:45\u201310:00",
+      "sitting_out": [
+        "Aakar"
+      ],
+      "time_slot": "30\u201340 min",
       "game_id": "r4_c1"
     },
     {
       "round": 4,
       "court": 2,
       "team_a": [
-        "Animesh",
-        "Shivani"
+        "AK",
+        "Animesh"
       ],
       "team_b": [
         "Kaushik",
-        "Shreya"
+        "Mayank"
       ],
       "sitting_out": [],
-      "time_slot": "09:45\u201310:00",
+      "time_slot": "30\u201340 min",
       "game_id": "r4_c2"
     },
     {
       "round": 4,
       "court": 3,
       "team_a": [
-        "Prashant",
-        "Chetan"
+        "Chetan",
+        "Piyusha"
       ],
       "team_b": [
-        "Ayush",
-        "Mayank"
+        "Leenav",
+        "Shivani"
       ],
       "sitting_out": [],
-      "time_slot": "09:45\u201310:00",
+      "time_slot": "30\u201340 min",
       "game_id": "r4_c3"
     },
     {
       "round": 5,
       "court": 1,
       "team_a": [
-        "Chetan",
-        "Neha"
+        "Mayank",
+        "Sandeep"
       ],
       "team_b": [
-        "Sandeep",
-        "Piyusha"
+        "Aakar",
+        "Kaushik"
       ],
       "sitting_out": [
-        "Ayush"
+        "Chetan"
       ],
-      "time_slot": "10:00\u201310:15",
+      "time_slot": "40\u201350 min",
       "game_id": "r5_c1"
     },
     {
       "round": 5,
       "court": 2,
       "team_a": [
-        "Mayank",
+        "AK",
         "Shivani"
       ],
       "team_b": [
-        "Prashant",
+        "Leenav",
         "Shreya"
       ],
       "sitting_out": [],
-      "time_slot": "10:00\u201310:15",
+      "time_slot": "40\u201350 min",
       "game_id": "r5_c2"
     },
     {
       "round": 5,
       "court": 3,
       "team_a": [
-        "Kaushik",
-        "Aakar"
+        "Animesh",
+        "Neha"
       ],
       "team_b": [
-        "Lenaav",
-        "Animesh"
+        "Piyusha",
+        "Prashant"
       ],
       "sitting_out": [],
-      "time_slot": "10:00\u201310:15",
+      "time_slot": "40\u201350 min",
       "game_id": "r5_c3"
     },
     {
       "round": 6,
       "court": 1,
       "team_a": [
-        "Ayush",
-        "Neha"
+        "Aakar",
+        "Animesh"
       ],
       "team_b": [
-        "Animesh",
-        "Piyusha"
+        "Neha",
+        "Prashant"
       ],
       "sitting_out": [
-        "Chetan"
+        "Shivani"
       ],
-      "time_slot": "10:15\u201310:30",
+      "time_slot": "50\u201360 min",
       "game_id": "r6_c1"
     },
     {
       "round": 6,
       "court": 2,
       "team_a": [
-        "Aakar",
-        "Shivani"
+        "AK",
+        "Leenav"
       ],
       "team_b": [
-        "Lenaav",
-        "Shreya"
+        "Chetan",
+        "Sandeep"
       ],
       "sitting_out": [],
-      "time_slot": "10:15\u201310:30",
+      "time_slot": "50\u201360 min",
       "game_id": "r6_c2"
     },
     {
       "round": 6,
       "court": 3,
       "team_a": [
-        "Prashant",
-        "Kaushik"
+        "Mayank",
+        "Piyusha"
       ],
       "team_b": [
-        "Mayank",
-        "Sandeep"
+        "Kaushik",
+        "Shreya"
       ],
       "sitting_out": [],
-      "time_slot": "10:15\u201310:30",
+      "time_slot": "50\u201360 min",
       "game_id": "r6_c3"
     },
     {
       "round": 7,
       "court": 1,
       "team_a": [
-        "Sandeep",
+        "AK",
         "Neha"
       ],
       "team_b": [
-        "Chetan",
-        "Piyusha"
+        "Sandeep",
+        "Shivani"
       ],
       "sitting_out": [
-        "Mayank"
+        "Animesh"
       ],
-      "time_slot": "10:30\u201310:45",
+      "time_slot": "60\u201370 min",
       "game_id": "r7_c1"
     },
     {
       "round": 7,
       "court": 2,
       "team_a": [
-        "Kaushik",
-        "Shivani"
+        "Mayank",
+        "Prashant"
       ],
       "team_b": [
-        "Ayush",
-        "Shreya"
+        "Chetan",
+        "Kaushik"
       ],
       "sitting_out": [],
-      "time_slot": "10:30\u201310:45",
+      "time_slot": "60\u201370 min",
       "game_id": "r7_c2"
     },
     {
       "round": 7,
       "court": 3,
       "team_a": [
-        "Prashant",
-        "Animesh"
+        "Aakar",
+        "Piyusha"
       ],
       "team_b": [
-        "Aakar",
-        "Lenaav"
+        "Leenav",
+        "Shreya"
       ],
       "sitting_out": [],
-      "time_slot": "10:30\u201310:45",
+      "time_slot": "60\u201370 min",
       "game_id": "r7_c3"
     },
     {
       "round": 8,
       "court": 1,
       "team_a": [
-        "Mayank",
-        "Neha"
+        "Kaushik",
+        "Piyusha"
       ],
       "team_b": [
-        "Ayush",
-        "Piyusha"
+        "AK",
+        "Shreya"
       ],
       "sitting_out": [
         "Prashant"
       ],
-      "time_slot": "10:45\u201311:00",
+      "time_slot": "70\u201380 min",
       "game_id": "r8_c1"
     },
     {
       "round": 8,
       "court": 2,
       "team_a": [
-        "Lenaav",
-        "Shivani"
+        "Aakar",
+        "Leenav"
       ],
       "team_b": [
         "Animesh",
-        "Shreya"
+        "Sandeep"
       ],
       "sitting_out": [],
-      "time_slot": "10:45\u201311:00",
+      "time_slot": "70\u201380 min",
       "game_id": "r8_c2"
     },
     {
       "round": 8,
       "court": 3,
       "team_a": [
-        "Kaushik",
-        "Chetan"
+        "Mayank",
+        "Neha"
       ],
       "team_b": [
-        "Aakar",
-        "Sandeep"
+        "Chetan",
+        "Shivani"
       ],
       "sitting_out": [],
-      "time_slot": "10:45\u201311:00",
+      "time_slot": "70\u201380 min",
       "game_id": "r8_c3"
     }
   ],
-  "scores": {
-    "r1_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r1_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r1_c3": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r2_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r2_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r2_c3": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r3_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r3_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r3_c3": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r4_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r4_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r4_c3": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r5_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r5_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r5_c3": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r6_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r6_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r6_c3": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r7_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r7_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r7_c3": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r8_c1": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r8_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    },
-    "r8_c3": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
-    }
-  },
+  "scores": {},
   "special_instructions": "Shivani should sit out at most 1 rounds.\nMayank should sit out at most 1 rounds.\nShivani should sit out at most 1 rounds.\nMayank should sit out at most 1 rounds.\nTeams should be [boy + boy] playing against [boy + boy] (all boys doubles match) or it can be [boy + girl] playing against [boy + girl] (mixed doubles match). Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
-  "session_active": true
+  "session_active": true,
+  "critics_choice": null
 }
