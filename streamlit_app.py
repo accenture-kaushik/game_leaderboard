@@ -1982,7 +1982,6 @@ def show_court(court: int) -> None:
 
                 _filled  = [p for p in [ea1, ea2, eb1, eb2] if p]
                 _selected = set(_filled)
-                _all_players = set(_pool)
                 _new_sitting = [p for p in _pool if p not in _selected]
                 if _new_sitting and all(_filled):
                     st.caption(f"Sitting out: {', '.join(_new_sitting)}")
@@ -1995,10 +1994,6 @@ def show_court(court: int) -> None:
                             st.error("All four player slots must be filled.")
                         elif len(_selected) < 4:
                             st.error("All four players must be different.")
-                        elif not _selected.issubset(_all_players):
-                            unknown = _selected - _all_players
-                            st.error(f"Unknown player(s): {', '.join(sorted(unknown))}. "
-                                     f"Use exact names from the list above.")
                         else:
                             new_state = copy.deepcopy(_get())
                             for _i, _g in enumerate(new_state["schedule"]):
