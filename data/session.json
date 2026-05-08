@@ -280,10 +280,12 @@
         "Neha"
       ],
       "team_b": [
-        "Kaushik",
+        "Shreya",
         "Rishu"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Kaushik"
+      ],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c3"
     },
