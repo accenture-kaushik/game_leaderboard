@@ -471,5 +471,28 @@
   },
   "special_instructions": "Shivani and Shreya must never be on the same team.\nKaushik must not be scheduled after 08:00.\nShivani should sit out at most 1 rounds.\nAvoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
   "session_active": true,
-  "critics_choice": null
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "Animesh",
+        "reason": "Animesh showcased exceptional efficiency, accumulating a remarkable +19 net score. His strategic play consistently delivered impressive points."
+      },
+      {
+        "rank": 2,
+        "name": "Neha",
+        "reason": "Neha's offensive prowess was undeniable, scoring an outstanding 49 points. Her consistent high-scoring rallies were a true highlight."
+      },
+      {
+        "rank": 3,
+        "name": "Kaushik",
+        "reason": "Kaushik delivered dominant performances, achieving an impressive +15 net score in his matches. His powerful play led to many standout rallies."
+      }
+    ],
+    "quips": [
+      "Three words for {name}: natural born winner.",
+      "Training? What training? This was pure {name}'s talent.",
+      "{name} was absolutely unbeatable today. Absolutely."
+    ]
+  }
 }
