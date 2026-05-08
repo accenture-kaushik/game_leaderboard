@@ -552,6 +552,101 @@
           "net_points": -8
         }
       ]
+    },
+    {
+      "timestamp": "2026-05-08 07:24:21 UTC",
+      "girl_names": [
+        "Neha",
+        "Piyusha",
+        "Shreya",
+        "Shivani"
+      ],
+      "players": [
+        {
+          "name": "AK",
+          "wins": 4,
+          "losses": 1,
+          "net_points": 10
+        },
+        {
+          "name": "Animesh",
+          "wins": 3,
+          "losses": 1,
+          "net_points": 19
+        },
+        {
+          "name": "Prashant",
+          "wins": 3,
+          "losses": 2,
+          "net_points": 13
+        },
+        {
+          "name": "Rishu",
+          "wins": 3,
+          "losses": 2,
+          "net_points": 11
+        },
+        {
+          "name": "Neha",
+          "wins": 3,
+          "losses": 2,
+          "net_points": 8
+        },
+        {
+          "name": "Leenav",
+          "wins": 3,
+          "losses": 2,
+          "net_points": 0
+        },
+        {
+          "name": "Aakar",
+          "wins": 3,
+          "losses": 2,
+          "net_points": -2
+        },
+        {
+          "name": "Kaushik",
+          "wins": 2,
+          "losses": 2,
+          "net_points": 15
+        },
+        {
+          "name": "Sandeep",
+          "wins": 2,
+          "losses": 2,
+          "net_points": 11
+        },
+        {
+          "name": "Piyusha",
+          "wins": 2,
+          "losses": 4,
+          "net_points": -8
+        },
+        {
+          "name": "Shivani",
+          "wins": 2,
+          "losses": 4,
+          "net_points": -22
+        },
+        {
+          "name": "Ayush",
+          "wins": 1,
+          "losses": 3,
+          "net_points": -21
+        },
+        {
+          "name": "Shreya",
+          "wins": 1,
+          "losses": 4,
+          "net_points": -26
+        },
+        {
+          "name": "Ak",
+          "wins": 0,
+          "losses": 1,
+          "net_points": -8
+        }
+      ]
     }
   ]
 }
