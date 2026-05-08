@@ -13,6 +13,7 @@ import copy
 import datetime
 import json
 import logging
+import math
 import os
 import threading
 from pathlib import Path
@@ -2265,14 +2266,31 @@ def show_all_time_leaderboard() -> None:
     def _rank_key(p: dict):
         return (_avg_pts(p), p.get("net_points", 0))
 
-    podium_players = sorted(active, key=_rank_key, reverse=True)[:3]
+    # Podium eligibility: player must have appeared in ALL of the last 5 sessions
+    def _parse_ts(e):
+        try:
+            return datetime.strptime(e["timestamp"], "%Y-%m-%d %H:%M:%S UTC")
+        except (KeyError, ValueError):
+            return datetime.min
+
+    _recent_n   = min(5, len(filtered))
+    _threshold  = max(1, math.ceil(0.6 * _recent_n))
+    _recent_sessions = sorted(filtered, key=_parse_ts, reverse=True)[:_recent_n]
+    _session_counts: dict = {}
+    for _sess in _recent_sessions:
+        for _pname in {p["name"] for p in _sess.get("players", [])}:
+            _session_counts[_pname] = _session_counts.get(_pname, 0) + 1
+    _recent_eligible = {name for name, cnt in _session_counts.items() if cnt >= _threshold}
+
+    podium_eligible = [p for p in active if p["name"] in _recent_eligible]
+    podium_players = sorted(podium_eligible, key=_rank_key, reverse=True)[:3]
 
     # ── Render podium ─────────────────────────────────────────────────────────
     st.markdown(
         '<div style="background:#F9A825;border-radius:10px;padding:0.75rem 1rem;'
         'text-align:center;font-size:1rem;font-weight:700;color:#1A1200;'
         'margin-bottom:0.75rem;letter-spacing:0.01em;">'
-        '🏆 All-Time Winner Podium (by avg points)</div>',
+        f'🏆 All-Time Winner Podium · active last {_recent_n} sessions</div>',
         unsafe_allow_html=True,
     )
 
