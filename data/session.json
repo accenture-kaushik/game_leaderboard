@@ -89,11 +89,11 @@
       "court": 3,
       "team_a": [
         "Animesh",
-        "Shreya"
+        "Shivani"
       ],
       "team_b": [
         "Piyusha",
-        "Shivani"
+        "Shreya"
       ],
       "sitting_out": [],
       "time_slot": "0\u201310 min",
@@ -249,9 +249,10 @@
       ],
       "team_b": [
         "Shivani",
-        "Shreya"
+        "Ak"
       ],
       "sitting_out": [
+        "Shreya",
         "AK"
       ],
       "time_slot": "40\u201350 min",
@@ -280,10 +281,12 @@
         "Neha"
       ],
       "team_b": [
-        "Kaushik",
+        "Shreya",
         "Rishu"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Kaushik"
+      ],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c3"
     },
@@ -375,9 +378,11 @@
       ],
       "team_b": [
         "Leenav",
+        "Piyusha"
+      ],
+      "sitting_out": [
         "Rishu"
       ],
-      "sitting_out": [],
       "time_slot": "60\u201370 min",
       "game_id": "r7_c3"
     }
@@ -390,7 +395,7 @@
     },
     "r2_c2": {
       "score_a": 11,
-      "score_b": 7,
+      "score_b": 8,
       "submitted": true
     },
     "r2_c3": {
@@ -437,9 +442,57 @@
       "score_a": 3,
       "score_b": 11,
       "submitted": true
+    },
+    "r5_c3": {
+      "score_a": 11,
+      "score_b": 9,
+      "submitted": true
+    },
+    "r7_c3": {
+      "score_a": 3,
+      "score_b": 11,
+      "submitted": true
+    },
+    "r5_c1": {
+      "score_a": 11,
+      "score_b": 3,
+      "submitted": true
+    },
+    "r4_c2": {
+      "score_a": 11,
+      "score_b": 9,
+      "submitted": true
+    },
+    "r1_c3": {
+      "score_a": 11,
+      "score_b": 4,
+      "submitted": true
     }
   },
   "special_instructions": "Shivani and Shreya must never be on the same team.\nKaushik must not be scheduled after 08:00.\nShivani should sit out at most 1 rounds.\nAvoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
   "session_active": true,
-  "critics_choice": null
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "Animesh",
+        "reason": "Animesh showcased exceptional efficiency, accumulating a remarkable +19 net score. His strategic play consistently delivered impressive points."
+      },
+      {
+        "rank": 2,
+        "name": "Neha",
+        "reason": "Neha's offensive prowess was undeniable, scoring an outstanding 49 points. Her consistent high-scoring rallies were a true highlight."
+      },
+      {
+        "rank": 3,
+        "name": "Kaushik",
+        "reason": "Kaushik delivered dominant performances, achieving an impressive +15 net score in his matches. His powerful play led to many standout rallies."
+      }
+    ],
+    "quips": [
+      "Three words for {name}: natural born winner.",
+      "Training? What training? This was pure {name}'s talent.",
+      "{name} was absolutely unbeatable today. Absolutely."
+    ]
+  }
 }
