@@ -440,23 +440,23 @@
       {
         "rank": 1,
         "name": "Ayush",
-        "reason": "Achieved a perfect record, demonstrating unparalleled consistency and skill throughout the tournament. His dominant point differential reflects exceptional performance in every match."
+        "reason": "His flawless record and dominant point differential showcase unparalleled consistency and strategic mastery. Ayush delivered a truly exceptional performance throughout the tournament."
       },
       {
         "rank": 2,
-        "name": "Sandeep",
-        "reason": "Showcased remarkable offensive prowess, scoring an impressive 60 points in highly competitive matches. His consistent effort led to many thrilling and closely contested rallies."
+        "name": "Rishu",
+        "reason": "Rishu demonstrated remarkable consistency and powerful play, securing many impressive victories. His strong net score reflects a consistently high level of performance."
       },
       {
         "rank": 3,
         "name": "Piyusha",
-        "reason": "Displayed incredible courage and determination, consistently scoring valuable points against formidable opponents. Her tenacious play and fighting spirit were truly inspiring."
+        "reason": "Piyusha displayed incredible bravery and determination, consistently scoring valuable points against tough opponents. Her fighting spirit and standout rallies were truly inspiring."
       }
     ],
     "quips": [
-      "The podium never looked this good without {name}.",
-      "The paddle was just an accessory. {name} didn't need it.",
-      "Nobody told {name} this was supposed to be hard."
+      "{name} warmed up and the other team got nervous.",
+      "{name} could have done better? Unlikely.",
+      "{name}'s footwork deserves its own highlight reel."
     ]
   }
 }
