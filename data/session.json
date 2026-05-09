@@ -440,23 +440,23 @@
       {
         "rank": 1,
         "name": "Ayush",
-        "reason": "Achieved a perfect record, showcasing unparalleled consistency and dominant play throughout the tournament. His exceptional skill and strategic brilliance led to an outstanding points differential."
+        "reason": "Ayush delivered an absolutely flawless performance, dominating every match with incredible skill. His consistent excellence and strategic play truly set him apart."
       },
       {
         "rank": 2,
         "name": "Rishu",
-        "reason": "Demonstrated remarkable consistency and powerful play, securing many impressive victories. His strong performance and high points scored highlight his significant impact on the court."
+        "reason": "Rishu demonstrated exceptional consistency and powerful play, securing many impressive victories. His strong net score highlights his ability to control games and deliver standout performances."
       },
       {
         "rank": 3,
         "name": "Piyusha",
-        "reason": "Displayed incredible courage and determination, consistently scoring valuable points against formidable opponents. Her fighting spirit and ability to contribute significantly were truly inspiring."
+        "reason": "Piyusha displayed remarkable courage and determination throughout the tournament. She consistently fought hard, securing valuable points and showcasing impressive rallies."
       }
     ],
     "quips": [
-      "You owe the team 7 beers for that finish, {name}.",
-      "{name} came here to have fun and accidentally won everything.",
-      "{name} didn't just play \u2014 {name} performed."
+      "{name}, we didn't see that coming. Neither did the ball.",
+      "{name} played every point like it was the last biscuit on the plate.",
+      "The rally that never ended \u2014 except it did, in {name}'s favour."
     ]
   }
 }
