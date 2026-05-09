@@ -5,9 +5,9 @@
     "Aakar",
     "Lenaav",
     "Ayush",
-    "Animesh",
+    "Rishu",
     "Mayank",
-    "Chetan",
+    "Sandeep",
     "Neha",
     "Piyusha",
     "Shreya",
@@ -25,9 +25,9 @@
     "Aakar": "intermediate",
     "Lenaav": "intermediate",
     "Ayush": "intermediate",
-    "Animesh": "intermediate",
+    "Rishu": "intermediate",
     "Mayank": "intermediate",
-    "Chetan": "intermediate",
+    "Sandeep": "intermediate",
     "Neha": "intermediate",
     "Piyusha": "intermediate",
     "Shreya": "intermediate",
@@ -55,11 +55,11 @@
       "court": 1,
       "team_a": [
         "Prashant",
-        "Kaushik"
+        "Neha"
       ],
       "team_b": [
-        "Aakar",
-        "Lenaav"
+        "Kaushik",
+        "Piyusha"
       ],
       "sitting_out": [],
       "time_slot": "09:00\u201309:15",
@@ -69,12 +69,12 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Ayush",
-        "Neha"
+        "Aakar",
+        "Shreya"
       ],
       "team_b": [
-        "Animesh",
-        "Piyusha"
+        "Lenaav",
+        "Shivani"
       ],
       "sitting_out": [],
       "time_slot": "09:00\u201309:15",
@@ -84,12 +84,12 @@
       "round": 1,
       "court": 3,
       "team_a": [
-        "Mayank",
-        "Shreya"
+        "Ayush",
+        "Rishu"
       ],
       "team_b": [
-        "Chetan",
-        "Shivani"
+        "Mayank",
+        "Sandeep"
       ],
       "sitting_out": [],
       "time_slot": "09:00\u201309:15",
@@ -100,11 +100,11 @@
       "court": 1,
       "team_a": [
         "Ayush",
-        "Animesh"
+        "Neha"
       ],
       "team_b": [
-        "Mayank",
-        "Chetan"
+        "Rishu",
+        "Piyusha"
       ],
       "sitting_out": [],
       "time_slot": "09:15\u201309:30",
@@ -114,12 +114,12 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Prashant",
-        "Neha"
+        "Mayank",
+        "Shreya"
       ],
       "team_b": [
-        "Kaushik",
-        "Piyusha"
+        "Sandeep",
+        "Shivani"
       ],
       "sitting_out": [],
       "time_slot": "09:15\u201309:30",
@@ -129,12 +129,12 @@
       "round": 2,
       "court": 3,
       "team_a": [
-        "Aakar",
-        "Shreya"
+        "Prashant",
+        "Aakar"
       ],
       "team_b": [
-        "Lenaav",
-        "Shivani"
+        "Kaushik",
+        "Lenaav"
       ],
       "sitting_out": [],
       "time_slot": "09:15\u201309:30",
@@ -144,12 +144,12 @@
       "round": 3,
       "court": 1,
       "team_a": [
-        "Prashant",
-        "Mayank"
+        "Kaushik",
+        "Neha"
       ],
       "team_b": [
-        "Kaushik",
-        "Chetan"
+        "Prashant",
+        "Piyusha"
       ],
       "sitting_out": [],
       "time_slot": "09:30\u201309:45",
@@ -159,12 +159,12 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Aakar",
-        "Neha"
+        "Lenaav",
+        "Shreya"
       ],
       "team_b": [
-        "Lenaav",
-        "Piyusha"
+        "Aakar",
+        "Shivani"
       ],
       "sitting_out": [],
       "time_slot": "09:30\u201309:45",
@@ -175,11 +175,11 @@
       "court": 3,
       "team_a": [
         "Ayush",
-        "Shreya"
+        "Mayank"
       ],
       "team_b": [
-        "Animesh",
-        "Shivani"
+        "Rishu",
+        "Sandeep"
       ],
       "sitting_out": [],
       "time_slot": "09:30\u201309:45",
@@ -189,12 +189,12 @@
       "round": 4,
       "court": 1,
       "team_a": [
-        "Aakar",
-        "Ayush"
+        "Rishu",
+        "Neha"
       ],
       "team_b": [
-        "Lenaav",
-        "Animesh"
+        "Ayush",
+        "Piyusha"
       ],
       "sitting_out": [],
       "time_slot": "09:45\u201310:00",
@@ -204,12 +204,12 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Prashant",
-        "Piyusha"
+        "Sandeep",
+        "Shreya"
       ],
       "team_b": [
-        "Kaushik",
-        "Shreya"
+        "Mayank",
+        "Shivani"
       ],
       "sitting_out": [],
       "time_slot": "09:45\u201310:00",
@@ -219,12 +219,12 @@
       "round": 4,
       "court": 3,
       "team_a": [
-        "Mayank",
-        "Shivani"
+        "Prashant",
+        "Lenaav"
       ],
       "team_b": [
-        "Chetan",
-        "Neha"
+        "Kaushik",
+        "Aakar"
       ],
       "sitting_out": [],
       "time_slot": "09:45\u201310:00",
@@ -234,12 +234,12 @@
       "round": 5,
       "court": 1,
       "team_a": [
-        "Prashant",
-        "Aakar"
+        "Aakar",
+        "Neha"
       ],
       "team_b": [
         "Lenaav",
-        "Chetan"
+        "Piyusha"
       ],
       "sitting_out": [],
       "time_slot": "10:00\u201310:15",
@@ -249,12 +249,12 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Kaushik",
-        "Neha"
+        "Prashant",
+        "Shreya"
       ],
       "team_b": [
-        "Mayank",
-        "Piyusha"
+        "Kaushik",
+        "Shivani"
       ],
       "sitting_out": [],
       "time_slot": "10:00\u201310:15",
@@ -264,12 +264,12 @@
       "round": 5,
       "court": 3,
       "team_a": [
-        "Animesh",
-        "Shreya"
+        "Ayush",
+        "Sandeep"
       ],
       "team_b": [
-        "Ayush",
-        "Shivani"
+        "Rishu",
+        "Mayank"
       ],
       "sitting_out": [],
       "time_slot": "10:00\u201310:15",
@@ -279,12 +279,12 @@
       "round": 6,
       "court": 1,
       "team_a": [
-        "Prashant",
-        "Animesh"
+        "Mayank",
+        "Neha"
       ],
       "team_b": [
-        "Aakar",
-        "Chetan"
+        "Sandeep",
+        "Piyusha"
       ],
       "sitting_out": [],
       "time_slot": "10:15\u201310:30",
@@ -294,12 +294,12 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Mayank",
-        "Neha"
+        "Ayush",
+        "Shreya"
       ],
       "team_b": [
-        "Ayush",
-        "Piyusha"
+        "Rishu",
+        "Shivani"
       ],
       "sitting_out": [],
       "time_slot": "10:15\u201310:30",
@@ -309,12 +309,12 @@
       "round": 6,
       "court": 3,
       "team_a": [
-        "Lenaav",
-        "Shreya"
+        "Prashant",
+        "Kaushik"
       ],
       "team_b": [
-        "Kaushik",
-        "Shivani"
+        "Aakar",
+        "Lenaav"
       ],
       "sitting_out": [],
       "time_slot": "10:15\u201310:30",
@@ -324,12 +324,12 @@
       "round": 7,
       "court": 1,
       "team_a": [
-        "Kaushik",
-        "Lenaav"
+        "Lenaav",
+        "Neha"
       ],
       "team_b": [
-        "Ayush",
-        "Mayank"
+        "Aakar",
+        "Piyusha"
       ],
       "sitting_out": [],
       "time_slot": "10:30\u201310:45",
@@ -339,12 +339,12 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Animesh",
-        "Neha"
+        "Kaushik",
+        "Shreya"
       ],
       "team_b": [
-        "Chetan",
-        "Piyusha"
+        "Prashant",
+        "Shivani"
       ],
       "sitting_out": [],
       "time_slot": "10:30\u201310:45",
@@ -354,12 +354,12 @@
       "round": 7,
       "court": 3,
       "team_a": [
-        "Prashant",
-        "Shreya"
+        "Ayush",
+        "Rishu"
       ],
       "team_b": [
-        "Aakar",
-        "Shivani"
+        "Mayank",
+        "Sandeep"
       ],
       "sitting_out": [],
       "time_slot": "10:30\u201310:45",
@@ -369,12 +369,12 @@
       "round": 8,
       "court": 1,
       "team_a": [
-        "Kaushik",
-        "Mayank"
+        "Sandeep",
+        "Neha"
       ],
       "team_b": [
-        "Ayush",
-        "Animesh"
+        "Mayank",
+        "Piyusha"
       ],
       "sitting_out": [],
       "time_slot": "10:45\u201311:00",
@@ -384,12 +384,12 @@
       "round": 8,
       "court": 2,
       "team_a": [
-        "Lenaav",
-        "Neha"
+        "Rishu",
+        "Shreya"
       ],
       "team_b": [
-        "Aakar",
-        "Piyusha"
+        "Ayush",
+        "Shivani"
       ],
       "sitting_out": [],
       "time_slot": "10:45\u201311:00",
@@ -399,12 +399,12 @@
       "round": 8,
       "court": 3,
       "team_a": [
-        "Chetan",
-        "Shreya"
+        "Prashant",
+        "Aakar"
       ],
       "team_b": [
-        "Prashant",
-        "Shivani"
+        "Kaushik",
+        "Lenaav"
       ],
       "sitting_out": [],
       "time_slot": "10:45\u201311:00",
@@ -533,6 +533,6 @@
       "submitted": false
     }
   },
-  "special_instructions": "Shivani should sit out at most 1 rounds.\nMayank should sit out at most 1 rounds.\nShivani should sit out at most 1 rounds.\nMayank should sit out at most 1 rounds.\nTeams should be [boy + boy] playing against [boy + boy] (all boys doubles match) or it can be [boy + girl] playing against [boy + girl] (mixed doubles match). Make unique partner pairs as much as possible. Team should never be [girl + girl].\nReduce players facing the same opponent team as much as possible.",
+  "special_instructions": "Shivani should sit out at most 1 rounds.\nMayank should sit out at most 1 rounds.\nShivani should sit out at most 1 rounds.\nMayank should sit out at most 1 rounds.\nTeams should be [boy + boy] playing against [boy + boy] (all boys doubles match) or it can be [boy + girl] playing against [boy + girl] (mixed doubles match). Team should never be [girl+girl].\nMake unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
   "session_active": true
 }
