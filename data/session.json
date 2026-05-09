@@ -440,23 +440,23 @@
       {
         "rank": 1,
         "name": "Ayush",
-        "reason": "Ayush delivered an absolutely flawless performance, dominating every match with exceptional skill. His consistent high scoring and strategic play were truly remarkable."
+        "reason": "Achieved a perfect record, demonstrating unparalleled consistency and skill throughout the tournament. His dominant point differential reflects exceptional performance in every match."
       },
       {
         "rank": 2,
-        "name": "Rishu",
-        "reason": "Rishu showcased incredible consistency and powerful play throughout the tournament. His impressive point differential highlights his strong offensive and defensive capabilities."
+        "name": "Sandeep",
+        "reason": "Showcased remarkable offensive prowess, scoring an impressive 60 points in highly competitive matches. His consistent effort led to many thrilling and closely contested rallies."
       },
       {
         "rank": 3,
         "name": "Piyusha",
-        "reason": "Piyusha displayed immense courage and fighting spirit, consistently scoring valuable points against tough opponents. Her determination and standout rallies were truly inspiring."
+        "reason": "Displayed incredible courage and determination, consistently scoring valuable points against formidable opponents. Her tenacious play and fighting spirit were truly inspiring."
       }
     ],
     "quips": [
-      "If there were bonus points for style, {name} would have won twice.",
-      "Best smash of the day \u2014 and {name} knows it.",
-      "If this were a movie, {name} would be the main character."
+      "The podium never looked this good without {name}.",
+      "The paddle was just an accessory. {name} didn't need it.",
+      "Nobody told {name} this was supposed to be hard."
     ]
   }
 }
