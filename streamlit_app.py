@@ -278,12 +278,10 @@ def _get() -> dict:
 
 
 def _put(state: dict) -> None:
-    """Update shared state, persist to GitHub and local file."""
+    """Update shared state, persist to local file (sync) and GitHub (background)."""
     with _file_lock:
         _box()["s"] = state
-        # GitHub (primary — survives restarts / redeploys)
-        _github_save(state)
-        # Local file (fast fallback)
+        # Local file — fast, written synchronously so it's always current
         try:
             d = _data_dir()
             d.mkdir(parents=True, exist_ok=True)
@@ -293,6 +291,8 @@ def _put(state: dict) -> None:
             tmp.replace(_data_file())
         except Exception as e:
             logging.warning("Could not persist state locally: %s", e)
+    # GitHub — survives restarts/redeploys; run in background so _put() returns instantly
+    threading.Thread(target=_github_save, args=(state,), daemon=True).start()
 
 
 # ===========================================================================
