@@ -1417,22 +1417,25 @@ def show_setup() -> None:
 
         # ── Upload schedule — always visible ─────────────────────────────────
         _has_schedule = bool(state.get("schedule"))
-        with st.expander("📤 Upload Schedule (Excel)", expanded=not _has_schedule):
+        with st.expander("📤 Upload Schedule (Excel / CSV)", expanded=not _has_schedule):
             st.caption(
-                "Upload an Excel file to set the tournament schedule. "
+                "Upload an Excel (.xlsx) or CSV file to set the tournament schedule. "
                 + ("Download the current schedule above to use as a template, edit offline, then re-upload."
                    if _has_schedule else
-                   "Use the Excel template format: Round, Court, Team A Player 1, Team A Player 2, "
-                   "Team B Player 1, Team B Player 2, Sitting Out.")
+                   "Columns required: Game, Round, Court, Team A (use 'P1 & P2'), "
+                   "Team B (use 'P1 & P2'), Score A, Score B, Sitting Out. "
+                   "iOS users: export from Numbers or Google Sheets as CSV.")
             )
             uploaded_xl = st.file_uploader(
-                "Choose Excel file",
-                type=["xlsx"],
+                "Choose Excel or CSV file",
+                type=["xlsx", "csv"],
                 key="schedule_upload",
                 label_visibility="collapsed",
             )
             if uploaded_xl is not None:
-                parsed_sched, parsed_scores, parse_err = _parse_uploaded_xlsx(uploaded_xl.read())
+                parsed_sched, parsed_scores, parse_err = _parse_uploaded_xlsx(
+                    uploaded_xl.read(), filename=uploaded_xl.name
+                )
                 if parse_err:
                     st.error(parse_err)
                 else:
@@ -1616,8 +1619,8 @@ def _build_docx(schedule: List[dict], scores: dict = None) -> bytes:
     return buf.getvalue()
 
 
-def _parse_uploaded_xlsx(file_bytes: bytes):
-    """Parse an uploaded schedule Excel into (schedule, scores, error_string).
+def _parse_uploaded_xlsx(file_bytes: bytes, filename: str = ""):
+    """Parse an uploaded schedule (Excel or CSV) into (schedule, scores, error_string).
 
     Expects the same columns produced by _build_xlsx:
       Game, Court, Team A, Score A, Team B, Score B, Sitting Out
@@ -1637,11 +1640,15 @@ def _parse_uploaded_xlsx(file_bytes: bytes):
             pass
         return str(val).strip()
 
+    is_csv = filename.lower().endswith(".csv")
     try:
-        try:
-            df = pd.read_excel(io.BytesIO(file_bytes), sheet_name="Schedule")
-        except Exception:
-            df = pd.read_excel(io.BytesIO(file_bytes))
+        if is_csv:
+            df = pd.read_csv(io.BytesIO(file_bytes), encoding="utf-8", dtype=str)
+        else:
+            try:
+                df = pd.read_excel(io.BytesIO(file_bytes), sheet_name="Schedule")
+            except Exception:
+                df = pd.read_excel(io.BytesIO(file_bytes))
     except Exception as exc:
         return None, None, f"Could not read file: {exc}"
 
