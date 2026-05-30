@@ -163,11 +163,11 @@
       "court": 2,
       "team_a": [
         "Prashant",
-        "Shreya"
+        "Mayank"
       ],
       "team_b": [
         "Aakar",
-        "Mayank"
+        "Shreya"
       ],
       "sitting_out": [
         "Leenav"
@@ -218,7 +218,7 @@
       ],
       "team_b": [
         "Sandeep",
-        "Piyusha"
+        "Shreya"
       ],
       "sitting_out": [
         "Mayank"
@@ -231,7 +231,7 @@
       "court": 2,
       "team_a": [
         "Leenav",
-        "Shreya"
+        "Piyusha"
       ],
       "team_b": [
         "Aakar",
@@ -252,7 +252,7 @@
       ],
       "team_b": [
         "Aakar",
-        "Shreya"
+        "Leenav"
       ],
       "sitting_out": [
         "Prashant"
@@ -269,7 +269,7 @@
       ],
       "team_b": [
         "Sanay",
-        "Leenav"
+        "Shreya"
       ],
       "sitting_out": [
         "Prashant"
@@ -282,7 +282,7 @@
       "court": 1,
       "team_a": [
         "Sandeep",
-        "Shreya"
+        "Mayank"
       ],
       "team_b": [
         "Leenav",
@@ -302,7 +302,7 @@
         "Piyusha"
       ],
       "team_b": [
-        "Mayank",
+        "Shreya",
         "Sanay"
       ],
       "sitting_out": [
@@ -320,7 +320,7 @@
       ],
       "team_b": [
         "Mayank",
-        "Piyusha"
+        "Shreya"
       ],
       "sitting_out": [
         "Sandeep"
@@ -333,11 +333,11 @@
       "court": 2,
       "team_a": [
         "Prashant",
-        "Leenav"
+        "Piyusha"
       ],
       "team_b": [
-        "Sanay",
-        "Shreya"
+        "Leenav",
+        "Sanay"
       ],
       "sitting_out": [
         "Sandeep"
@@ -350,11 +350,11 @@
       "court": 1,
       "team_a": [
         "Prashant",
-        "Aakar"
+        "Shreya"
       ],
       "team_b": [
-        "Leenav",
-        "Piyusha"
+        "Sandeep",
+        "Leenav"
       ],
       "sitting_out": [
         "Neha"
@@ -366,11 +366,11 @@
       "round": 10,
       "court": 2,
       "team_a": [
-        "Sandeep",
-        "Shreya"
+        "Mayank",
+        "Piyusha"
       ],
       "team_b": [
-        "Mayank",
+        "Aakar",
         "Sanay"
       ],
       "sitting_out": [
@@ -482,6 +482,6 @@
       "submitted": false
     }
   },
-  "special_instructions": "Avoid a team with 2 girls. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
+  "special_instructions": "Avoid a team with 2 girls. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible. Make sure everyone get to rest 1 time ",
   "session_active": true
 }
