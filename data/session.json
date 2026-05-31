@@ -477,9 +477,9 @@
       "submitted": true
     },
     "r10_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 11,
+      "score_b": 7,
+      "submitted": true
     }
   },
   "special_instructions": "Avoid a team with 2 girls. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible. Make sure everyone get to rest 1 time. And Mayank to rest 2 times ",
