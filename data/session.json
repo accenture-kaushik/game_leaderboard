@@ -407,9 +407,9 @@
       "submitted": true
     },
     "r3_c2": {
-      "score_a": null,
-      "score_b": null,
-      "submitted": false
+      "score_a": 7,
+      "score_b": 11,
+      "submitted": true
     },
     "r4_c1": {
       "score_a": 6,
