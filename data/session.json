@@ -483,5 +483,29 @@
     }
   },
   "special_instructions": "Avoid a team with 2 girls. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible. Make sure everyone get to rest 1 time. And Mayank to rest 2 times ",
-  "session_active": true
+  "session_active": true,
+  "critics_choice": {
+    "picks": [
+      {
+        "rank": 1,
+        "name": "Sandeep",
+        "reason": "Sandeep consistently delivered powerful performances, scoring an impressive 64 points. His exceptional offensive play and standout rallies were a highlight of the tournament."
+      },
+      {
+        "rank": 2,
+        "name": "Neha",
+        "reason": "Neha displayed incredible courage and skill, accumulating an outstanding 58 points. Her consistent scoring and tenacious play against all opponents were truly inspiring."
+      },
+      {
+        "rank": 3,
+        "name": "Piyusha",
+        "reason": "Piyusha showcased remarkable consistency and bravery throughout her matches, scoring 52 points. Her ability to maintain close scorelines against tough competition was truly impressive."
+      }
+    ],
+    "quips": [
+      "{name} was officially too good to be invited back next time.",
+      "{name}, you are officially banned from this group.",
+      "{name}'s footwork deserves its own highlight reel."
+    ]
+  }
 }
