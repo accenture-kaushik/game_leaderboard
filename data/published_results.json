@@ -730,6 +730,63 @@
           "net_points": -41
         }
       ]
+    },
+    {
+      "timestamp": "2026-06-18 04:49:54 UTC",
+      "girl_names": [
+        "Neha",
+        "Piyusha"
+      ],
+      "players": [
+        {
+          "name": "Kaushik",
+          "wins": 4,
+          "losses": 1,
+          "net_points": 10
+        },
+        {
+          "name": "Animesh",
+          "wins": 3,
+          "losses": 2,
+          "net_points": 17
+        },
+        {
+          "name": "Aakar",
+          "wins": 3,
+          "losses": 2,
+          "net_points": -6
+        },
+        {
+          "name": "Piyusha",
+          "wins": 3,
+          "losses": 2,
+          "net_points": -9
+        },
+        {
+          "name": "Ayush",
+          "wins": 2,
+          "losses": 3,
+          "net_points": 1
+        },
+        {
+          "name": "Leenav",
+          "wins": 2,
+          "losses": 3,
+          "net_points": 0
+        },
+        {
+          "name": "AK",
+          "wins": 2,
+          "losses": 3,
+          "net_points": -5
+        },
+        {
+          "name": "Neha",
+          "wins": 1,
+          "losses": 4,
+          "net_points": -8
+        }
+      ]
     }
   ]
 }
