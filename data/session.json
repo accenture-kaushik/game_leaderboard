@@ -196,7 +196,13 @@
       "game_id": "r6_c2"
     }
   ],
-  "scores": {},
+  "scores": {
+    "r1_c1": {
+      "score_a": 7,
+      "score_b": 11,
+      "submitted": true
+    }
+  },
   "session_active": true,
   "critics_choice": null,
   "num_courts": 2
