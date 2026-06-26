@@ -25,14 +25,14 @@
       "court": 2,
       "team_a": [
         "Sandeep",
-        "Mayank"
-      ],
-      "team_b": [
-        "Kaushik",
         "Ayush"
       ],
+      "team_b": [
+        "Aakar",
+        "Mayank"
+      ],
       "sitting_out": [
-        "Aakar"
+        "Kaushik"
       ],
       "time_slot": "0\u201310 min",
       "game_id": "r1_c2"
@@ -199,11 +199,6 @@
     }
   ],
   "scores": {
-    "r1_c2": {
-      "score_a": 11,
-      "score_b": 5,
-      "submitted": true
-    },
     "r1_c1": {
       "score_a": 11,
       "score_b": 4,
