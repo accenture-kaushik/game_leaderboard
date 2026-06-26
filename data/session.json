@@ -203,6 +203,11 @@
       "score_a": 7,
       "score_b": 11,
       "submitted": true
+    },
+    "r1_c2": {
+      "score_a": 11,
+      "score_b": 5,
+      "submitted": true
     }
   },
   "session_active": true,
