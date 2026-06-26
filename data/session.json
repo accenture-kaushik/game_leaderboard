@@ -24,14 +24,16 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Aakar",
+        "Sandeep",
         "Mayank"
       ],
       "team_b": [
-        "Ayush",
-        "Sandeep"
+        "Kaushik",
+        "Ayush"
       ],
-      "sitting_out": [],
+      "sitting_out": [
+        "Aakar"
+      ],
       "time_slot": "0\u201310 min",
       "game_id": "r1_c2"
     },
