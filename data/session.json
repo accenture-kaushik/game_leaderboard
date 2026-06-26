@@ -138,13 +138,14 @@
       "court": 1,
       "team_a": [
         "Ayush",
-        "Sandeep"
+        "Kaushik"
       ],
       "team_b": [
-        "Kaushik",
-        "Shreya"
+        "Mayank",
+        "Sandeep"
       ],
       "sitting_out": [
+        "Shreya",
         "Neha"
       ],
       "time_slot": "40\u201350 min",
