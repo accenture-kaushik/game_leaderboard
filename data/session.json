@@ -6,15 +6,16 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "Kaushik",
-        "Piyusha"
+        "Shreya",
+        "Aakar"
       ],
       "team_b": [
         "Neha",
         "Vasu"
       ],
       "sitting_out": [
-        "Shreya"
+        "Kaushik",
+        "Piyusha"
       ],
       "time_slot": "0\u201310 min",
       "game_id": "r1_c1"
