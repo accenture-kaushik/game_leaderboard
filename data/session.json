@@ -155,14 +155,17 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Aakar",
+        "Neha",
         "Vasu"
       ],
       "team_b": [
+        "Aakar",
+        "Shreya"
+      ],
+      "sitting_out": [
         "Mayank",
         "Piyusha"
       ],
-      "sitting_out": [],
       "time_slot": "40\u201350 min",
       "game_id": "r5_c2"
     },
