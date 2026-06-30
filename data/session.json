@@ -1,8 +1,190 @@
 {
   "players": [],
   "skill_levels": {},
-  "schedule": [],
+  "schedule": [
+    {
+      "round": 1,
+      "court": 1,
+      "team_a": [
+        "Neha",
+        "Sandeep"
+      ],
+      "team_b": [
+        "Aakar",
+        "Piyusha"
+      ],
+      "sitting_out": [],
+      "time_slot": "0\u201310 min",
+      "game_id": "r1_c1"
+    },
+    {
+      "round": 1,
+      "court": 2,
+      "team_a": [
+        "Kaushik",
+        "Shreya"
+      ],
+      "team_b": [
+        "Adwait",
+        "Vasu"
+      ],
+      "sitting_out": [],
+      "time_slot": "0\u201310 min",
+      "game_id": "r1_c2"
+    },
+    {
+      "round": 2,
+      "court": 1,
+      "team_a": [
+        "Aakar",
+        "Sandeep"
+      ],
+      "team_b": [
+        "Shreya",
+        "Vasu"
+      ],
+      "sitting_out": [],
+      "time_slot": "10\u201320 min",
+      "game_id": "r2_c1"
+    },
+    {
+      "round": 2,
+      "court": 2,
+      "team_a": [
+        "Kaushik",
+        "Neha"
+      ],
+      "team_b": [
+        "Adwait",
+        "Piyusha"
+      ],
+      "sitting_out": [],
+      "time_slot": "10\u201320 min",
+      "game_id": "r2_c2"
+    },
+    {
+      "round": 3,
+      "court": 1,
+      "team_a": [
+        "Sandeep",
+        "Vasu"
+      ],
+      "team_b": [
+        "Adwait",
+        "Neha"
+      ],
+      "sitting_out": [],
+      "time_slot": "20\u201330 min",
+      "game_id": "r3_c1"
+    },
+    {
+      "round": 3,
+      "court": 2,
+      "team_a": [
+        "Kaushik",
+        "Piyusha"
+      ],
+      "team_b": [
+        "Aakar",
+        "Shreya"
+      ],
+      "sitting_out": [],
+      "time_slot": "20\u201330 min",
+      "game_id": "r3_c2"
+    },
+    {
+      "round": 4,
+      "court": 1,
+      "team_a": [
+        "Sandeep",
+        "Shreya"
+      ],
+      "team_b": [
+        "Kaushik",
+        "Neha"
+      ],
+      "sitting_out": [],
+      "time_slot": "30\u201340 min",
+      "game_id": "r4_c1"
+    },
+    {
+      "round": 4,
+      "court": 2,
+      "team_a": [
+        "Aakar",
+        "Adwait"
+      ],
+      "team_b": [
+        "Piyusha",
+        "Vasu"
+      ],
+      "sitting_out": [],
+      "time_slot": "30\u201340 min",
+      "game_id": "r4_c2"
+    },
+    {
+      "round": 5,
+      "court": 1,
+      "team_a": [
+        "Piyusha",
+        "Sandeep"
+      ],
+      "team_b": [
+        "Kaushik",
+        "Vasu"
+      ],
+      "sitting_out": [],
+      "time_slot": "40\u201350 min",
+      "game_id": "r5_c1"
+    },
+    {
+      "round": 5,
+      "court": 2,
+      "team_a": [
+        "Aakar",
+        "Neha"
+      ],
+      "team_b": [
+        "Adwait",
+        "Shreya"
+      ],
+      "sitting_out": [],
+      "time_slot": "40\u201350 min",
+      "game_id": "r5_c2"
+    },
+    {
+      "round": 6,
+      "court": 1,
+      "team_a": [
+        "Piyusha",
+        "Sandeep"
+      ],
+      "team_b": [
+        "Adwait",
+        "Shreya"
+      ],
+      "sitting_out": [],
+      "time_slot": "50\u201360 min",
+      "game_id": "r6_c1"
+    },
+    {
+      "round": 6,
+      "court": 2,
+      "team_a": [
+        "Aakar",
+        "Kaushik"
+      ],
+      "team_b": [
+        "Neha",
+        "Vasu"
+      ],
+      "sitting_out": [],
+      "time_slot": "50\u201360 min",
+      "game_id": "r6_c2"
+    }
+  ],
   "scores": {},
-  "session_active": false,
-  "critics_choice": null
+  "session_active": true,
+  "critics_choice": null,
+  "num_courts": 2
 }
