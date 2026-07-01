@@ -162,15 +162,15 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Shreya",
+        "Ayush",
         "Vasu"
       ],
       "team_b": [
-        "Ayush",
+        "Kaushik",
         "Sandeep"
       ],
       "sitting_out": [
-        "Kaushik"
+        "Shreya"
       ],
       "time_slot": "08:15\u201308:30",
       "game_id": "r4_c2"
