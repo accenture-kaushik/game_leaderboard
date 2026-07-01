@@ -214,13 +214,14 @@
       "court": 1,
       "team_a": [
         "Neha",
-        "Adwit"
+        "Ayush"
       ],
       "team_b": [
         "Piyusha",
-        "Kaushik"
+        "Adwit"
       ],
       "sitting_out": [
+        "Kaushik",
         "Sandeep"
       ],
       "time_slot": "08:45\u201309:00",
