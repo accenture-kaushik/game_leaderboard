@@ -1,11 +1,11 @@
 {
   "players": [
-    "Adwait",
-    "Prashant",
-    "Vasu",
-    "Aakar",
-    "Kid",
-    "Saurav",
+    "Boy 1",
+    "Boy 2",
+    "Boy 3",
+    "Boy 4",
+    "Boy 5",
+    "Boy 6",
     "Neha",
     "Piyusha"
   ],
@@ -14,12 +14,12 @@
     "Piyusha"
   ],
   "skill_levels": {
-    "Adwait": "intermediate",
-    "Prashant": "intermediate",
-    "Vasu": "intermediate",
-    "Aakar": "intermediate",
-    "Kid": "intermediate",
-    "Saurav": "intermediate",
+    "Boy 1": "intermediate",
+    "Boy 2": "intermediate",
+    "Boy 3": "intermediate",
+    "Boy 4": "intermediate",
+    "Boy 5": "intermediate",
+    "Boy 6": "intermediate",
     "Neha": "intermediate",
     "Piyusha": "intermediate"
   },
@@ -40,12 +40,12 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "Adwait",
-        "Neha"
+        "Neha",
+        "Boy 1"
       ],
       "team_b": [
-        "Vasu",
-        "Aakar"
+        "Piyusha",
+        "Boy 2"
       ],
       "sitting_out": [],
       "time_slot": "07:00\u201307:12",
@@ -55,12 +55,12 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Prashant",
-        "Piyusha"
+        "Boy 3",
+        "Boy 4"
       ],
       "team_b": [
-        "Kid",
-        "Saurav"
+        "Boy 5",
+        "Boy 6"
       ],
       "sitting_out": [],
       "time_slot": "07:00\u201307:12",
@@ -70,12 +70,12 @@
       "round": 2,
       "court": 1,
       "team_a": [
-        "Prashant",
-        "Neha"
+        "Neha",
+        "Boy 3"
       ],
       "team_b": [
-        "Adwait",
-        "Kid"
+        "Boy 1",
+        "Boy 5"
       ],
       "sitting_out": [],
       "time_slot": "07:12\u201307:24",
@@ -85,12 +85,12 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Vasu",
-        "Piyusha"
+        "Piyusha",
+        "Boy 4"
       ],
       "team_b": [
-        "Aakar",
-        "Saurav"
+        "Boy 2",
+        "Boy 6"
       ],
       "sitting_out": [],
       "time_slot": "07:12\u201307:24",
@@ -100,12 +100,12 @@
       "round": 3,
       "court": 1,
       "team_a": [
-        "Vasu",
-        "Neha"
+        "Neha",
+        "Boy 5"
       ],
       "team_b": [
-        "Adwait",
-        "Saurav"
+        "Boy 2",
+        "Boy 4"
       ],
       "sitting_out": [],
       "time_slot": "07:24\u201307:36",
@@ -115,12 +115,12 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Aakar",
-        "Piyusha"
+        "Piyusha",
+        "Boy 6"
       ],
       "team_b": [
-        "Prashant",
-        "Kid"
+        "Boy 1",
+        "Boy 3"
       ],
       "sitting_out": [],
       "time_slot": "07:24\u201307:36",
@@ -130,12 +130,12 @@
       "round": 4,
       "court": 1,
       "team_a": [
-        "Aakar",
-        "Neha"
+        "Neha",
+        "Boy 2"
       ],
       "team_b": [
-        "Adwait",
-        "Vasu"
+        "Boy 3",
+        "Boy 6"
       ],
       "sitting_out": [],
       "time_slot": "07:36\u201307:48",
@@ -145,12 +145,12 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Kid",
-        "Piyusha"
+        "Piyusha",
+        "Boy 1"
       ],
       "team_b": [
-        "Prashant",
-        "Saurav"
+        "Boy 4",
+        "Boy 5"
       ],
       "sitting_out": [],
       "time_slot": "07:36\u201307:48",
@@ -160,12 +160,12 @@
       "round": 5,
       "court": 1,
       "team_a": [
-        "Kid",
-        "Neha"
+        "Neha",
+        "Boy 4"
       ],
       "team_b": [
-        "Adwait",
-        "Aakar"
+        "Boy 1",
+        "Boy 6"
       ],
       "sitting_out": [],
       "time_slot": "07:48\u201308:00",
@@ -175,12 +175,12 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Saurav",
-        "Piyusha"
+        "Piyusha",
+        "Boy 3"
       ],
       "team_b": [
-        "Prashant",
-        "Vasu"
+        "Boy 2",
+        "Boy 5"
       ],
       "sitting_out": [],
       "time_slot": "07:48\u201308:00",
@@ -190,12 +190,12 @@
       "round": 6,
       "court": 1,
       "team_a": [
-        "Saurav",
-        "Neha"
+        "Neha",
+        "Boy 6"
       ],
       "team_b": [
-        "Prashant",
-        "Aakar"
+        "Boy 2",
+        "Boy 3"
       ],
       "sitting_out": [],
       "time_slot": "08:00\u201308:12",
@@ -205,12 +205,12 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Adwait",
-        "Piyusha"
+        "Piyusha",
+        "Boy 5"
       ],
       "team_b": [
-        "Vasu",
-        "Kid"
+        "Boy 1",
+        "Boy 4"
       ],
       "sitting_out": [],
       "time_slot": "08:00\u201308:12",
@@ -220,12 +220,12 @@
       "round": 7,
       "court": 1,
       "team_a": [
-        "Adwait",
-        "Neha"
+        "Neha",
+        "Boy 1"
       ],
       "team_b": [
-        "Vasu",
-        "Saurav"
+        "Piyusha",
+        "Boy 2"
       ],
       "sitting_out": [],
       "time_slot": "08:12\u201308:24",
@@ -235,12 +235,12 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Prashant",
-        "Piyusha"
+        "Boy 3",
+        "Boy 5"
       ],
       "team_b": [
-        "Aakar",
-        "Kid"
+        "Boy 4",
+        "Boy 6"
       ],
       "sitting_out": [],
       "time_slot": "08:12\u201308:24",
