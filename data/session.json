@@ -44,8 +44,8 @@
         "Boy 1"
       ],
       "team_b": [
-        "Piyusha",
-        "Boy 2"
+        "Boy 3",
+        "Boy 4"
       ],
       "sitting_out": [],
       "time_slot": "07:00\u201307:12",
@@ -55,8 +55,8 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Boy 3",
-        "Boy 4"
+        "Piyusha",
+        "Boy 2"
       ],
       "team_b": [
         "Boy 5",
@@ -135,7 +135,7 @@
       ],
       "team_b": [
         "Boy 3",
-        "Boy 6"
+        "Boy 5"
       ],
       "sitting_out": [],
       "time_slot": "07:36\u201307:48",
@@ -150,7 +150,7 @@
       ],
       "team_b": [
         "Boy 4",
-        "Boy 5"
+        "Boy 6"
       ],
       "sitting_out": [],
       "time_slot": "07:36\u201307:48",
@@ -224,8 +224,8 @@
         "Boy 1"
       ],
       "team_b": [
-        "Piyusha",
-        "Boy 2"
+        "Boy 2",
+        "Boy 5"
       ],
       "sitting_out": [],
       "time_slot": "08:12\u201308:24",
@@ -235,11 +235,11 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Boy 3",
-        "Boy 5"
+        "Piyusha",
+        "Boy 4"
       ],
       "team_b": [
-        "Boy 4",
+        "Boy 3",
         "Boy 6"
       ],
       "sitting_out": [],
