@@ -1,9 +1,9 @@
 {
   "players": [
     "Ayush",
-    "Vasu",
     "Sandeep",
     "Prashant",
+    "Vasu",
     "Aakar",
     "Neha",
     "Shreya",
@@ -16,9 +16,9 @@
   ],
   "skill_levels": {
     "Ayush": "intermediate",
-    "Vasu": "intermediate",
     "Sandeep": "intermediate",
     "Prashant": "intermediate",
+    "Vasu": "intermediate",
     "Aakar": "intermediate",
     "Neha": "intermediate",
     "Shreya": "intermediate",
@@ -41,12 +41,12 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Ayush"
+        "Ayush",
+        "Shreya"
       ],
       "team_b": [
-        "Shreya",
-        "Vasu"
+        "Prashant",
+        "Neha"
       ],
       "sitting_out": [],
       "time_slot": "07:30\u201307:45",
@@ -56,11 +56,11 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Piyusha",
-        "Prashant"
+        "Sandeep",
+        "Piyusha"
       ],
       "team_b": [
-        "Sandeep",
+        "Vasu",
         "Aakar"
       ],
       "sitting_out": [],
@@ -71,12 +71,12 @@
       "round": 2,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Prashant"
+        "Ayush",
+        "Piyusha"
       ],
       "team_b": [
-        "Piyusha",
-        "Vasu"
+        "Shreya",
+        "Neha"
       ],
       "sitting_out": [],
       "time_slot": "07:45\u201308:00",
@@ -86,12 +86,12 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Shreya",
-        "Sandeep"
+        "Sandeep",
+        "Aakar"
       ],
       "team_b": [
-        "Ayush",
-        "Aakar"
+        "Prashant",
+        "Vasu"
       ],
       "sitting_out": [],
       "time_slot": "07:45\u201308:00",
@@ -101,12 +101,12 @@
       "round": 3,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Sandeep"
+        "Ayush",
+        "Neha"
       ],
       "team_b": [
-        "Shreya",
-        "Prashant"
+        "Piyusha",
+        "Aakar"
       ],
       "sitting_out": [],
       "time_slot": "08:00\u201308:15",
@@ -116,12 +116,12 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Piyusha",
-        "Aakar"
+        "Shreya",
+        "Vasu"
       ],
       "team_b": [
-        "Ayush",
-        "Vasu"
+        "Sandeep",
+        "Prashant"
       ],
       "sitting_out": [],
       "time_slot": "08:00\u201308:15",
@@ -131,12 +131,12 @@
       "round": 4,
       "court": 1,
       "team_a": [
-        "Neha",
+        "Ayush",
         "Aakar"
       ],
       "team_b": [
         "Piyusha",
-        "Shreya"
+        "Prashant"
       ],
       "sitting_out": [],
       "time_slot": "08:15\u201308:30",
@@ -146,11 +146,11 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Vasu",
-        "Prashant"
+        "Neha",
+        "Vasu"
       ],
       "team_b": [
-        "Ayush",
+        "Shreya",
         "Sandeep"
       ],
       "sitting_out": [],
@@ -161,12 +161,12 @@
       "round": 5,
       "court": 1,
       "team_a": [
-        "Neha",
+        "Ayush",
         "Vasu"
       ],
       "team_b": [
-        "Piyusha",
-        "Ayush"
+        "Aakar",
+        "Prashant"
       ],
       "sitting_out": [],
       "time_slot": "08:30\u201308:45",
@@ -176,12 +176,12 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Shreya",
-        "Aakar"
+        "Neha",
+        "Sandeep"
       ],
       "team_b": [
-        "Sandeep",
-        "Prashant"
+        "Piyusha",
+        "Shreya"
       ],
       "sitting_out": [],
       "time_slot": "08:30\u201308:45",
@@ -191,11 +191,11 @@
       "round": 6,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Shreya"
+        "Ayush",
+        "Prashant"
       ],
       "team_b": [
-        "Piyusha",
+        "Vasu",
         "Sandeep"
       ],
       "sitting_out": [],
@@ -206,12 +206,12 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Ayush",
-        "Prashant"
+        "Aakar",
+        "Shreya"
       ],
       "team_b": [
-        "Vasu",
-        "Aakar"
+        "Neha",
+        "Piyusha"
       ],
       "sitting_out": [],
       "time_slot": "08:45\u201309:00",
