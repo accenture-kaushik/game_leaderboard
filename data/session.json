@@ -11,16 +11,14 @@
     "Leenav",
     "Neha",
     "Shreya",
-    "Piyusha",
-    "Shivani",
-    "Muskan"
+    "Muskan",
+    "Shivani"
   ],
   "girl_names": [
     "Neha",
     "Shreya",
-    "Piyusha",
-    "Shivani",
-    "Muskan"
+    "Muskan",
+    "Shivani"
   ],
   "skill_levels": {
     "Ayush": "intermediate",
@@ -34,9 +32,8 @@
     "Leenav": "intermediate",
     "Neha": "intermediate",
     "Shreya": "intermediate",
-    "Piyusha": "intermediate",
-    "Shivani": "beginner",
-    "Muskan": "beginner"
+    "Muskan": "intermediate",
+    "Shivani": "intermediate"
   },
   "num_courts": 3,
   "games_per_hour": 4,
@@ -57,52 +54,102 @@
   "schedule": [
     {
       "round": 1,
-      "court": 3,
+      "court": 1,
       "team_a": [
         "Kaushik",
         "Neha"
       ],
       "team_b": [
-        "Ayush",
-        "Sandeep"
+        "Shreya",
+        "Ayush"
       ],
       "sitting_out": [
-        "Prashant",
-        "Vasu",
-        "Adwait",
-        "Avyut",
-        "Chetan",
-        "Leenav",
-        "Shreya",
-        "Piyusha",
+        "Leenav"
+      ],
+      "time_slot": "07:30\u201307:45",
+      "game_id": "r1_c1"
+    },
+    {
+      "round": 1,
+      "court": 2,
+      "team_a": [
+        "Muskan",
+        "Sandeep"
+      ],
+      "team_b": [
         "Shivani",
-        "Muskan"
+        "Prashant"
+      ],
+      "sitting_out": [
+        "Leenav"
+      ],
+      "time_slot": "07:30\u201307:45",
+      "game_id": "r1_c2"
+    },
+    {
+      "round": 1,
+      "court": 3,
+      "team_a": [
+        "Vasu",
+        "Adwait"
+      ],
+      "team_b": [
+        "Avyut",
+        "Chetan"
+      ],
+      "sitting_out": [
+        "Leenav"
       ],
       "time_slot": "07:30\u201307:45",
       "game_id": "r1_c3"
     },
     {
       "round": 2,
-      "court": 3,
+      "court": 1,
       "team_a": [
-        "Prashant",
-        "Shreya"
+        "Kaushik",
+        "Neha"
       ],
       "team_b": [
-        "Vasu",
-        "Piyusha"
+        "Muskan",
+        "Prashant"
       ],
       "sitting_out": [
-        "Ayush",
-        "Sandeep",
-        "Kaushik",
-        "Adwait",
-        "Avyut",
-        "Chetan",
-        "Leenav",
-        "Neha",
+        "Chetan"
+      ],
+      "time_slot": "07:45\u201308:00",
+      "game_id": "r2_c1"
+    },
+    {
+      "round": 2,
+      "court": 2,
+      "team_a": [
+        "Shreya",
+        "Sandeep"
+      ],
+      "team_b": [
         "Shivani",
-        "Muskan"
+        "Vasu"
+      ],
+      "sitting_out": [
+        "Chetan"
+      ],
+      "time_slot": "07:45\u201308:00",
+      "game_id": "r2_c2"
+    },
+    {
+      "round": 2,
+      "court": 3,
+      "team_a": [
+        "Ayush",
+        "Adwait"
+      ],
+      "team_b": [
+        "Avyut",
+        "Leenav"
+      ],
+      "sitting_out": [
+        "Chetan"
       ],
       "time_slot": "07:45\u201308:00",
       "game_id": "r2_c3"
@@ -111,16 +158,15 @@
       "round": 3,
       "court": 1,
       "team_a": [
-        "Adwait",
-        "Shreya"
+        "Neha",
+        "Avyut"
       ],
       "team_b": [
-        "Avyut",
-        "Muskan"
+        "Shreya",
+        "Chetan"
       ],
       "sitting_out": [
-        "Ayush",
-        "Piyusha"
+        "Ayush"
       ],
       "time_slot": "08:00\u201308:15",
       "game_id": "r3_c1"
@@ -129,16 +175,15 @@
       "round": 3,
       "court": 2,
       "team_a": [
-        "Chetan",
+        "Muskan",
         "Leenav"
       ],
       "team_b": [
-        "Prashant",
-        "Shivani"
+        "Shivani",
+        "Adwait"
       ],
       "sitting_out": [
-        "Ayush",
-        "Piyusha"
+        "Ayush"
       ],
       "time_slot": "08:00\u201308:15",
       "game_id": "r3_c2"
@@ -147,16 +192,15 @@
       "round": 3,
       "court": 3,
       "team_a": [
-        "Neha",
-        "Vasu"
-      ],
-      "team_b": [
         "Sandeep",
         "Kaushik"
       ],
+      "team_b": [
+        "Prashant",
+        "Vasu"
+      ],
       "sitting_out": [
-        "Ayush",
-        "Piyusha"
+        "Ayush"
       ],
       "time_slot": "08:00\u201308:15",
       "game_id": "r3_c3"
@@ -165,16 +209,15 @@
       "round": 4,
       "court": 1,
       "team_a": [
-        "Ayush",
-        "Muskan"
+        "Neha",
+        "Vasu"
       ],
       "team_b": [
-        "Adwait",
-        "Chetan"
+        "Shreya",
+        "Adwait"
       ],
       "sitting_out": [
-        "Vasu",
-        "Shreya"
+        "Sandeep"
       ],
       "time_slot": "08:15\u201308:30",
       "game_id": "r4_c1"
@@ -183,16 +226,15 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Sandeep",
-        "Piyusha"
+        "Muskan",
+        "Kaushik"
       ],
       "team_b": [
-        "Avyut",
+        "Shivani",
         "Leenav"
       ],
       "sitting_out": [
-        "Vasu",
-        "Shreya"
+        "Sandeep"
       ],
       "time_slot": "08:15\u201308:30",
       "game_id": "r4_c2"
@@ -201,16 +243,15 @@
       "round": 4,
       "court": 3,
       "team_a": [
-        "Prashant",
-        "Neha"
+        "Ayush",
+        "Chetan"
       ],
       "team_b": [
-        "Kaushik",
-        "Shivani"
+        "Prashant",
+        "Avyut"
       ],
       "sitting_out": [
-        "Vasu",
-        "Shreya"
+        "Sandeep"
       ],
       "time_slot": "08:15\u201308:30",
       "game_id": "r4_c3"
@@ -219,16 +260,15 @@
       "round": 5,
       "court": 1,
       "team_a": [
-        "Vasu",
-        "Muskan"
+        "Neha",
+        "Chetan"
       ],
       "team_b": [
-        "Ayush",
-        "Adwait"
+        "Shreya",
+        "Leenav"
       ],
       "sitting_out": [
-        "Kaushik",
-        "Shivani"
+        "Prashant"
       ],
       "time_slot": "08:30\u201308:45",
       "game_id": "r5_c1"
@@ -237,16 +277,15 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Sandeep",
-        "Leenav"
+        "Muskan",
+        "Adwait"
       ],
       "team_b": [
-        "Prashant",
-        "Avyut"
+        "Shivani",
+        "Ayush"
       ],
       "sitting_out": [
-        "Kaushik",
-        "Shivani"
+        "Prashant"
       ],
       "time_slot": "08:30\u201308:45",
       "game_id": "r5_c2"
@@ -255,16 +294,15 @@
       "round": 5,
       "court": 3,
       "team_a": [
-        "Chetan",
-        "Neha"
+        "Sandeep",
+        "Vasu"
       ],
       "team_b": [
-        "Piyusha",
-        "Shreya"
+        "Kaushik",
+        "Avyut"
       ],
       "sitting_out": [
-        "Kaushik",
-        "Shivani"
+        "Prashant"
       ],
       "time_slot": "08:30\u201308:45",
       "game_id": "r5_c3"
@@ -273,16 +311,15 @@
       "round": 6,
       "court": 1,
       "team_a": [
-        "Kaushik",
-        "Muskan"
+        "Neha",
+        "Adwait"
       ],
       "team_b": [
-        "Vasu",
-        "Shivani"
+        "Shreya",
+        "Avyut"
       ],
       "sitting_out": [
-        "Sandeep",
-        "Avyut"
+        "Vasu"
       ],
       "time_slot": "08:45\u201309:00",
       "game_id": "r6_c1"
@@ -291,16 +328,15 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Ayush",
-        "Leenav"
+        "Muskan",
+        "Ayush"
       ],
       "team_b": [
-        "Avyut",
-        "Shreya"
+        "Shivani",
+        "Chetan"
       ],
       "sitting_out": [
-        "Sandeep",
-        "Prashant"
+        "Vasu"
       ],
       "time_slot": "08:45\u201309:00",
       "game_id": "r6_c2"
@@ -309,16 +345,15 @@
       "round": 6,
       "court": 3,
       "team_a": [
-        "Adwait",
-        "Neha"
+        "Sandeep",
+        "Leenav"
       ],
       "team_b": [
-        "Chetan",
-        "Piyusha"
+        "Prashant",
+        "Kaushik"
       ],
       "sitting_out": [
-        "Sandeep",
-        "Avyut"
+        "Vasu"
       ],
       "time_slot": "08:45\u201309:00",
       "game_id": "r6_c3"
@@ -327,16 +362,15 @@
       "round": 7,
       "court": 1,
       "team_a": [
-        "Prashant",
-        "Muskan"
+        "Neha",
+        "Sandeep"
       ],
       "team_b": [
-        "Vasu",
-        "Shreya"
+        "Muskan",
+        "Prashant"
       ],
       "sitting_out": [
-        "Chetan",
-        "Neha"
+        "Shivani"
       ],
       "time_slot": "09:00\u201309:15",
       "game_id": "r7_c1"
@@ -345,16 +379,15 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Kaushik",
-        "Avyut"
+        "Ayush",
+        "Vasu"
       ],
       "team_b": [
-        "Shivani",
-        "Leenav"
+        "Kaushik",
+        "Adwait"
       ],
       "sitting_out": [
-        "Chetan",
-        "Neha"
+        "Shivani"
       ],
       "time_slot": "09:00\u201309:15",
       "game_id": "r7_c2"
@@ -363,16 +396,15 @@
       "round": 7,
       "court": 3,
       "team_a": [
-        "Ayush",
-        "Piyusha"
+        "Avyut",
+        "Chetan"
       ],
       "team_b": [
-        "Sandeep",
-        "Adwait"
+        "Leenav",
+        "Shreya"
       ],
       "sitting_out": [
-        "Chetan",
-        "Neha"
+        "Shivani"
       ],
       "time_slot": "09:00\u201309:15",
       "game_id": "r7_c3"
@@ -381,16 +413,15 @@
       "round": 8,
       "court": 1,
       "team_a": [
-        "Ayush",
-        "Chetan"
-      ],
-      "team_b": [
-        "Vasu",
+        "Neha",
         "Prashant"
       ],
+      "team_b": [
+        "Muskan",
+        "Chetan"
+      ],
       "sitting_out": [
-        "Adwait",
-        "Muskan"
+        "Shreya"
       ],
       "time_slot": "09:15\u201309:30",
       "game_id": "r8_c1"
@@ -399,16 +430,15 @@
       "round": 8,
       "court": 2,
       "team_a": [
-        "Adwait",
-        "Shivani"
+        "Ayush",
+        "Leenav"
       ],
       "team_b": [
-        "Leenav",
-        "Neha"
+        "Sandeep",
+        "Adwait"
       ],
       "sitting_out": [
-        "Sandeep",
-        "Muskan"
+        "Shreya"
       ],
       "time_slot": "09:15\u201309:30",
       "game_id": "r8_c2"
@@ -417,23 +447,42 @@
       "round": 8,
       "court": 3,
       "team_a": [
-        "Shreya",
+        "Vasu",
         "Kaushik"
       ],
       "team_b": [
-        "Piyusha",
-        "Avyut"
+        "Avyut",
+        "Shivani"
       ],
       "sitting_out": [
-        "Adwait",
-        "Muskan"
+        "Shreya"
       ],
       "time_slot": "09:15\u201309:30",
       "game_id": "r8_c3"
     }
   ],
   "scores": {
+    "r1_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r1_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
     "r1_c3": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c2": {
       "score_a": null,
       "score_b": null,
       "submitted": false
