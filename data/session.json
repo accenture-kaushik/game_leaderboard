@@ -1,8 +1,372 @@
 {
-  "players": [],
-  "skill_levels": {},
-  "schedule": [],
-  "scores": {},
-  "session_active": false,
-  "critics_choice": null
+  "players": [
+    "Aakar",
+    "Ayush",
+    "Prashant",
+    "Sandy",
+    "Adwait",
+    "Vasu",
+    "Neha",
+    "Piyusha",
+    "Shivani",
+    "Shreya"
+  ],
+  "girl_names": [
+    "Neha",
+    "Piyusha",
+    "Shivani",
+    "Shreya"
+  ],
+  "skill_levels": {
+    "Aakar": "intermediate",
+    "Ayush": "intermediate",
+    "Prashant": "intermediate",
+    "Sandy": "intermediate",
+    "Adwait": "intermediate",
+    "Vasu": "intermediate",
+    "Neha": "intermediate",
+    "Piyusha": "intermediate",
+    "Shivani": "intermediate",
+    "Shreya": "intermediate"
+  },
+  "num_courts": 2,
+  "games_per_hour": 5,
+  "court_times": {
+    "1": {
+      "start": "07:00",
+      "end": "08:30"
+    },
+    "2": {
+      "start": "07:00",
+      "end": "08:30"
+    }
+  },
+  "schedule": [
+    {
+      "round": 1,
+      "court": 1,
+      "team_a": [
+        "Neha",
+        "Piyusha"
+      ],
+      "team_b": [
+        "Shivani",
+        "Shreya"
+      ],
+      "sitting_out": [
+        "Aakar",
+        "Adwait"
+      ],
+      "time_slot": "07:00\u201307:12",
+      "game_id": "r1_c1"
+    },
+    {
+      "round": 1,
+      "court": 2,
+      "team_a": [
+        "Ayush",
+        "Prashant"
+      ],
+      "team_b": [
+        "Sandy",
+        "Vasu"
+      ],
+      "sitting_out": [
+        "Aakar",
+        "Adwait"
+      ],
+      "time_slot": "07:00\u201307:12",
+      "game_id": "r1_c2"
+    },
+    {
+      "round": 2,
+      "court": 1,
+      "team_a": [
+        "Neha",
+        "Ayush"
+      ],
+      "team_b": [
+        "Shreya",
+        "Prashant"
+      ],
+      "sitting_out": [
+        "Piyusha",
+        "Sandy"
+      ],
+      "time_slot": "07:12\u201307:24",
+      "game_id": "r2_c1"
+    },
+    {
+      "round": 2,
+      "court": 2,
+      "team_a": [
+        "Aakar",
+        "Vasu"
+      ],
+      "team_b": [
+        "Adwait",
+        "Shivani"
+      ],
+      "sitting_out": [
+        "Piyusha",
+        "Sandy"
+      ],
+      "time_slot": "07:12\u201307:24",
+      "game_id": "r2_c2"
+    },
+    {
+      "round": 3,
+      "court": 1,
+      "team_a": [
+        "Piyusha",
+        "Vasu"
+      ],
+      "team_b": [
+        "Shreya",
+        "Aakar"
+      ],
+      "sitting_out": [
+        "Neha",
+        "Ayush"
+      ],
+      "time_slot": "07:24\u201307:36",
+      "game_id": "r3_c1"
+    },
+    {
+      "round": 3,
+      "court": 2,
+      "team_a": [
+        "Prashant",
+        "Adwait"
+      ],
+      "team_b": [
+        "Sandy",
+        "Shivani"
+      ],
+      "sitting_out": [
+        "Neha",
+        "Ayush"
+      ],
+      "time_slot": "07:24\u201307:36",
+      "game_id": "r3_c2"
+    },
+    {
+      "round": 4,
+      "court": 1,
+      "team_a": [
+        "Neha",
+        "Adwait"
+      ],
+      "team_b": [
+        "Piyusha",
+        "Shivani"
+      ],
+      "sitting_out": [
+        "Prashant",
+        "Vasu"
+      ],
+      "time_slot": "07:36\u201307:48",
+      "game_id": "r4_c1"
+    },
+    {
+      "round": 4,
+      "court": 2,
+      "team_a": [
+        "Aakar",
+        "Sandy"
+      ],
+      "team_b": [
+        "Ayush",
+        "Shreya"
+      ],
+      "sitting_out": [
+        "Prashant",
+        "Vasu"
+      ],
+      "time_slot": "07:36\u201307:48",
+      "game_id": "r4_c2"
+    },
+    {
+      "round": 5,
+      "court": 1,
+      "team_a": [
+        "Neha",
+        "Vasu"
+      ],
+      "team_b": [
+        "Shreya",
+        "Sandy"
+      ],
+      "sitting_out": [
+        "Aakar",
+        "Piyusha"
+      ],
+      "time_slot": "07:48\u201308:00",
+      "game_id": "r5_c1"
+    },
+    {
+      "round": 5,
+      "court": 2,
+      "team_a": [
+        "Ayush",
+        "Adwait"
+      ],
+      "team_b": [
+        "Shivani",
+        "Prashant"
+      ],
+      "sitting_out": [
+        "Aakar",
+        "Piyusha"
+      ],
+      "time_slot": "07:48\u201308:00",
+      "game_id": "r5_c2"
+    },
+    {
+      "round": 6,
+      "court": 1,
+      "team_a": [
+        "Piyusha",
+        "Sandy"
+      ],
+      "team_b": [
+        "Shivani",
+        "Aakar"
+      ],
+      "sitting_out": [
+        "Neha",
+        "Shreya"
+      ],
+      "time_slot": "08:00\u201308:12",
+      "game_id": "r6_c1"
+    },
+    {
+      "round": 6,
+      "court": 2,
+      "team_a": [
+        "Ayush",
+        "Adwait"
+      ],
+      "team_b": [
+        "Prashant",
+        "Vasu"
+      ],
+      "sitting_out": [
+        "Neha",
+        "Shreya"
+      ],
+      "time_slot": "08:00\u201308:12",
+      "game_id": "r6_c2"
+    },
+    {
+      "round": 7,
+      "court": 1,
+      "team_a": [
+        "Neha",
+        "Shreya"
+      ],
+      "team_b": [
+        "Piyusha",
+        "Ayush"
+      ],
+      "sitting_out": [
+        "Sandy",
+        "Shivani"
+      ],
+      "time_slot": "08:12\u201308:24",
+      "game_id": "r7_c1"
+    },
+    {
+      "round": 7,
+      "court": 2,
+      "team_a": [
+        "Aakar",
+        "Prashant"
+      ],
+      "team_b": [
+        "Adwait",
+        "Vasu"
+      ],
+      "sitting_out": [
+        "Sandy",
+        "Shivani"
+      ],
+      "time_slot": "08:12\u201308:24",
+      "game_id": "r7_c2"
+    }
+  ],
+  "scores": {
+    "r1_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r1_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r2_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r3_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r3_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r4_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r4_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r5_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r5_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r6_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r6_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r7_c1": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    },
+    "r7_c2": {
+      "score_a": null,
+      "score_b": null,
+      "submitted": false
+    }
+  },
+  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
+  "session_active": true
 }
