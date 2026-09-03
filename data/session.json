@@ -6,6 +6,7 @@
     "Sandy",
     "Adwait",
     "Vasu",
+    "Kaushik",
     "Neha",
     "Piyusha",
     "Shivani",
@@ -24,6 +25,7 @@
     "Sandy": "intermediate",
     "Adwait": "intermediate",
     "Vasu": "intermediate",
+    "Kaushik": "intermediate",
     "Neha": "intermediate",
     "Piyusha": "intermediate",
     "Shivani": "intermediate",
@@ -46,16 +48,17 @@
       "round": 1,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Piyusha"
+        "Ayush",
+        "Neha"
       ],
       "team_b": [
-        "Shivani",
-        "Shreya"
+        "Prashant",
+        "Shivani"
       ],
       "sitting_out": [
+        "Kaushik",
         "Aakar",
-        "Adwait"
+        "Piyusha"
       ],
       "time_slot": "07:00\u201307:12",
       "game_id": "r1_c1"
@@ -64,16 +67,17 @@
       "round": 1,
       "court": 2,
       "team_a": [
-        "Ayush",
-        "Prashant"
+        "Sandy",
+        "Adwait"
       ],
       "team_b": [
-        "Sandy",
+        "Shreya",
         "Vasu"
       ],
       "sitting_out": [
+        "Kaushik",
         "Aakar",
-        "Adwait"
+        "Piyusha"
       ],
       "time_slot": "07:00\u201307:12",
       "game_id": "r1_c2"
@@ -82,16 +86,17 @@
       "round": 2,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Ayush"
+        "Aakar",
+        "Piyusha"
       ],
       "team_b": [
-        "Shreya",
-        "Prashant"
+        "Ayush",
+        "Shreya"
       ],
       "sitting_out": [
-        "Piyusha",
-        "Sandy"
+        "Kaushik",
+        "Neha",
+        "Prashant"
       ],
       "time_slot": "07:12\u201307:24",
       "game_id": "r2_c1"
@@ -100,7 +105,7 @@
       "round": 2,
       "court": 2,
       "team_a": [
-        "Aakar",
+        "Sandy",
         "Vasu"
       ],
       "team_b": [
@@ -108,8 +113,9 @@
         "Shivani"
       ],
       "sitting_out": [
-        "Piyusha",
-        "Sandy"
+        "Kaushik",
+        "Neha",
+        "Prashant"
       ],
       "time_slot": "07:12\u201307:24",
       "game_id": "r2_c2"
@@ -118,16 +124,17 @@
       "round": 3,
       "court": 1,
       "team_a": [
-        "Piyusha",
-        "Vasu"
+        "Aakar",
+        "Neha"
       ],
       "team_b": [
-        "Shreya",
-        "Aakar"
+        "Ayush",
+        "Piyusha"
       ],
       "sitting_out": [
-        "Neha",
-        "Ayush"
+        "Kaushik",
+        "Sandy",
+        "Adwait"
       ],
       "time_slot": "07:24\u201307:36",
       "game_id": "r3_c1"
@@ -137,15 +144,16 @@
       "court": 2,
       "team_a": [
         "Prashant",
-        "Adwait"
-      ],
-      "team_b": [
-        "Sandy",
         "Shivani"
       ],
+      "team_b": [
+        "Vasu",
+        "Shreya"
+      ],
       "sitting_out": [
-        "Neha",
-        "Ayush"
+        "Kaushik",
+        "Sandy",
+        "Adwait"
       ],
       "time_slot": "07:24\u201307:36",
       "game_id": "r3_c2"
@@ -154,16 +162,17 @@
       "round": 4,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Adwait"
+        "Aakar",
+        "Kaushik"
       ],
       "team_b": [
-        "Piyusha",
-        "Shivani"
+        "Ayush",
+        "Prashant"
       ],
       "sitting_out": [
-        "Prashant",
-        "Vasu"
+        "Neha",
+        "Piyusha",
+        "Shreya"
       ],
       "time_slot": "07:36\u201307:48",
       "game_id": "r4_c1"
@@ -172,16 +181,17 @@
       "round": 4,
       "court": 2,
       "team_a": [
-        "Aakar",
-        "Sandy"
+        "Sandy",
+        "Adwait"
       ],
       "team_b": [
-        "Ayush",
-        "Shreya"
+        "Vasu",
+        "Shivani"
       ],
       "sitting_out": [
-        "Prashant",
-        "Vasu"
+        "Neha",
+        "Piyusha",
+        "Shreya"
       ],
       "time_slot": "07:36\u201307:48",
       "game_id": "r4_c2"
@@ -190,16 +200,17 @@
       "round": 5,
       "court": 1,
       "team_a": [
-        "Neha",
+        "Aakar",
         "Vasu"
       ],
       "team_b": [
-        "Shreya",
-        "Sandy"
+        "Ayush",
+        "Kaushik"
       ],
       "sitting_out": [
-        "Aakar",
-        "Piyusha"
+        "Prashant",
+        "Sandy",
+        "Shivani"
       ],
       "time_slot": "07:48\u201308:00",
       "game_id": "r5_c1"
@@ -208,16 +219,17 @@
       "round": 5,
       "court": 2,
       "team_a": [
-        "Ayush",
-        "Adwait"
+        "Adwait",
+        "Neha"
       ],
       "team_b": [
-        "Shivani",
-        "Prashant"
+        "Piyusha",
+        "Shreya"
       ],
       "sitting_out": [
-        "Aakar",
-        "Piyusha"
+        "Prashant",
+        "Sandy",
+        "Shivani"
       ],
       "time_slot": "07:48\u201308:00",
       "game_id": "r5_c2"
@@ -226,16 +238,17 @@
       "round": 6,
       "court": 1,
       "team_a": [
-        "Piyusha",
+        "Aakar",
         "Sandy"
       ],
       "team_b": [
-        "Shivani",
-        "Aakar"
+        "Prashant",
+        "Kaushik"
       ],
       "sitting_out": [
-        "Neha",
-        "Shreya"
+        "Ayush",
+        "Adwait",
+        "Neha"
       ],
       "time_slot": "08:00\u201308:12",
       "game_id": "r6_c1"
@@ -244,16 +257,17 @@
       "round": 6,
       "court": 2,
       "team_a": [
-        "Ayush",
-        "Adwait"
+        "Vasu",
+        "Shivani"
       ],
       "team_b": [
-        "Prashant",
-        "Vasu"
+        "Piyusha",
+        "Shreya"
       ],
       "sitting_out": [
-        "Neha",
-        "Shreya"
+        "Ayush",
+        "Adwait",
+        "Neha"
       ],
       "time_slot": "08:00\u201308:12",
       "game_id": "r6_c2"
@@ -262,16 +276,17 @@
       "round": 7,
       "court": 1,
       "team_a": [
-        "Neha",
-        "Shreya"
+        "Ayush",
+        "Adwait"
       ],
       "team_b": [
-        "Piyusha",
-        "Ayush"
+        "Prashant",
+        "Piyusha"
       ],
       "sitting_out": [
+        "Aakar",
         "Sandy",
-        "Shivani"
+        "Vasu"
       ],
       "time_slot": "08:12\u201308:24",
       "game_id": "r7_c1"
@@ -280,16 +295,17 @@
       "round": 7,
       "court": 2,
       "team_a": [
-        "Aakar",
-        "Prashant"
+        "Neha",
+        "Kaushik"
       ],
       "team_b": [
-        "Adwait",
-        "Vasu"
+        "Shivani",
+        "Shreya"
       ],
       "sitting_out": [
+        "Aakar",
         "Sandy",
-        "Shivani"
+        "Vasu"
       ],
       "time_slot": "08:12\u201308:24",
       "game_id": "r7_c2"
@@ -367,6 +383,6 @@
       "submitted": false
     }
   },
-  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible.",
+  "special_instructions": "Avoid a team with 2 girls if the opponent team has a boy. Make unique partner pairs as much as possible. Reduce players facing the same opponent team as much as possible. have Kaushik sit out more and start Kaushik's games from 07:30 onwards. ",
   "session_active": true
 }
